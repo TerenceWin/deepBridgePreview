@@ -1,63 +1,63 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import SuccessModal from './SuccessModal'; // New component for confirmation
-import countryList from './countries/countryList';
+import React, { useState } from "react";
+import axios from "axios";
+import SuccessModal from "./SuccessModal"; // New component for confirmation
+import countryList from "./countries/countryList";
 
 const MyForm = () => {
-
-
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    country: '',
-    whatsapp: '',
-    company: '',
+    firstName: "",
+    lastName: "",
+    email: "",
+    country: "",
+    whatsapp: "",
+    company: "",
     emailConsent: false,
-    promoConsent: false
+    promoConsent: false,
   });
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prevState => ({
+    setFormData((prevState) => ({
       ...prevState,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    axios.post('http://localhost:8000/api/contacts', formData)
+
+    axios
+      .post("http://localhost:8000/api/contacts", formData)
       .then((response) => {
         console.log(response.data);
         setShowSuccessModal(true);
-  
+
         // Clear the form after successful submission
         setFormData({
-          firstName: '',
-          lastName: '',
-          email: '',
-          country: '',
-          whatsapp: '',
-          company: '',
+          firstName: "",
+          lastName: "",
+          email: "",
+          country: "",
+          whatsapp: "",
+          company: "",
           emailConsent: false,
-          promoConsent: false
+          promoConsent: false,
         });
       })
       .catch((error) => {
-        console.error('Error submitting form:', error);
-        alert('Submission failed');
+        console.error("Error submitting form:", error);
+        alert("Submission failed");
       });
   };
-  
 
   return (
-    <div className='pt-5' id="Form">
-        <div className="booking-form card shadow-sm p-4 w-75 m-auto mb-5" style={{ maxWidth: "700px" }} >
+    <div className="pt-5" id="Form">
+      <div
+        className="booking-form card shadow-sm p-4 w-75 m-auto mb-5"
+        style={{ maxWidth: "700px" }}
+      >
         <h2 className="text-center mb-2">Get in Touch with Deep-Bridge</h2>
-
 
         <form onSubmit={handleSubmit}>
           {/* First Name */}
@@ -101,21 +101,20 @@ const MyForm = () => {
 
           {/* Country, Prefix, WhatsApp */}
           <div className="mb-3 d-flex gap-2">
-          <select 
-              className="form-select" 
-              style={{ width: '120px' }}
+            <select
+              className="form-select"
+              style={{ width: "120px" }}
               name="country"
               value={formData.country}
               onChange={handleChange}
             >
               <option value="">Country</option>
-              {countryList.map(country => (
+              {countryList.map((country) => (
                 <option key={country.code} value={country.code}>
                   {country.name}
                 </option>
               ))}
             </select>
-
 
             <input
               type="tel"
@@ -142,48 +141,18 @@ const MyForm = () => {
           </div>
 
           {/* Email Consent */}
-          <div className="mb-3">
-            <div className="form-check">
-              <input
-                type="checkbox"
-                className="form-check-input"
-                id="emailConsent"
-                name="emailConsent"
-                checked={formData.emailConsent}
-                onChange={handleChange}
-              />
-              <label className="form-check-label" htmlFor="emailConsent">
-                I agree to receive emails based on my enquiry
-              </label>
-            </div>
-          </div>
-
-          {/* Promo Consent */}
-          <div className="mb-3">
-            <div className="form-check">
-              <input
-                type="checkbox"
-                className="form-check-input"
-                id="promoConsent"
-                name="promoConsent"
-                checked={formData.promoConsent}
-                onChange={handleChange}
-              />
-              <label className="form-check-label" htmlFor="promoConsent">
-                I agree to receive promotional emails & WhatsApps
-              </label>
-            </div>
-          </div>
 
           <button type="submit" className="btn btn-primary w-100">
             Contact us
           </button>
         </form>
 
-        <SuccessModal show={showSuccessModal} handleClose={() => setShowSuccessModal(false)} />
+        <SuccessModal
+          show={showSuccessModal}
+          handleClose={() => setShowSuccessModal(false)}
+        />
       </div>
     </div>
-    
   );
 };
 
