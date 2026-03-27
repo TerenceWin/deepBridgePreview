@@ -1,106 +1,11 @@
-html {
-  overflow-x: hidden;
-  width: 100%;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  overflow-x: hidden;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-#root {
-  width: 100%;
-  overflow-x: hidden;
-  position: relative;
-}
-
-/* Ensure main app wrapper doesn't overflow */
-#root > * {
-  max-width: 100%;
-  overflow-x: hidden;
-  width: 100%;
-}
-
-/* Prevent horizontal overflow from images and media */
-img,
-video,
-iframe,
-embed,
-object {
-  max-width: 100%;
-  height: auto;
-}
-
-/* Ensure all container elements respect viewport width */
-.container,
-.container-fluid,
-.row {
-  max-width: 100%;
-  overflow-x: hidden;
-  width: 100%;
-}
-
-/* Fix Bootstrap container-fluid padding causing overflow */
-.container-fluid {
-  padding-left: 15px;
-  padding-right: 15px;
-}
-
-@media (max-width: 575.98px) {
-  .container-fluid {
-    padding-left: 10px;
-    padding-right: 10px;
-  }
-}
-
-/* Ensure parent elements contain absolutely positioned children */
-[class*="container"],
-[class*="section"],
-[class*="row"] {
-  position: relative;
-}
-
-/* Fix for elements with negative positioning */
-[style*="left: -"],
-[style*="right: -"],
-[class*="left: -"],
-[class*="right: -"] {
-  max-width: calc(100% + 50px);
-}
-
-/* Ensure sections don't overflow */
-section {
-  width: 100%;
-  max-width: 100%;
-  overflow-x: hidden !important;
-  overflow-y: visible !important;
-  position: relative;
-  box-sizing: border-box;
-  height: auto;
-  min-height: auto;
-  max-height: none !important;
-}
-
-/* Ensure all deep-bridge-feature sections are constrained */
-.deep-bridge-feature {
-  overflow-x: hidden !important;
-  width: 100%;
-  max-width: 100%;
-  position: relative;
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-}
+html { overflow-x: hidden; width: 100%; }
+* { box-sizing: border-box; }
+body { overflow-x: hidden; width: 100%; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+#root { width: 100%; overflow-x: hidden; position: relative; }
+img, video, iframe, embed, object { max-width: 100%; height: auto; }
+.container, .container-fluid, .row { max-width: 100%; overflow-x: hidden; width: 100%; }
+.container-fluid { padding-left: 15px; padding-right: 15px; }
+@media (max-width: 575.98px) { .container-fluid { padding-left: 10px; padding-right: 10px; } }
+section { width: 100%; max-width: 100%; overflow-x: hidden; position: relative; box-sizing: border-box; }
+.deep-bridge-feature { overflow-x: hidden; width: 100%; max-width: 100%; position: relative; }
+code { font-family: 'JetBrains Mono', source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace; }

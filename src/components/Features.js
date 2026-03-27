@@ -1,102 +1,36 @@
-import React from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-import Testimonials from "./Testimonials";
-import { FaClock, FaChartLine, FaRobot } from "react-icons/fa";
-import { FiMessageCircle } from "react-icons/fi";
+import React from 'react';
+import '../styles/theme.css';
 
-const Features = () => {
-  const features = [
-    {
-      icon: FaClock,
-      title: "Faster responses to RFQs and enquiries",
-      description:
-        "Reduce waiting time for your buyers by letting an AI sales agent draft replies and quotations in seconds, using your products, prices, and rules.",
-    },
-    {
-      icon: FiMessageCircle,
-      title: "AI-powered email and WhatsApp assistant",
-      description:
-        "Give tasks to Deep-Bridge and let it handle day-to-day conversations across channels—so every buyer gets timely, consistent communication without extra effort from your team.",
-    },
-    {
-      icon: FaChartLine,
-      title: "Smarter workflows and clearer priorities",
-      description:
-        "Cut through noise in inboxes and chats. Deep-Bridge highlights which buyers and offers need attention next, helping your team focus on the deals that actually move the needle.",
-    },
-  ];
+const features = [
+  { tag: 'Extract · Verify · Log',       title: 'AI Document Processing',      desc: 'Reads inbound emails, extracts requirements, cross-references product databases, and flags discrepancies — before a human touches it.' },
+  { tag: 'Automate · Approve · Audit',   title: 'Agentic Deal Workflows',      desc: 'Automated pipelines that follow up, remind, escalate, and route — with human approval gates at every critical decision point.' },
+  { tag: 'Analyse · Improve · Predict',  title: 'Trade Intelligence',          desc: 'Observes deal patterns across the pipeline. Identifies where cycles stall, which customers convert, and which product categories lose margin.' },
+  { tag: 'Source · Trace · Defend',      title: 'Evidence-First Audit Trail',  desc: 'Every extracted data point, decision, and approval links back to its source — email, document, website, or upload. Nothing without provenance.' },
+  { tag: 'HKD · USD · RMB · SGD',        title: 'Multi-Market Execution',      desc: 'Handles multi-currency, multi-language, and multi-brand operations from a single system. Built for HK, SEA, and China-origin trade flows.' },
+  { tag: 'Generate · Version · Link',    title: 'Quotation & Order Engine',    desc: 'Generates structured quotations from extracted requirements, tracks versions, and links to the final order so spec changes are never lost.' },
+];
 
+function Features() {
   return (
-    <section className="deep-bridge-feature py-5">
-      <div className="container my-5">
-        <div
-          className="text-center mb-5"
-          data-aos="fade-up"
-          data-aos-delay="100"
-        >
-          <h2 className="feature-title display-5 fw-bold mb-3">
-            Bridging deeper connections for your{" "}
-            <span className="highlight-gradient">business</span>
-          </h2>
-          <p className="lead text-muted">
-            <FaRobot className="me-2" style={{ color: "#1a92da" }} />
-            Powerful AI support for your sales team
-          </p>
-        </div>
-
-        <div className="row align-items-stretch">
-          {/* Features Column */}
-          <div className="col-lg-6 mb-5 mb-lg-0 d-flex flex-column">
-            {features.map((feature, index) => {
-              const IconComponent = feature.icon;
-              return (
-                <div
-                  key={index}
-                  className="modern-card feature-card-modern mb-4"
-                  data-aos="fade-right"
-                  data-aos-delay={200 + index * 100}
-                >
-                  <div className="card-body position-relative">
-                    <div className="corner-accent top-right"></div>
-                    <div className="corner-accent bottom-left"></div>
-
-                    <div className="d-flex align-items-start">
-                      <div className="feature-icon-wrapper me-4">
-                        <IconComponent
-                          className="feature-icon"
-                          style={{ color: "#1a92da" }}
-                        />
-                      </div>
-                      <div className="feature-content flex-grow-1">
-                        <h3
-                          className="h5 mb-3"
-                          style={{ color: "#2d3748", fontWeight: "600" }}
-                        >
-                          {feature.title}
-                        </h3>
-                        <p className="card-text mb-0">{feature.description}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+    <section style={{ background: '#F8F7F3', padding: '88px 48px' }}>
+      <div className="db-section-tag">Core Capabilities</div>
+      <h2 style={{ fontFamily: "'EB Garamond',Georgia,serif", fontSize: 'clamp(26px,3.5vw,40px)', fontWeight: 400, color: '#0D1F35', marginBottom: '12px' }}>
+        Built for the <em style={{ color: '#2A5298' }}>full trade cycle.</em>
+      </h2>
+      <p style={{ fontFamily: "'Inter',sans-serif", fontSize: '15px', color: '#6B7A8A', fontWeight: 300, lineHeight: 1.8, maxWidth: '480px', marginBottom: '48px' }}>
+        Every stage of the deal — from first inquiry to final shipment — tracked, structured, and auditable in one system.
+      </p>
+      <div className="db-feature-grid">
+        {features.map((f, i) => (
+          <div key={i} className="db-feature-card">
+            <div className="db-feature-title">{f.title}</div>
+            <div className="db-feature-desc">{f.desc}</div>
+            <div className="db-feature-tag">{f.tag}</div>
           </div>
-
-          {/* Testimonials Column */}
-          <div className="col-lg-6 d-flex align-items-stretch">
-            <div
-              className="w-100 d-flex"
-              data-aos="fade-left"
-              data-aos-delay="400"
-            >
-              <Testimonials />
-            </div>
-          </div>
-        </div>
+        ))}
       </div>
     </section>
   );
-};
+}
 
 export default Features;

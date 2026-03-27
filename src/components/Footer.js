@@ -1,101 +1,31 @@
-import React from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "../styles/Partners.css";
-import { FaLinkedin, FaRobot, FaGem } from "react-icons/fa";
-import { FiMail, FiPhone, FiMapPin } from "react-icons/fi";
-import logoCropped from "../images/logo-cropped.jpeg";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import '../styles/theme.css';
+
+const DBLogo = () => (
+  <svg width="26" height="26" viewBox="0 0 52 52" fill="none">
+    <rect x="8" y="14" width="6" height="28" rx="1" fill="#2A5298"/>
+    <rect x="38" y="14" width="6" height="28" rx="1" fill="#2A5298"/>
+    <rect x="6" y="12" width="40" height="5" rx="1.5" fill="#1E3A5F"/>
+    <path d="M14 17 Q26 30 38 17" stroke="#2A5298" strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.5"/>
+  </svg>
+);
 
 function Footer() {
   return (
-    <footer className="footer-modern">
-      <section className="footer-content py-1 border-top">
-        <div className="container">
-          {/* Change row to use flexbox centering */}
-          <div className="row g-4 justify-content-around align-items-start py-3">
-            {/* Remove specific column classes and let content determine width */}
-            <div className="col-auto">
-              <div className="footer-column" style={{ maxWidth: "300px" }}>
-                <h6 className="footer-title mb-4">
-                  <img
-                    src={logoCropped}
-                    alt="Deep-Bridge"
-                    className="me-2"
-                    style={{ height: "30px", width: "auto" }}
-                  />
-                  Deep-Bridge
-                </h6>
-                <p className="footer-text">
-                  At Deep-Bridge, we're committed to helping traditional
-                  businesses thrive in a digital-first world. Our AI-powered
-                  solutions are designed to simplify communication, automate
-                  workflows, and drive smarter decision-making—without requiring
-                  any technical expertise.
-                </p>
-              </div>
-            </div>
-
-            <div className="col-auto">
-              <div className="footer-column" style={{ maxWidth: "250px" }}>
-                <h6 className="footer-title mb-4">Follow Us</h6>
-                <p className="footer-text mb-4">
-                  Stay connected with us on social media for the latest updates
-                  and news.
-                </p>
-                <div className="footer-social-links">
-                  <a
-                    href="https://www.linkedin.com/company/deep-bridge/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="social-link"
-                    aria-label="LinkedIn"
-                  >
-                    <FaLinkedin size={24} style={{ color: "#1a92da" }} />
-                  </a>
-                </div>
-              </div>
-            </div>
-
-            <div className="col-auto">
-              <div className="footer-column" style={{ maxWidth: "220px" }}>
-                <h6 className="footer-title mb-3">Contact Us</h6>
-                <div className="footer-contact">
-                  <div className="contact-item mb-2">
-                    <FiMail className="me-2" style={{ color: "#1a92da" }} />
-                    <span className="text-muted">info@deep-bridge.com</span>
-                  </div>
-                  <div className="contact-item mb-2">
-                    <FiPhone className="me-2" style={{ color: "#1a92da" }} />
-                    <span className="text-muted">+852 6725 9701</span>
-                  </div>
-                  <div className="contact-item">
-                    <FiMapPin className="me-2" style={{ color: "#1a92da" }} />
-                    <span className="text-muted" style={{ fontSize: "0.9rem" }}>
-                      1118-1119 Metro Ctr. II,
-                      <br />
-                      21 Lam Hing Street,
-                      <br />
-                      Kowloon Bay, Hong Kong
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer Bottom remains same */}
-      <div className="footer-bottom py-3">
-        <div className="container">
-          <div className="row">
-            <div className="col-12 text-center">
-              <p className="footer-copyright mb-0">
-                © {new Date().getFullYear()} Deep-Bridge. All rights reserved.
-              </p>
-            </div>
-          </div>
-        </div>
+    <footer style={{ background: '#F8F7F3', borderTop: '1px solid rgba(30,58,95,0.1)', padding: '34px 48px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '20px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <DBLogo />
+        <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: '13px', fontWeight: 500, letterSpacing: '0.5px', color: '#0D1F35' }}>
+          DEEP<span style={{ color: '#2A5298' }}>BRIDGE</span>
+        </span>
       </div>
+      <ul style={{ display: 'flex', gap: '24px', listStyle: 'none', margin: 0, padding: 0 }}>
+        {[['/', 'Home'], ['/services', 'Services'], ['/contact', 'About'], ['/crm/login', 'Login']].map(([to, label]) => (
+          <li key={to}><Link to={to} style={{ fontFamily: "'Inter',sans-serif", fontSize: '12px', color: '#9AABB8', textDecoration: 'none' }}>{label}</Link></li>
+        ))}
+      </ul>
+      <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: '9px', letterSpacing: '1px', color: '#9AABB8' }}>© 2026 Deep Bridge Ltd · Hong Kong</span>
     </footer>
   );
 }
