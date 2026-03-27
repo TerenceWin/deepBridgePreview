@@ -3,6 +3,10 @@
   "buildCommand": "react-scripts build",
   "outputDirectory": "build",
   "installCommand": "npm install",
+  "env": {
+    "DISABLE_ESLINT_PLUGIN": "true",
+    "GENERATE_SOURCEMAP": "false"
+  },
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ]
