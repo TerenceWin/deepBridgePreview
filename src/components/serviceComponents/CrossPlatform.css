@@ -1,0 +1,470 @@
+.cross-platform-section {
+  background: #fafbfc;
+  padding: 60px 0;
+  position: relative;
+  overflow-x: hidden;
+  overflow-y: visible;
+  width: 100%;
+  max-width: 100%;
+}
+
+.cross-platform-content {
+  padding: 2rem 0;
+}
+
+.sync-icon-wrapper {
+  margin-bottom: 2rem;
+}
+
+.sync-icon-box {
+  width: 80px;
+  height: 80px;
+  background: #4ade80;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.sync-icon {
+  color: white;
+  font-size: 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.sync-icon-box::after {
+  content: '';
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  top: 50%;
+  right: -10px;
+  transform: translateY(-50%);
+}
+
+.cross-platform-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #1a92da;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.5rem;
+}
+
+.cross-platform-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #1a202c;
+  line-height: 1.4;
+  margin-bottom: 2rem;
+}
+
+.cross-platform-subtitle {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #4a5568;
+  margin-bottom: 2rem;
+}
+
+.cross-platform-feature-card {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  text-align: center;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cross-platform-feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.cross-platform-feature-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1a202c;
+  margin-bottom: 1rem;
+}
+
+.cross-platform-feature-description {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #4a5568;
+  margin-bottom: 0;
+}
+
+.cross-platform-features {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.cross-platform-features li {
+  font-size: 1.1rem;
+  color: #4a5568;
+  line-height: 1.8;
+  margin-bottom: 1rem;
+  padding-left: 2rem;
+  position: relative;
+}
+
+.cross-platform-features li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: #4ade80;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+/* Devices Container */
+.devices-container {
+  position: relative;
+  min-height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+.devices-container:hover {
+  transform: scale(1.02);
+}
+
+/* Cross Platform Image */
+.crossplatform-image {
+  max-width: 100%;
+  width: auto;
+  height: auto;
+  display: block;
+  object-fit: contain;
+  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.3));
+}
+
+/* Laptop */
+.laptop-device {
+  z-index: 1;
+  left: 10%;
+  top: 20%;
+  transform: rotateY(-15deg) rotateX(5deg);
+}
+
+.laptop-device .device-screen {
+  width: 280px;
+  height: 180px;
+  background: #1a202c;
+  border-radius: 8px 8px 0 0;
+  padding: 15px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.laptop-device .device-content {
+  background: #f8f9fa;
+  height: 100%;
+  border-radius: 4px;
+  padding: 12px;
+  overflow: hidden;
+}
+
+.laptop-device .device-header {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #1a202c;
+  margin-bottom: 10px;
+}
+
+.laptop-device .device-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.laptop-device .device-card {
+  height: 60px;
+  background: white;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.laptop-device .device-base {
+  width: 300px;
+  height: 8px;
+  background: #cbd5e0;
+  border-radius: 0 0 4px 4px;
+  margin: 0 auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Tablet */
+.tablet-device {
+  z-index: 2;
+  left: 35%;
+  top: 10%;
+  transform: rotateY(-5deg) rotateX(3deg);
+}
+
+.tablet-device .device-screen {
+  width: 200px;
+  height: 260px;
+  background: #1a202c;
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.tablet-device .device-content {
+  background: #f8f9fa;
+  height: 100%;
+  border-radius: 8px;
+  padding: 15px;
+  overflow: hidden;
+}
+
+.tablet-device .device-header {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1a202c;
+  margin-bottom: 8px;
+}
+
+.tablet-device .device-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1a202c;
+  margin-bottom: 15px;
+}
+
+.tablet-device .device-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tablet-device .device-card {
+  height: 50px;
+  background: white;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Smartphone */
+.phone-device {
+  z-index: 3;
+  right: 15%;
+  top: 25%;
+  transform: rotateY(10deg) rotateX(-3deg);
+}
+
+.phone-device .device-screen {
+  width: 120px;
+  height: 220px;
+  background: #1a202c;
+  border-radius: 20px;
+  padding: 10px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.phone-device .device-content {
+  background: #1a202c;
+  height: 100%;
+  border-radius: 15px;
+  padding: 15px 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.phone-device .device-toggle {
+  font-size: 0.7rem;
+  color: #4ade80;
+  text-align: center;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.phone-device .device-value {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: white;
+  text-align: center;
+  margin-bottom: auto;
+  padding-top: 20px;
+}
+
+.phone-device .device-nav {
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.phone-device .device-nav span {
+  width: 20px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+/* Security Card */
+.security-card {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  border: 1px solid #e5e7eb;
+  position: relative;
+  overflow: hidden;
+}
+
+.security-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(74, 222, 128, 0.1) 0%, transparent 70%);
+  animation: pulse 3s ease-in-out infinite;
+}
+
+.security-icon-wrapper {
+  margin-bottom: 1rem;
+  position: relative;
+  z-index: 1;
+}
+
+.security-icon {
+  font-size: 3rem;
+  color: #4ade80;
+  position: relative;
+}
+
+.security-icon-wrapper::before {
+  content: '';
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  border: 2px solid rgba(74, 222, 128, 0.2);
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.security-icon-wrapper::after {
+  content: '';
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  border: 1px solid rgba(74, 222, 128, 0.1);
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.security-text {
+  font-size: 1.1rem;
+  color: #4a5568;
+  margin: 0;
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 991.98px) {
+  .cross-platform-section {
+    padding: 40px 0;
+  }
+
+  .cross-platform-title {
+    font-size: 1.8rem;
+  }
+
+  .devices-container {
+    min-height: 400px;
+    margin-top: 3rem;
+  }
+
+  .crossplatform-image {
+    max-width: min(500px, 90vw); /* Responsive scaling for tablets */
+  }
+
+  .laptop-device,
+  .tablet-device,
+  .phone-device {
+    position: relative;
+    left: auto;
+    right: auto;
+    top: auto;
+    transform: none;
+    margin: 1rem auto;
+  }
+
+  .laptop-device {
+    z-index: 3;
+  }
+
+  .tablet-device {
+    z-index: 2;
+  }
+
+  .phone-device {
+    z-index: 1;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .cross-platform-title {
+    font-size: 1.5rem;
+  }
+
+  .cross-platform-features li {
+    font-size: 1rem;
+  }
+
+  .laptop-device .device-screen {
+    width: 240px;
+    height: 150px;
+  }
+
+  .tablet-device .device-screen {
+    width: 180px;
+    height: 240px;
+  }
+
+  .phone-device .device-screen {
+    width: 100px;
+    height: 180px;
+  }
+
+  .crossplatform-image {
+    max-width: min(350px, 85vw); /* Responsive scaling for mobile */
+  }
+
+  .security-card {
+    padding: 1.5rem;
+  }
+}
+

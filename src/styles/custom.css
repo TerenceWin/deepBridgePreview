@@ -1,7 +1,7 @@
 /* Custom styles */
 :root {
-    --primary: #E85C3F;
-    --primary-hover: #D04B30;
+    --primary: #667eea;
+    --primary-hover: #5a6fd8;
   }
   
   body {
@@ -20,17 +20,24 @@
   
   /* Hero section */
   .hero {
+    margin-top: 0;
+    padding-top: var(--navbar-height, 80px);
     position: relative;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: visible;
     min-height: 600px;
     display: flex;
     align-items: center;
-    background: linear-gradient(to right, #ffe0b2, #9b5de5); /* Adjusted colors */
+    background: #fafbfc;
+    width: 100%;
+    max-width: 100%;
   }
 
   .gradient-overlay {
     width: 100%;
-    padding: 4rem 0;
+    padding: 2rem 0 4rem 0;
+    position: relative;
+    z-index: 1;
   }
 
   /* Social icons */
@@ -151,3 +158,4 @@ blockquote {
   }
 }
   }
+

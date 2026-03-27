@@ -1,0 +1,22 @@
+.threads-container {
+  position: absolute;
+  top: -20%;
+  left: 0;
+  right: 0;
+  width: 100%;
+  max-width: 100vw;
+  height: 120%;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.threads-container canvas {
+  display: block;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: 100%;
+  box-sizing: border-box;
+}
+

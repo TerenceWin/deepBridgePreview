@@ -1,29 +1,26 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "../styles/Partners.css";
+import "../../styles/Partners.css";
 import axios from "axios";
-import SuccessModal from "./SuccessModal";
-import countryList from "./countries/countryList";
-import { FiSend } from "react-icons/fi";
+import SuccessModal from "../SuccessModal";
+import { FiSend, FiMessageCircle } from "react-icons/fi";
 
-const MyForm = () => {
+const ContactForm = () => {
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     email: "",
-    country: "",
-    whatsapp: "",
+    phone: "",
     company: "",
-    emailConsent: false,
-    promoConsent: false,
+    message: "",
   });
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setFormData((prevState) => ({
       ...prevState,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: value,
     }));
   };
 
@@ -41,37 +38,20 @@ const MyForm = () => {
           firstName: "",
           lastName: "",
           email: "",
-          country: "",
-          whatsapp: "",
+          phone: "",
           company: "",
-          emailConsent: false,
-          promoConsent: false,
+          message: "",
         });
       })
       .catch((error) => {
         console.error("Error submitting form:", error);
-        alert("Submission failed");
+        alert("Submission failed. Please try again.");
       });
   };
 
   return (
-    <section className="deep-bridge-feature py-5" id="Form">
-      <div className="container my-5">
-        <div
-          className="text-center mb-5"
-          data-aos="fade-up"
-          data-aos-delay="100"
-        >
-          <h2 className="feature-title display-5 fw-bold mb-3">
-            Get in Touch with{" "}
-            <span className="highlight-gradient">Deep-Bridge</span>
-          </h2>
-          <p className="lead text-muted">
-            <FiSend className="me-2" style={{ color: "#667eea" }} />
-            Let's start a conversation about your business needs
-          </p>
-        </div>
-
+    <section>
+      <div className="container">
         <div className="row justify-content-center">
           <div className="col-lg-8 col-xl-7">
             <div
@@ -90,7 +70,7 @@ const MyForm = () => {
                   <FiSend size={40} />
                 </div>
                 <h3 className="card-title mb-2 text-center w-100">
-                  Contact Us
+                  Contact Form
                 </h3>
                 <p className="card-subtitle mb-0">We'd love to hear from you</p>
               </div>
@@ -140,49 +120,43 @@ const MyForm = () => {
                     />
                   </div>
 
-                  {/* Country and Phone */}
-                  <div className="mb-3">
-                    <div className="row g-2">
-                      <div className="col-md-4">
-                        <select
-                          className="form-select form-control-modern"
-                          name="country"
-                          value={formData.country}
-                          onChange={handleChange}
-                        >
-                          <option value="">Country</option>
-                          {countryList.map((country) => (
-                            <option key={country.code} value={country.code}>
-                              {country.name}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                      <div className="col-md-8">
-                        <input
-                          type="tel"
-                          className="form-control form-control-modern"
-                          placeholder="Phone Number*"
-                          name="whatsapp"
-                          value={formData.whatsapp}
-                          onChange={handleChange}
-                          required
-                        />
-                      </div>
+                  {/* Phone and Company */}
+                  <div className="row mb-3">
+                    <div className="col-md-6 mb-3 mb-md-0">
+                      <input
+                        type="tel"
+                        className="form-control form-control-modern"
+                        placeholder="Phone Number"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleChange}
+                      />
+                    </div>
+                    <div className="col-md-6">
+                      <input
+                        type="text"
+                        className="form-control form-control-modern"
+                        placeholder="Company*"
+                        name="company"
+                        value={formData.company}
+                        onChange={handleChange}
+                        required
+                      />
                     </div>
                   </div>
 
-                  {/* Company */}
+                  {/* Message */}
                   <div className="mb-4">
-                    <input
-                      type="text"
+                    <textarea
                       className="form-control form-control-modern"
-                      placeholder="Company*"
-                      name="company"
-                      value={formData.company}
+                      placeholder="Your Message*"
+                      name="message"
+                      rows="5"
+                      value={formData.message}
                       onChange={handleChange}
                       required
-                    />
+                      style={{ resize: "vertical" }}
+                    ></textarea>
                   </div>
 
                   {/* Submit Button */}
@@ -191,7 +165,7 @@ const MyForm = () => {
                     className="btn btn-primary btn-modern w-100"
                   >
                     <FiSend className="me-2" />
-                    Contact Us
+                    Send Message
                   </button>
                 </form>
               </div>
@@ -208,4 +182,4 @@ const MyForm = () => {
   );
 };
 
-export default MyForm;
+export default ContactForm;
