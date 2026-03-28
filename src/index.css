@@ -1,7 +1,7 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
-body { margin: 0; padding: 0; background: #080f17; }
+body { margin: 0; padding: 0; }
 ::-webkit-scrollbar { width: 3px; }
-::-webkit-scrollbar-track { background: #080f17; }
-::-webkit-scrollbar-thumb { background: rgba(74,144,217,0.4); border-radius: 2px; }
-::selection { background: rgba(74,144,217,0.25); color: #fff; }
+::-webkit-scrollbar-track { background: #F7F5F1; }
+::-webkit-scrollbar-thumb { background: #1a5799; border-radius: 2px; }
+::selection { background: rgba(26,87,153,0.15); color: #080f17; }
