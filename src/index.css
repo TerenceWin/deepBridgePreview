@@ -1,21 +1,13 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-html {
-  scroll-behavior: smooth;
-  font-size: 16px;
-}
-
+html { scroll-behavior: smooth; }
 body {
   font-family: 'Plus Jakarta Sans', sans-serif;
-  background: #F4F2EE;
-  color: #0A1628;
+  background: #F2F0EC;
+  color: #0B1829;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
-  line-height: 1.6;
 }
-
 ::-webkit-scrollbar { width: 3px; }
-::-webkit-scrollbar-track { background: #F4F2EE; }
+::-webkit-scrollbar-track { background: #F2F0EC; }
 ::-webkit-scrollbar-thumb { background: #1A5FA6; border-radius: 2px; }
 ::selection { background: rgba(26,95,166,0.12); }
