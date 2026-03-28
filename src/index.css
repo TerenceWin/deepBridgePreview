@@ -1,11 +1,35 @@
-html { overflow-x: hidden; width: 100%; }
-* { box-sizing: border-box; }
-body { overflow-x: hidden; width: 100%; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
-#root { width: 100%; overflow-x: hidden; position: relative; }
-img, video, iframe, embed, object { max-width: 100%; height: auto; }
-.container, .container-fluid, .row { max-width: 100%; overflow-x: hidden; width: 100%; }
-.container-fluid { padding-left: 15px; padding-right: 15px; }
-@media (max-width: 575.98px) { .container-fluid { padding-left: 10px; padding-right: 10px; } }
-section { width: 100%; max-width: 100%; overflow-x: hidden; position: relative; box-sizing: border-box; }
-.deep-bridge-feature { overflow-x: hidden; width: 100%; max-width: 100%; position: relative; }
-code { font-family: 'JetBrains Mono', source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace; }
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300;1,9..144,400;1,9..144,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --navy: #0D1B2A;
+  --navy-2: #111f30;
+  --blue: #1D5FA6;
+  --sky: #4A90D9;
+  --slate: #8EA8C3;
+  --cloud: #FAFAFA;
+  --mist: #E8EAF0;
+  --text-dim: rgba(255,255,255,0.45);
+  --text-faint: rgba(255,255,255,0.2);
+  --border: rgba(255,255,255,0.07);
+  --border-light: rgba(13,27,42,0.08);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: var(--navy);
+  color: #fff;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--navy); }
+::-webkit-scrollbar-thumb { background: rgba(74,144,217,0.3); border-radius: 2px; }
+
+/* ── SELECTION ── */
+::selection { background: rgba(74,144,217,0.3); color: #fff; }
