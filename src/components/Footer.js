@@ -1,33 +1,52 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import '../styles/theme.css';
+import { LogoFavicon } from './LogoMark';
 
-const DBLogo = () => (
-  <svg width="26" height="26" viewBox="0 0 52 52" fill="none">
-    <rect x="8" y="14" width="6" height="28" rx="1" fill="#2A5298"/>
-    <rect x="38" y="14" width="6" height="28" rx="1" fill="#2A5298"/>
-    <rect x="6" y="12" width="40" height="5" rx="1.5" fill="#1E3A5F"/>
-    <path d="M14 17 Q26 30 38 17" stroke="#2A5298" strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.5"/>
-  </svg>
-);
+const nav = [
+  { label: 'Services', to: '/services' },
+  { label: 'Pricing', to: '/pricing' },
+  { label: 'Partners', to: '/partner' },
+  { label: 'About', to: '/about' },
+  { label: 'Careers', to: '/careers' },
+];
 
-function Footer() {
+export default function Footer() {
   return (
-    <footer style={{ background: '#F8F7F3', borderTop: '1px solid rgba(30,58,95,0.1)', padding: '34px 48px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '20px' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-        <DBLogo />
-        <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: '13px', fontWeight: 500, letterSpacing: '0.5px', color: '#0D1F35' }}>
-          DEEP<span style={{ color: '#2A5298' }}>BRIDGE</span>
-        </span>
+    <footer style={{ background: '#0A2540', color: 'white' }}>
+      <div style={{ maxWidth: 960, margin: '0 auto', padding: '64px 48px 40px' }}>
+        <div className="db-footer-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 48, marginBottom: 56 }}>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+              <LogoFavicon size={28} />
+              <span style={{ fontSize: 16, fontWeight: 500, letterSpacing: '-0.3px' }}>Deep Bridge</span>
+            </div>
+            <div style={{ fontSize: 11, letterSpacing: '2px', color: '#29ABE2', textTransform: 'uppercase', marginBottom: 16 }}>Trade Operating System</div>
+            <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', lineHeight: 1.8, maxWidth: 240 }}>Building tools for exporters and trading teams who want stronger systems behind the way they already work.</p>
+          </div>
+          <div>
+            <div style={{ fontSize: 10, letterSpacing: '2px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: 20 }}>Navigation</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {nav.map(l => (<Link key={l.to} to={l.to} style={{ fontSize: 14, color: 'rgba(255,255,255,0.65)', textDecoration: 'none' }}>{l.label}</Link>))}
+            </div>
+          </div>
+          <div>
+            <div style={{ fontSize: 10, letterSpacing: '2px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: 20 }}>Contact</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <a href="mailto:info@deep-bridge.com" style={{ fontSize: 14, color: 'rgba(255,255,255,0.65)', textDecoration: 'none' }}>info@deep-bridge.com</a>
+              <a href="mailto:careers@deep-bridge.com" style={{ fontSize: 14, color: 'rgba(255,255,255,0.65)', textDecoration: 'none' }}>careers@deep-bridge.com</a>
+              <div style={{ marginTop: 8, display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', lineHeight: 1.6 }}>Unit 1127, 11th Floor</span>
+                <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', lineHeight: 1.6 }}>Metro Centre 2</span>
+                <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', lineHeight: 1.6 }}>Kowloon Bay, Hong Kong</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style={{ borderTop: '0.5px solid rgba(255,255,255,0.08)', paddingTop: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
+          <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)' }}>© 2025 Deep Bridge Limited. All rights reserved.</span>
+          <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)' }}>Kowloon Bay, Hong Kong</span>
+        </div>
       </div>
-      <ul style={{ display: 'flex', gap: '24px', listStyle: 'none', margin: 0, padding: 0 }}>
-        {[['/', 'Home'], ['/services', 'Services'], ['/contact', 'About'], ['/crm/login', 'Login']].map(([to, label]) => (
-          <li key={to}><Link to={to} style={{ fontFamily: "'Inter',sans-serif", fontSize: '12px', color: '#9AABB8', textDecoration: 'none' }}>{label}</Link></li>
-        ))}
-      </ul>
-      <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: '9px', letterSpacing: '1px', color: '#9AABB8' }}>© 2026 Deep Bridge Ltd · Hong Kong</span>
     </footer>
   );
 }
-
-export default Footer;
