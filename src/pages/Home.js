@@ -82,35 +82,32 @@ const tools = ["factoryFinder", "generateQuotation", "handleFiles", "catalogGene
 export default function Home() {
   const heroText = 'Built from firsthand export experience';
   const [typedText, setTypedText] = useState('');
-  const [demoEngage, setDemoEngage] = useState(false);
-  const typing = useRef(null); 
+  const typeIntervalRef = useRef(null);
+  const loopRef = useRef(null);
+
+  function runTyping() {
+    setTypedText('');
+    let i = 0;
+    typeIntervalRef.current = setInterval(() => {
+      i++;
+      setTypedText(heroText.slice(0, i));
+      if (i === heroText.length) clearInterval(typeIntervalRef.current);
+    }, 40);
+  }
+
+  function stopAnimation() {
+    clearInterval(typeIntervalRef.current);
+    clearInterval(loopRef.current);
+    setTypedText(heroText);
+  }
 
   useEffect(() => {
-    function runTyping() {
-      typing.current = true;
-      setTypedText('');
-      let i = 0;
-      const type = setInterval(() => {
-        i++;
-        setTypedText(heroText.slice(0, i));
-        if (i === heroText.length) clearInterval(type);
-      }, 40);
-      typing.current = false;  
-      return type;
-    }
-
-    if(demoEngage){
-      if(typing.current === true) return
-      setTypedText(heroText)
-      return 
-    }
-      let typeInterval = runTyping();
-      const loop = setInterval(() => {
-        clearInterval(typeInterval);
-        typeInterval = runTyping();
-      }, 10000);
-    
-    return () => { clearInterval(typeInterval); clearInterval(loop); };
+    runTyping();
+    loopRef.current = setInterval(() => {
+      clearInterval(typeIntervalRef.current);
+      runTyping();
+    }, 10000);
+    return () => { clearInterval(typeIntervalRef.current); clearInterval(loopRef.current); };
   }, []);
 
   const [currentTool, setCurrentTool] = useState(tools[0]);
@@ -122,6 +119,7 @@ export default function Home() {
         <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)', backgroundSize: '60px 60px', pointerEvents: 'none' }} />
         <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: sky }} />
         
+        {/* backgroundColor: 'rgba(255,255,255,0.04)' */}
         {/* Hero Section- ORIGINAL */}
         {/* <div style={{ maxWidth: MAX_WIDTH, margin: '0 auto', width: '100%', position: 'relative' }}>
           <div style={{ fontSize: 11, letterSpacing: '3px', color: sky, textTransform: 'uppercase', marginBottom: 28, opacity: 0.9 }}>Trade Operating System</div>
@@ -145,7 +143,6 @@ export default function Home() {
         </div> */}
 
         {/* Hero Section- HERO Section with DEMO [MAX_WIDTH]*/} 
-        {/* backgroundColor: 'rgba(255,255,255,0.04)' */}
         <div style={{ maxWidth: 1200, margin: '0 auto', width: '100%', position: 'relative'}}> 
           <div style={{ fontSize: 11, letterSpacing: '3px', color: sky, textTransform: 'uppercase', marginBottom: 28, opacity: 0.9 }}>Trade Operating System</div>
           <h1 style={{ height: 150, fontSize: 68, fontWeight: 500, color: 'white', lineHeight: 1.02, letterSpacing: '-0.04em', maxWidth: 700, marginBottom: 28 }}>
@@ -166,10 +163,107 @@ export default function Home() {
             View services →
             </Link>
           </div>
-          <div style={{maxWidth: 1200, height: 800, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-          onClick={() => setTypedText(heroText)}>
-            <div style={{width: 1200, height: 720, backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: 10, padding: 20, boxSizing: 'border-box'}}>
-                <div style={{width: '100%', height: '100%', backgroundColor: 'white'}}></div>
+          <div style={{ width: '100%', marginTop: 40, backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: 12, padding: 10, boxSizing: 'border-box' }}
+            onClick={stopAnimation}>
+            <div style={{ backgroundColor: 'white', borderRadius: 8, display: 'flex', flexDirection: 'column', overflow: 'hidden', fontFamily: 'inherit' }}>
+
+              {/* Chat area */}
+              <div style={{ background: '#f5f5f7', padding: '16px 14px', display: 'flex', flexDirection: 'column', gap: 12 }}>
+
+                {/* Sender bubble — right side (iMessage blue) */}
+                <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-end', gap: 8 }}>
+                  <div style={{ background: '#2563eb', color: 'white', fontSize: 14, fontWeight: 500, padding: '10px 16px', borderRadius: '20px 20px 4px 20px', maxWidth: '60%', boxShadow: '0 1px 2px rgba(0,0,0,0.15)' }}>
+                    LED lights
+                  </div>
+                </div>
+
+                {/* Receiver bubble — left side (iMessage gray) */}
+                <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'flex-end', gap: 8 }}>
+                  <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#d1d5db', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, flexShrink: 0 }}>🤖</div>
+                  <div style={{ background: 'white', color: '#111827', borderRadius: '20px 20px 20px 4px', maxWidth: '75%', boxShadow: '0 1px 2px rgba(0,0,0,0.1)', overflow: 'hidden' }}>
+
+                    {/* Results summary */}
+                    <div style={{ padding: '10px 14px', fontSize: 13, color: '#374151', borderBottom: '1px solid #f3f4f6' }}>
+                      Found 22 suppliers for <strong>'LED lights'</strong>. 2 with emails. Source: online + database.
+                    </div>
+
+                    {/* Suppliers panel */}
+                    <div style={{ borderTop: '1px solid #f3f4f6' }}>
+
+                      {/* Panel header */}
+                      <div style={{ padding: '10px 14px', borderBottom: '1px solid #f3f4f6', display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                        <span style={{ fontSize: 13, fontWeight: 600, color: '#111827', marginRight: 4 }}>👥 Suppliers Found (22)</span>
+                        {[
+                          { label: 'Add to Shortlist', bg: 'white', color: '#374151', border: '1px solid #d1d5db' },
+                          { label: 'Add All (With Email)', bg: 'white', color: '#374151', border: '1px solid #d1d5db' },
+                          { label: 'Find Emails', bg: '#16a34a', color: 'white', border: 'none' },
+                          { label: 'Contact Suppliers', bg: '#0f766e', color: 'white', border: 'none' },
+                          { label: 'View Fullscreen', bg: 'white', color: '#374151', border: '1px solid #d1d5db' },
+                        ].map(btn => (
+                          <button key={btn.label} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 5, background: btn.bg, color: btn.color, border: btn.border, cursor: 'pointer', fontFamily: 'inherit', fontWeight: 500 }}>
+                            {btn.label}
+                          </button>
+                        ))}
+                      </div>
+
+                      {/* Supplier rows */}
+                      {[
+                        { name: 'Electronic Technology Co., Ltd', status: null },
+                        { name: 'Parz Industry&Trading CO.,LTD', status: 'Not found' },
+                        { name: 'BIGLUX INNOVATION LTD', status: 'Not found' },
+                        { name: 'ZHONGSHAN DAORUI LIGHTING & EKECTRONIC LIMITED', status: 'Not found' },
+                        { name: 'CHINA ELECTRONICS ZHUHAI COMPANY LIMITED', status: 'Not found' },
+                        { name: 'GUANGDONG JUNON', status: 'Not found' },
+                      ].map((s, i) => (
+                        <div key={i} style={{ display: 'flex', alignItems: 'center', padding: '9px 14px', borderBottom: '1px solid #f9fafb', gap: 10 }}>
+                          <div style={{ width: 14, height: 14, border: '1.5px solid #9ca3af', borderRadius: 3, flexShrink: 0 }} />
+                          <div style={{ flex: 1 }}>
+                            <div style={{ fontSize: 12, color: '#2563eb', fontWeight: 500 }}>{s.name}</div>
+                            <div style={{ fontSize: 11, color: '#6b7280', marginTop: 1 }}>LED lights</div>
+                          </div>
+                          <div style={{ fontSize: 11, color: '#6b7280', marginRight: 6 }}>LED lights</div>
+                          {s.status && <div style={{ fontSize: 11, color: '#9ca3af' }}>{s.status}</div>}
+                        </div>
+                      ))}
+
+                      {/* Panel footer */}
+                      <div style={{ padding: '8px 14px', background: '#f9fafb', fontSize: 11, color: '#6b7280', display: 'flex', gap: 14 }}>
+                        <span>✉ 2 with emails</span>
+                        <span>🖥 20 no email yet</span>
+                        <span>🗄 2 DB-appended</span>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Bottom toolbar */}
+              <div style={{ borderTop: '1px solid #e5e7eb', padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 10 }}>
+                <button style={{ fontSize: 12, fontWeight: 600, padding: '8px 14px', background: '#f3f4f6', border: '1px solid #d1d5db', borderRadius: 6, cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap' }}>
+                  📋 Generate Quotation ▲
+                </button>
+                <div style={{ width: 32, height: 32, border: '1px solid #d1d5db', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, color: '#6b7280', cursor: 'pointer' }}>📎</div>
+                <div style={{ width: 32, height: 32, border: '1px solid #d1d5db', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, color: '#6b7280', cursor: 'pointer' }}>ℹ</div>
+                <input readOnly value="Ask the assistant to..." style={{ flex: 1, fontSize: 13, padding: '8px 12px', border: '1px solid #d1d5db', borderRadius: 6, color: '#9ca3af', background: 'white', fontFamily: 'inherit' }} />
+                <button style={{ fontSize: 12, fontWeight: 600, padding: '8px 16px', background: '#2563eb', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontFamily: 'inherit' }}>✈ Send</button>
+                <button style={{ fontSize: 12, fontWeight: 600, padding: '8px 14px', background: '#f3f4f6', border: '1px solid #d1d5db', borderRadius: 6, cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap' }}>📋 Generate Quotation</button>
+              </div>
+
+              {/* History chips */}
+              <div style={{ padding: '8px 14px 12px', display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                {[
+                  { label: 'TS_50001', time: 'Apr 27, 09:40 PM' },
+                  { label: 'build a quotation...', time: 'Apr 27, 09:38 PM' },
+                  { label: 'give me an examp...', time: 'Apr 27, 09:05 PM' },
+                ].map(chip => (
+                  <div key={chip.label} style={{ fontSize: 11, color: '#6b7280', background: '#f3f4f6', border: '1px solid #e5e7eb', borderRadius: 20, padding: '4px 10px', display: 'flex', alignItems: 'center', gap: 6 }}>
+                    🕐 <span style={{ color: '#374151', fontWeight: 500 }}>{chip.label}</span> {chip.time}
+                  </div>
+                ))}
+              </div>
+
             </div>
           </div>
         </div>        
