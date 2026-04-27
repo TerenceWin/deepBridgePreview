@@ -53,7 +53,67 @@ const whyUs = [
   { title: 'More output from the same team', text: 'Help teams handle more work without the same increase in headcount.', icon: '04' },
 ];
 
+const factoryFinder = {
+  factoryFinder : [
+    {
+      input: "Stainless steel pet bowls, OEM, MOQ under 500, Guangdong", 
+      output: "", 
+      type: "text", 
+    }, 
+    {
+      input: "Waterproof LED strip lights, CE certified, export experience to Europe", 
+      output: "", 
+      type: "text"
+    }, 
+    {
+      input: "Photo of a wooden hair styling tool (uploaded image)", 
+      output: "", 
+      type: "image"
+    }
+  ], 
+  generateQuotation : [
+
+  ],
+  handleFiles : [], 
+  catalogGenerator: [],
+}
+const tools = ["factoryFinder", "generateQuotation", "handleFiles", "catalogGenerator"];
+
 export default function Home() {
+  const heroText = 'Built from firsthand export experience';
+  const [typedText, setTypedText] = useState('');
+  const [demoEngage, setDemoEngage] = useState(false);
+  const typing = useRef(null); 
+
+  useEffect(() => {
+    function runTyping() {
+      typing.current = true;
+      setTypedText('');
+      let i = 0;
+      const type = setInterval(() => {
+        i++;
+        setTypedText(heroText.slice(0, i));
+        if (i === heroText.length) clearInterval(type);
+      }, 40);
+      typing.current = false;  
+      return type;
+    }
+
+    if(demoEngage){
+      if(typing.current === true) return
+      setTypedText(heroText)
+      return 
+    }
+      let typeInterval = runTyping();
+      const loop = setInterval(() => {
+        clearInterval(typeInterval);
+        typeInterval = runTyping();
+      }, 10000);
+    
+    return () => { clearInterval(typeInterval); clearInterval(loop); };
+  }, []);
+
+  const [currentTool, setCurrentTool] = useState(tools[0]);
   const [modal, setModal] = useState(false);
   return (
     <div style={{ background: warmWhite }}>
@@ -61,7 +121,9 @@ export default function Home() {
       <div className="db-hero" style={{ background: navy, minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: `${NAV_HEIGHT + 80}px 48px 100px`, position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)', backgroundSize: '60px 60px', pointerEvents: 'none' }} />
         <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: sky }} />
-        <div style={{ maxWidth: MAX_WIDTH, margin: '0 auto', width: '100%', position: 'relative' }}>
+        
+        {/* Hero Section- ORIGINAL */}
+        {/* <div style={{ maxWidth: MAX_WIDTH, margin: '0 auto', width: '100%', position: 'relative' }}>
           <div style={{ fontSize: 11, letterSpacing: '3px', color: sky, textTransform: 'uppercase', marginBottom: 28, opacity: 0.9 }}>Trade Operating System</div>
           <h1 style={{ fontSize: 68, fontWeight: 500, color: 'white', lineHeight: 1.02, letterSpacing: '-0.04em', maxWidth: 700, marginBottom: 28 }}>Built from firsthand export experience</h1>
           <p style={{ fontSize: 19, color: 'rgba(255,255,255,0.6)', lineHeight: 1.8, maxWidth: 520, marginBottom: 44 }}>Deep Bridge grew out of real export operations and is designed around the work that keeps trade moving, including buyer enquiries, quotations, supplier coordination, and document checks.</p>
@@ -69,11 +131,54 @@ export default function Home() {
             <button onClick={() => setModal(true)} style={{ background: sky, color: 'white', border: 'none', borderRadius: 8, padding: '13px 28px', fontSize: 15, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit' }}>See it with your data</button>
             <Link to="/services" style={{ display: 'inline-flex', alignItems: 'center', background: 'transparent', color: 'rgba(255,255,255,0.7)', border: '0.5px solid rgba(255,255,255,0.2)', borderRadius: 8, padding: '13px 24px', fontSize: 15, textDecoration: 'none' }}>View services →</Link>
           </div>
-        </div>
-        <div style={{ position: 'absolute', bottom: 36, left: 48, display: 'flex', alignItems: 'center', gap: 12 }}>
+        </div> */}
+
+        {/* Hero Section- HERO Section with DEMO*/}
+        {/* <div style={{ maxWidth: MAX_WIDTH, margin: '0 auto', width: '100%', position: 'relative' }}>
+          <div style={{ fontSize: 11, letterSpacing: '3px', color: sky, textTransform: 'uppercase', marginBottom: 28, opacity: 0.9 }}>Trade Operating System</div>
+          <h1 style={{ fontSize: 68, fontWeight: 500, color: 'white', lineHeight: 1.02, letterSpacing: '-0.04em', maxWidth: 700, marginBottom: 28 }}>Built from firsthand export experience</h1>
+          <p style={{ fontSize: 19, color: 'rgba(255,255,255,0.6)', lineHeight: 1.8, maxWidth: 520, marginBottom: 44 }}>Deep Bridge grew out of real export operations and is designed around the work that keeps trade moving, including buyer enquiries, quotations, supplier coordination, and document checks.</p>
+          <div className="db-hero-btns" style={{ display: 'flex', gap: 12 }}>
+            <button onClick={() => setModal(true)} style={{ background: sky, color: 'white', border: 'none', borderRadius: 8, padding: '13px 28px', fontSize: 15, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit' }}>See it with your data</button>
+            <Link to="/services" style={{ display: 'inline-flex', alignItems: 'center', background: 'transparent', color: 'rgba(255,255,255,0.7)', border: '0.5px solid rgba(255,255,255,0.2)', borderRadius: 8, padding: '13px 24px', fontSize: 15, textDecoration: 'none' }}>View services →</Link>
+          </div>
+        </div> */}
+
+        {/* Hero Section- HERO Section with DEMO [MAX_WIDTH]*/} 
+        {/* backgroundColor: 'rgba(255,255,255,0.04)' */}
+        <div style={{ maxWidth: 1200, margin: '0 auto', width: '100%', position: 'relative'}}> 
+          <div style={{ fontSize: 11, letterSpacing: '3px', color: sky, textTransform: 'uppercase', marginBottom: 28, opacity: 0.9 }}>Trade Operating System</div>
+          <h1 style={{ height: 150, fontSize: 68, fontWeight: 500, color: 'white', lineHeight: 1.02, letterSpacing: '-0.04em', maxWidth: 700, marginBottom: 28 }}>
+            {typedText}
+          </h1>
+          <div className="db-hero-btns" style={{ display: 'flex', gap: 12 }}>
+            <button onClick={() => setModal(true)}
+              style={{ background: sky, color: 'white', border: 'none', borderRadius: 8, padding: '13px 28px', fontSize: 15, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', transition: 'background 0.2s' }}
+              onMouseEnter={e => e.currentTarget.style.background = '#1e95ccd3'}
+              onMouseLeave={e => e.currentTarget.style.background = sky}>
+              See it with your data
+            </button>
+            <Link to="/services" style={{ display: 'inline-flex', alignItems: 'center', background: 'transparent', color: 'rgba(255,255,255,0.7)', border: '0.5px solid rgba(255,255,255,0.2)', borderRadius: 8, 
+            padding: '13px 24px', fontSize: 15, textDecoration: 'none', fontWeight: 700, transition: 'background 0.2s'  }}
+              onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
+              onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+            >
+            View services →
+            </Link>
+          </div>
+          <div style={{maxWidth: 1200, height: 800, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          onClick={() => setTypedText(heroText)}>
+            <div style={{width: 1200, height: 720, backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: 10, padding: 20, boxSizing: 'border-box'}}>
+                <div style={{width: '100%', height: '100%', backgroundColor: 'white'}}></div>
+            </div>
+          </div>
+        </div>        
+
+          {/*SCROLL*/}
+        {/* <div style={{ position: 'absolute', bottom: 36, left: 48, display: 'flex', alignItems: 'center', gap: 12 }}>
           <div style={{ width: 36, height: 0.5, background: 'rgba(255,255,255,0.2)' }} />
           <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', letterSpacing: '2px', textTransform: 'uppercase' }}>Scroll</span>
-        </div>
+        </div> */}
       </div>
       <div style={{ background: navyMid }}>
         <div style={{ maxWidth: MAX_WIDTH, margin: '0 auto', padding: '0 48px' }}>
