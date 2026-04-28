@@ -49,14 +49,14 @@ const data = {
   'Handle Files' : [
     {
         input: "BSCI audit certificate PDF", 
-        output: [],
+        output: [{description: 'Parsed audit score, expiry date, factory name, compliance status'}],
         type: 'document'
     }, 
   ], 
   'Catalog Generator': [
     {
         input: "Brand logo, product images (x8), product names + descriptions", 
-        output: [], 
+        output: [{description: 'Branded PDF catalog with product pages, consistent layout, and downloadable file'}],
         type: 'logo/ images/ text'
     },
 ]}

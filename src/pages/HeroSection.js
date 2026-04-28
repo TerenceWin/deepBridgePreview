@@ -19,11 +19,13 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
     const [messages, setMessages] = useState([]);
     const chatContainerRef = useRef(null);
 
+    //Clear & Reset Chat history
     useEffect(() => {
       setStage(0);
       setMessages([]);
     }, [currentTab]);
 
+    //Typing Animation
     useEffect(() => {
       clearInterval(typingIntervalRef.current);
       setTypingText('');
@@ -52,6 +54,7 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
         return "fas fa-list";
     }
     
+    //10 second intervals tab switching
     const startTabInterval = () => {
         clearInterval(tabIntervalRef.current);
         tabIntervalRef.current = setInterval(() => {
@@ -62,11 +65,16 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
         }, 10000);
     };
 
+    //Reset 10 second tab switching timer when page loads 
     useEffect(() => {
         startTabInterval();
         return () => clearInterval(tabIntervalRef.current);
     }, []);
 
+    //Send Buttons Clicked 
+    // -> Stop tab switching, typing animation
+    // -> Get the response data
+    // -> Check if input is last, Yes? -> display 'Book a demo' 
     const handleSend = () => {
       if (!typingText.trim()) return;
       clearInterval(tabIntervalRef.current);
@@ -83,6 +91,8 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
         handleModal();
       }
     };
+
+    
 
     const renderAIOutput = (output, tab) => {
       if (!output || output.length === 0) return <span style={{ color: '#6b7280', fontSize: 12 }}>No output available yet.</span>;
