@@ -5,6 +5,8 @@ import factoryFinder1_2_1 from '../images/heroSection/Factory Finder 1-2-1.webp'
 import factoryFinder1_2_2 from '../images/heroSection/Factory Finder 1-2-2.webp';
 import factoryFinder1_2_3 from '../images/heroSection/Factory Finder 1-2-3.webp';
 import factoryFinder1_3_1 from '../images/heroSection/Factory Finder 1-3-1.webp';
+import factoryFinder2_1_1 from '../images/heroSection/Factory Finder 2-1-1.webp';
+import factoryFinder2_1_2 from '../images/heroSection/Factory Finder 2-1-2.webp';
 
 const data = {
   'Factory Finder' : [
@@ -27,7 +29,7 @@ const data = {
       input: "Waterproof LED strip lights, CE certified, export experience to Europe", 
       output : ["Found 1 supplier for 'Waterproof LED strip lights, CE certified, export experience to Europe'. 0 with emails. Source: online + database.", 
         [{name: 'Beauty (GD) Manufacturing Co., Limited'}, {url: 'https://beautystclighting.en.made-in-china.com/'}, {description: 'LEDStripLight, TUVCERoHS IP67Waterproof220V SMD2835 360LED/M Rope Double-RowLEDStripLight, TUVCERoHS Outdoor RopeLightsC...'}, 
-          {productImages : [factoryFinder1_1_1, factoryFinder1_1_2, factoryFinder1_1_3]}
+          {productImages : [factoryFinder2_1_1, factoryFinder2_1_2]}
         ]
       ], 
       type: "text"
