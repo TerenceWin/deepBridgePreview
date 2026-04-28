@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { LogoMark } from '../components/LogoMark';
 import DemoModal from '../components/DemoModal';
 import { MAX_WIDTH, NAV_HEIGHT, SECTION_PAD, SECTION_PAD_SM } from '../components/layout';
+import Hero from './Hero.js'
+
 
 const sky = '#29ABE2';
 const navy = '#0A2540';
@@ -77,14 +79,29 @@ const factoryFinder = {
   handleFiles : [], 
   catalogGenerator: [],
 }
-const tools = ["factoryFinder", "generateQuotation", "handleFiles", "catalogGenerator"];
 
 export default function Home() {
+
+  const getBreakpoint = () => {
+    if (window.innerWidth <= 420) return 'mobile';
+    if (window.innerWidth <= 768) return 'tablet';
+    if (window.innerWidth <= 1480) return 'laptop';
+    return 'desktop';
+  };
+
+  const [breakpoint, setBreakpoint] = useState(getBreakpoint());
+  const isMobile  = breakpoint === 'mobile';
+  const isTablet  = breakpoint === 'tablet';
+  const isLaptop  = breakpoint === 'laptop';
+  const isDesktop = breakpoint === 'desktop';
+
   const heroText = 'Built from firsthand export experience';
   const [typedText, setTypedText] = useState('');
   const typeIntervalRef = useRef(null);
   const loopRef = useRef(null);
+  const [modal, setModal] = useState(false);
 
+  {/*Title Animation*/}
   function runTyping() {
     setTypedText('');
     let i = 0;
@@ -110,8 +127,17 @@ export default function Home() {
     return () => { clearInterval(typeIntervalRef.current); clearInterval(loopRef.current); };
   }, []);
 
-  const [currentTool, setCurrentTool] = useState(tools[0]);
-  const [modal, setModal] = useState(false);
+  {/*Screen Responsive*/}
+  useEffect(() => {
+    const handle = () => setBreakpoint(getBreakpoint());
+    window.addEventListener('resize', handle);
+    return () => window.removeEventListener('resize', handle);
+  }, []);
+
+  const handleModal = () => {
+    setModal(true)
+  }
+
   return (
     <div style={{ background: warmWhite }}>
       <DemoModal isOpen={modal} onClose={() => setModal(false)} />
@@ -143,12 +169,15 @@ export default function Home() {
         </div> */}
 
         {/* Hero Section- HERO Section with DEMO [MAX_WIDTH]*/} 
-        <div style={{ maxWidth: 1200, margin: '0 auto', width: '100%', position: 'relative'}}> 
-          <div style={{ fontSize: 11, letterSpacing: '3px', color: sky, textTransform: 'uppercase', marginBottom: 28, opacity: 0.9 }}>Trade Operating System</div>
-          <h1 style={{ height: 150, fontSize: 68, fontWeight: 500, color: 'white', lineHeight: 1.02, letterSpacing: '-0.04em', maxWidth: 700, marginBottom: 28 }}>
+        <div style={{ maxWidth: isDesktop ? 1200 : isLaptop ? MAX_WIDTH : isTablet ? 700 : 300, margin: '0 auto', marginTop: isLaptop ? -80 : 0, width: '100%', position: 'relative', padding: '0 48px', boxSizing: 'border-box'}}> 
+          <div style={{ fontSize: 11, letterSpacing: '3px', color: sky, textTransform: 'uppercase', marginBottom: isLaptop ? 10: 28, opacity: 0.9 }}>
+            Trade Operating System
+          </div>
+          <h1 style={{ height: 150, fontSize: 68, fontWeight: 500, 
+            color: 'white', lineHeight: 1.02, letterSpacing: '-0.04em', maxWidth: 700, marginBottom: 28 }}>
             {typedText}
           </h1>
-          <div className="db-hero-btns" style={{ display: 'flex', gap: 12 }}>
+          <div className="db-hero-btns" style={{ display: 'flex', gap: 12, marginBottom: isLaptop ? 30: 0}}>
             <button onClick={() => setModal(true)}
               style={{ background: sky, color: 'white', border: 'none', borderRadius: 8, padding: '13px 28px', fontSize: 15, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', transition: 'background 0.2s' }}
               onMouseEnter={e => e.currentTarget.style.background = '#1e95ccd3'}
@@ -156,117 +185,17 @@ export default function Home() {
               See it with your data
             </button>
             <Link to="/services" style={{ display: 'inline-flex', alignItems: 'center', background: 'transparent', color: 'rgba(255,255,255,0.7)', border: '0.5px solid rgba(255,255,255,0.2)', borderRadius: 8, 
-            padding: '13px 24px', fontSize: 15, textDecoration: 'none', fontWeight: 700, transition: 'background 0.2s'  }}
+            padding: '13px 24px', fontSize: 15, textDecoration: 'none', fontWeight: 700, transition: 'background 0.2s' }}
               onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
               onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
             >
             View services →
             </Link>
           </div>
-          <div style={{ width: '100%', marginTop: 40, backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: 12, padding: 10, boxSizing: 'border-box' }}
-            onClick={stopAnimation}>
-            <div style={{ backgroundColor: 'white', borderRadius: 8, display: 'flex', flexDirection: 'column', overflow: 'hidden', fontFamily: 'inherit' }}>
-
-              {/* Chat area */}
-              <div style={{ background: '#f5f5f7', padding: '16px 14px', display: 'flex', flexDirection: 'column', gap: 12 }}>
-
-                {/* Sender bubble — right side (iMessage blue) */}
-                <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-end', gap: 8 }}>
-                  <div style={{ background: '#2563eb', color: 'white', fontSize: 14, fontWeight: 500, padding: '10px 16px', borderRadius: '20px 20px 4px 20px', maxWidth: '60%', boxShadow: '0 1px 2px rgba(0,0,0,0.15)' }}>
-                    LED lights
-                  </div>
-                </div>
-
-                {/* Receiver bubble — left side (iMessage gray) */}
-                <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'flex-end', gap: 8 }}>
-                  <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#d1d5db', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, flexShrink: 0 }}>🤖</div>
-                  <div style={{ background: 'white', color: '#111827', borderRadius: '20px 20px 20px 4px', maxWidth: '75%', boxShadow: '0 1px 2px rgba(0,0,0,0.1)', overflow: 'hidden' }}>
-
-                    {/* Results summary */}
-                    <div style={{ padding: '10px 14px', fontSize: 13, color: '#374151', borderBottom: '1px solid #f3f4f6' }}>
-                      Found 22 suppliers for <strong>'LED lights'</strong>. 2 with emails. Source: online + database.
-                    </div>
-
-                    {/* Suppliers panel */}
-                    <div style={{ borderTop: '1px solid #f3f4f6' }}>
-
-                      {/* Panel header */}
-                      <div style={{ padding: '10px 14px', borderBottom: '1px solid #f3f4f6', display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-                        <span style={{ fontSize: 13, fontWeight: 600, color: '#111827', marginRight: 4 }}>👥 Suppliers Found (22)</span>
-                        {[
-                          { label: 'Add to Shortlist', bg: 'white', color: '#374151', border: '1px solid #d1d5db' },
-                          { label: 'Add All (With Email)', bg: 'white', color: '#374151', border: '1px solid #d1d5db' },
-                          { label: 'Find Emails', bg: '#16a34a', color: 'white', border: 'none' },
-                          { label: 'Contact Suppliers', bg: '#0f766e', color: 'white', border: 'none' },
-                          { label: 'View Fullscreen', bg: 'white', color: '#374151', border: '1px solid #d1d5db' },
-                        ].map(btn => (
-                          <button key={btn.label} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 5, background: btn.bg, color: btn.color, border: btn.border, cursor: 'pointer', fontFamily: 'inherit', fontWeight: 500 }}>
-                            {btn.label}
-                          </button>
-                        ))}
-                      </div>
-
-                      {/* Supplier rows */}
-                      {[
-                        { name: 'Electronic Technology Co., Ltd', status: null },
-                        { name: 'Parz Industry&Trading CO.,LTD', status: 'Not found' },
-                        { name: 'BIGLUX INNOVATION LTD', status: 'Not found' },
-                        { name: 'ZHONGSHAN DAORUI LIGHTING & EKECTRONIC LIMITED', status: 'Not found' },
-                        { name: 'CHINA ELECTRONICS ZHUHAI COMPANY LIMITED', status: 'Not found' },
-                        { name: 'GUANGDONG JUNON', status: 'Not found' },
-                      ].map((s, i) => (
-                        <div key={i} style={{ display: 'flex', alignItems: 'center', padding: '9px 14px', borderBottom: '1px solid #f9fafb', gap: 10 }}>
-                          <div style={{ width: 14, height: 14, border: '1.5px solid #9ca3af', borderRadius: 3, flexShrink: 0 }} />
-                          <div style={{ flex: 1 }}>
-                            <div style={{ fontSize: 12, color: '#2563eb', fontWeight: 500 }}>{s.name}</div>
-                            <div style={{ fontSize: 11, color: '#6b7280', marginTop: 1 }}>LED lights</div>
-                          </div>
-                          <div style={{ fontSize: 11, color: '#6b7280', marginRight: 6 }}>LED lights</div>
-                          {s.status && <div style={{ fontSize: 11, color: '#9ca3af' }}>{s.status}</div>}
-                        </div>
-                      ))}
-
-                      {/* Panel footer */}
-                      <div style={{ padding: '8px 14px', background: '#f9fafb', fontSize: 11, color: '#6b7280', display: 'flex', gap: 14 }}>
-                        <span>✉ 2 with emails</span>
-                        <span>🖥 20 no email yet</span>
-                        <span>🗄 2 DB-appended</span>
-                      </div>
-                    </div>
-
-                  </div>
-                </div>
-
-              </div>
-
-              {/* Bottom toolbar */}
-              <div style={{ borderTop: '1px solid #e5e7eb', padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 10 }}>
-                <button style={{ fontSize: 12, fontWeight: 600, padding: '8px 14px', background: '#f3f4f6', border: '1px solid #d1d5db', borderRadius: 6, cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap' }}>
-                  📋 Generate Quotation ▲
-                </button>
-                <div style={{ width: 32, height: 32, border: '1px solid #d1d5db', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, color: '#6b7280', cursor: 'pointer' }}>📎</div>
-                <div style={{ width: 32, height: 32, border: '1px solid #d1d5db', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, color: '#6b7280', cursor: 'pointer' }}>ℹ</div>
-                <input readOnly value="Ask the assistant to..." style={{ flex: 1, fontSize: 13, padding: '8px 12px', border: '1px solid #d1d5db', borderRadius: 6, color: '#9ca3af', background: 'white', fontFamily: 'inherit' }} />
-                <button style={{ fontSize: 12, fontWeight: 600, padding: '8px 16px', background: '#2563eb', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontFamily: 'inherit' }}>✈ Send</button>
-                <button style={{ fontSize: 12, fontWeight: 600, padding: '8px 14px', background: '#f3f4f6', border: '1px solid #d1d5db', borderRadius: 6, cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap' }}>📋 Generate Quotation</button>
-              </div>
-
-              {/* History chips */}
-              <div style={{ padding: '8px 14px 12px', display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-                {[
-                  { label: 'TS_50001', time: 'Apr 27, 09:40 PM' },
-                  { label: 'build a quotation...', time: 'Apr 27, 09:38 PM' },
-                  { label: 'give me an examp...', time: 'Apr 27, 09:05 PM' },
-                ].map(chip => (
-                  <div key={chip.label} style={{ fontSize: 11, color: '#6b7280', background: '#f3f4f6', border: '1px solid #e5e7eb', borderRadius: 20, padding: '4px 10px', display: 'flex', alignItems: 'center', gap: 6 }}>
-                    🕐 <span style={{ color: '#374151', fontWeight: 500 }}>{chip.label}</span> {chip.time}
-                  </div>
-                ))}
-              </div>
-
-            </div>
+            <Hero stopAnimation={stopAnimation} handleModal={handleModal}/>
           </div>
-        </div>        
+
+               
 
           {/*SCROLL*/}
         {/* <div style={{ position: 'absolute', bottom: 36, left: 48, display: 'flex', alignItems: 'center', gap: 12 }}>
