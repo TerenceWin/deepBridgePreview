@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { LogoMark } from '../components/LogoMark';
 import DemoModal from '../components/DemoModal';
 import { MAX_WIDTH, NAV_HEIGHT, SECTION_PAD, SECTION_PAD_SM } from '../components/layout';
-import Hero from './Hero.js'
+import Hero from './HeroSection.js'
 
 
 const sky = '#29ABE2';
@@ -53,32 +53,7 @@ const whyUs = [
   { title: 'Earlier risk visibility', text: 'Catch certificate and documentation gaps before they become costly.', icon: '02' },
   { title: 'Faster commercial response', text: 'Move from enquiry to quotation with fewer delays.', icon: '03' },
   { title: 'More output from the same team', text: 'Help teams handle more work without the same increase in headcount.', icon: '04' },
-];
-
-const factoryFinder = {
-  factoryFinder : [
-    {
-      input: "Stainless steel pet bowls, OEM, MOQ under 500, Guangdong", 
-      output: "", 
-      type: "text", 
-    }, 
-    {
-      input: "Waterproof LED strip lights, CE certified, export experience to Europe", 
-      output: "", 
-      type: "text"
-    }, 
-    {
-      input: "Photo of a wooden hair styling tool (uploaded image)", 
-      output: "", 
-      type: "image"
-    }
-  ], 
-  generateQuotation : [
-
-  ],
-  handleFiles : [], 
-  catalogGenerator: [],
-}
+]
 
 export default function Home() {
 
@@ -177,7 +152,7 @@ export default function Home() {
             color: 'white', lineHeight: 1.02, letterSpacing: '-0.04em', maxWidth: 700, marginBottom: 28 }}>
             {typedText}
           </h1>
-          <div className="db-hero-btns" style={{ display: 'flex', gap: 12, marginBottom: isLaptop ? 30: 0}}>
+          <div className="db-hero-btns" style={{ display: 'flex', gap: 12, marginBottom: isLaptop ? 30 : 50}}>
             <button onClick={() => setModal(true)}
               style={{ background: sky, color: 'white', border: 'none', borderRadius: 8, padding: '13px 28px', fontSize: 15, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', transition: 'background 0.2s' }}
               onMouseEnter={e => e.currentTarget.style.background = '#1e95ccd3'}
@@ -192,7 +167,7 @@ export default function Home() {
             View services →
             </Link>
           </div>
-            <Hero stopAnimation={stopAnimation} handleModal={handleModal}/>
+            <Hero stopAnimation={stopAnimation} handleModal={handleModal} isDesktop={isDesktop} />
           </div>
 
                
