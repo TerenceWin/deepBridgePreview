@@ -18,6 +18,12 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
     const currentStageRef = useRef(null);
     const [messages, setMessages] = useState([]);
     const chatContainerRef = useRef(null);
+    
+    const [showClickMe, setShowClickMe] = useState(false);
+    const [tabDropdownOpen, setTabDropdownOpen] = useState(false);
+    const [tabDropdownClosing, setTabDropdownClosing] = useState(false);
+    const tabDropdownRef = useRef(null);
+
 
     //Clear & Reset Chat history
     useEffect(() => {
@@ -62,7 +68,7 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
                 const i = tabs.indexOf(prev);
                 return tabs[(i + 1) % tabs.length];
             });
-        }, 10000);
+        }, 4000);
     };
 
     //Reset 10 second tab switching timer when page loads 
@@ -70,6 +76,22 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
         startTabInterval();
         return () => clearInterval(tabIntervalRef.current);
     }, []);
+
+    useEffect(() => {
+      const t = setTimeout(() => setShowClickMe(true), 3000);
+      return () => clearTimeout(t);
+    }, []);
+
+    useEffect(() => {
+      const handleClickOutside = (e) => {
+        if (tabDropdownOpen && tabDropdownRef.current && !tabDropdownRef.current.contains(e.target)) {
+          setTabDropdownClosing(true);
+          setTimeout(() => { setTabDropdownOpen(false); setTabDropdownClosing(false); }, 250);
+        }
+      };
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, [tabDropdownOpen]);
 
     //Send Buttons Clicked 
     // -> Stop tab switching, typing animation
@@ -133,35 +155,17 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
     return(
         <div>
         <style>{`
-          @keyframes fadeIn    { from { opacity: 0; } to { opacity: 1; } }
-          @keyframes fadeOut   { from { opacity: 1; } to { opacity: 0; } }
-          @keyframes tabFadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-          @keyframes scrollUp  { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+          @keyframes fadeIn      { from { opacity: 0; } to { opacity: 1; } }
+          @keyframes fadeOut     { from { opacity: 1; } to { opacity: 0; } }
+          @keyframes tabFadeIn   { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+          @keyframes scrollUp    { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+          @keyframes tabExpand   { from { opacity: 0; transform: scaleY(0); } to { opacity: 1; transform: scaleY(1); } }
+          @keyframes tabShrink   { from { opacity: 1; transform: scaleY(1); } to { opacity: 0; transform: scaleY(0); } }
         `}</style>
 
           {/*Hero Section*/}
           <div style={{ width: '100%', backgroundColor: 'rgba(255,255,255, 0.1)', borderRadius: 12, padding: 10, boxSizing: 'border-box' }} onClick={stopAnimation}>
             <div style={{ width: '100%', backgroundColor: '#08253f', borderRadius: 8, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: 5, overflow: 'hidden', fontFamily: 'inherit', padding: 10, boxSizing: 'border-box' }}>
-
-              {/*Chat Tabs*/}
-              <div style={{ width: '100%', height: 50, display: 'flex', backgroundColor: 'white', borderRadius: 7, justifyContent: 'space-between', alignItems: 'center', padding: '0 20px', margin: '0 auto'}}>
-                {tabs.map((tab) => (
-                  <div key={tab} style={{ fontSize: 12, fontWeight: 600, color: currentTab === tab ? 'white' : '#08253f', backgroundColor: currentTab === tab ? '#08253f' : 'white', border: '1.5px solid #08253f',
-                    borderRadius: 8, padding: '0 10px', textAlign: 'center', cursor: 'pointer', transition: 'filter 0.2s', width: 180, height: 30, display: 'flex', justifyContent: 'center', alignItems: 'center',
-                    animation: currentTab === tab ? 'tabFadeIn 0.35s ease forwards' : 'none'}}
-                  onClick={() => { setCurrentTab(tab); startTabInterval(); }}
-                  onMouseEnter={e => e.currentTarget.style.filter = 'brightness(0.9)'}
-                  onMouseLeave={e => e.currentTarget.style.filter = 'brightness(1)'}
-                  >
-                    <i className={handleTabIcon(tab)} style={{ fontSize: 16, marginRight: 10, 
-                      color: tab === tabs[0] ? '#1fc9ed' : tab === tabs[1] ? '#fcc10a' : tab === tabs[2] ? '#e02f3e': '#049669'
-                    }}></i>
-                    {tab}
-                  </div>
-                ))}
-                <div>{/*5th Empty Tab for clean look*/}</div>
-                {isDesktop && <div></div>}
-              </div>
 
               {/*Chat Section*/}
                 <div style={{ width: '100%', height: isDesktop ? 500 :410, backgroundColor: 'white', border: '1px solid black', borderRadius: 10, position: 'relative'}}
@@ -207,14 +211,56 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
                 {/*Chat input*/}
                   <div style={{width: '100%', height: 60, border: '1px solid #8e8e8e', borderRadius: 8}}>
                     <div style={{ padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 10 }}>
-                      <button style={{ width: 180, fontSize: 12, fontWeight: 600, padding: '8px 14px', background: '#f3f4f6', border: '1px solid #d1d5db', borderRadius: 6, cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap', overflow: 'hidden', display: 'flex', alignItems: 'center' }}>
-                        <i className={handleIcon()} style={{ fontSize: 16, marginRight: 10, display: 'inline-block',animation: 'scrollUp 0.5s ease forwards',
-                            color: currentTab === tabs[0] ? '#1fc9ed' : currentTab === tabs[1] ? '#fcc10a' : currentTab === tabs[2] ? '#e02f3e': '#049669'
-                        }}></i>
-                        <span key={currentTab} style={{ display: 'inline-block', animation: 'scrollUp 0.5s ease forwards' }}>
-                          {currentTab}
-                        </span>
-                      </button>
+                      <div ref={tabDropdownRef} style={{ position: 'relative', width: 180 }}>
+                        <button
+                          onClick={() => {
+                            if (tabDropdownOpen) {
+                              setTabDropdownClosing(true);
+                              setTimeout(() => { setTabDropdownOpen(false); setTabDropdownClosing(false); }, 250);
+                            } else {
+                              setTabDropdownOpen(true);
+                            }
+                          }}
+                          style={{ width: '100%', fontSize: 12, fontWeight: 600, padding: '8px 14px', background: '#f3f4f6', border: '1px solid #d1d5db', borderRadius: 6, cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap', overflow: 'hidden', display: 'flex', alignItems: 'center' }}>
+                          <i className={handleIcon()} style={{ fontSize: 16, marginRight: 10, display: 'inline-block', animation: 'scrollUp 0.5s ease forwards',
+                              color: currentTab === tabs[0] ? '#1fc9ed' : currentTab === tabs[1] ? '#fcc10a' : currentTab === tabs[2] ? '#e02f3e' : '#049669'
+                          }}></i>
+                          <span key={currentTab} style={{ display: 'inline-block', animation: 'scrollUp 0.5s ease forwards' }}>
+                            {currentTab}
+                          </span>
+                        </button>
+                        {tabDropdownOpen && (
+                          <div style={{
+                            position: 'absolute', bottom: '110%', left: 0, width: '100%',
+                            background: 'white', border: '1px solid #d1d5db', borderRadius: 6,
+                            boxShadow: '0 4px 12px rgba(0,0,0,0.12)', overflow: 'hidden', zIndex: 50,
+                            transformOrigin: 'bottom',
+                            animation: `${tabDropdownClosing ? 'tabShrink' : 'tabExpand'} 0.25s ease forwards`,
+                          }}>
+                            {tabs.map(tab => (
+                              <div
+                                key={tab}
+                                onClick={() => {
+                                  setCurrentTab(tab);
+                                  setTabDropdownClosing(true);
+                                  setTimeout(() => { setTabDropdownOpen(false); setTabDropdownClosing(false); }, 250);
+                                }}
+                                style={{
+                                  display: 'flex', alignItems: 'center', gap: 10, padding: '8px 14px',
+                                  fontSize: 12, fontWeight: tab === currentTab ? 600 : 400,
+                                  cursor: 'pointer', background: tab === currentTab ? '#f0f9ff' : 'white',
+                                  color: '#111827',
+                                }}
+                                onMouseEnter={e => { if (tab !== currentTab) e.currentTarget.style.background = '#f3f4f6'; }}
+                                onMouseLeave={e => { e.currentTarget.style.background = tab === currentTab ? '#f0f9ff' : 'white'; }}
+                              >
+                                <i className={handleTabIcon(tab)} style={{ fontSize: 13, color: tab === tabs[0] ? '#1fc9ed' : tab === tabs[1] ? '#fcc10a' : tab === tabs[2] ? '#e02f3e' : '#049669' }} />
+                                {tab}
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
                       <div style={{ width: 32, height: 32, border: '1px solid #d1d5db', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, color: '#6b7280', cursor: 'pointer' }}>
                         <i className="fa fa-upload" style={{ fontSize: 16, color: '#1a2e44' }}/>
                       </div>
@@ -232,9 +278,17 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
                         style={{ flex: 1, fontSize: 13, padding: '8px 12px', border: '1px solid #d1d5db', borderRadius: 6, color: 'black', background: 'white', fontFamily: 'inherit'}}
                         value={typingText}
                       />
-                      <button style={{ fontSize: 12, fontWeight: 600, padding: '10px', background: '#2563eb', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontFamily: 'inherit' }}
-                      onClick={() => handleSend()}>
-                        Send</button>
+                      <div style={{ position: 'relative', display: 'inline-block' }}>
+                        <div style={{ position: 'absolute', bottom: '130%', left: '100%', transform: 'translateX(-50%)', background: '#1fc9ed', color: 'white', fontSize: 11, fontWeight: 600,
+                          padding: '4px 10px', borderRadius: 6, whiteSpace: 'nowrap', pointerEvents: 'none', display: 'flex',
+                          opacity: showClickMe ? 1 : 0, transition: 'opacity 0.6s ease' }}>
+                          Click me
+                          <div style={{ position: 'absolute', top: '100%', left: '30%', transform: 'translateX(-50%)', width: 0, height: 0, borderLeft: '5px solid transparent', borderRight: '5px solid transparent', borderTop: '5px solid #1fc9ed' }} />
+                        </div>
+                        <button style={{ fontSize: 12, fontWeight: 600, padding: '10px', background: '#1fc9ed', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontFamily: 'inherit' }}
+                        onClick={() => handleSend()}>
+                          Send</button>
+                      </div>
                     </div>
                   </div>
 
