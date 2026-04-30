@@ -2,6 +2,19 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MAX_WIDTH, NAV_HEIGHT, SECTION_PAD, SECTION_PAD_SM } from '../components/layout';
 import data from './heroData.js'
+import FactoryFinderOutput from './FactoryFinder.js'
+import QuotationGeneratorOutput from './QuotationGenerator.js'
+import HandleFilesOutput from './HandleFiles.js'
+import CatalogGeneratorOutput from './CatalogGenerator.js'
+import testProduct1 from '../images/heroSection/testProduct1.jpeg';
+import testProduct2 from '../images/heroSection/testProduct2.jpeg';
+import testProduct3 from '../images/heroSection/testProduct3.webp';
+import testProduct4 from '../images/heroSection/testProduct4.png';
+import testProduct5 from '../images/heroSection/testProduct5.jpg';
+import testProduct5webp from '../images/heroSection/testProduct5.webp';
+import handleFiles1 from '../images/heroSection/handleFiles/handleFiles1.pptx';
+import handleFiles2 from '../images/heroSection/handleFiles/handleFiles2.pptx';
+import handleFiles3 from '../images/heroSection/handleFiles/handleFiles3.pptx';
 
 export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
     const tabs = ["Factory Finder", "Generate Quotation", "Handle Files", "Catalog Generator"];
@@ -23,6 +36,27 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
     const [tabDropdownOpen, setTabDropdownOpen] = useState(false);
     const [tabDropdownClosing, setTabDropdownClosing] = useState(false);
     const tabDropdownRef = useRef(null);
+    const [selectedUser, setSelectedUser] = useState({ name: 'Marcus Lin', color: '#1fc9ed' });
+    const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+    const [userDropdownClosing, setUserDropdownClosing] = useState(false);
+    const userDropdownRef = useRef(null);
+    const [uploadDropdownOpen, setUploadDropdownOpen] = useState(false);
+    const [uploadDropdownClosing, setUploadDropdownClosing] = useState(false);
+    const uploadDropdownRef = useRef(null);
+    const [selectedHandleFile, setSelectedHandleFile] = useState(null);
+    const [selectedProductImage, setSelectedProductImage] = useState(null);
+    const uploadImages = [testProduct1, testProduct2, testProduct3, testProduct4, testProduct5, testProduct5webp];
+    const handleFilesItems = [
+      { file: handleFiles1, name: 'handleFiles1.pptx' },
+      { file: handleFiles2, name: 'handleFiles2.pptx' },
+      { file: handleFiles3, name: 'handleFiles3.pptx' },
+    ];
+    const users = [
+      { name: 'Marcus Lin',    color: '#1fc9ed' },
+      { name: 'Priya Nair',   color: '#fcc10a' },
+      { name: 'Ethan Wolfe',  color: '#e02f3e' },
+      { name: 'Chloe Park',   color: '#049669' },
+    ];
 
 
     //Clear & Reset Chat history
@@ -68,7 +102,7 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
                 const i = tabs.indexOf(prev);
                 return tabs[(i + 1) % tabs.length];
             });
-        }, 4000);
+        }, 10000);
     };
 
     //Reset 10 second tab switching timer when page loads 
@@ -93,6 +127,30 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
       return () => document.removeEventListener('mousedown', handleClickOutside);
     }, [tabDropdownOpen]);
 
+    useEffect(() => {
+      const handleClickOutside = (e) => {
+        if (userDropdownOpen && userDropdownRef.current && !userDropdownRef.current.contains(e.target)) {
+          setUserDropdownClosing(true);
+          setTimeout(() => { setUserDropdownOpen(false); setUserDropdownClosing(false); }, 250);
+          startTabInterval();
+        }
+      };
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, [userDropdownOpen]);
+
+    useEffect(() => {
+      const handleClickOutside = (e) => {
+        if (uploadDropdownOpen && uploadDropdownRef.current && !uploadDropdownRef.current.contains(e.target)) {
+          setUploadDropdownClosing(true);
+          setTimeout(() => { setUploadDropdownOpen(false); setUploadDropdownClosing(false); }, 250);
+          startTabInterval();
+        }
+      };
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, [uploadDropdownOpen]);
+
     //Send Buttons Clicked 
     // -> Stop tab switching, typing animation
     // -> Get the response data
@@ -102,7 +160,7 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
       clearInterval(tabIntervalRef.current);
       clearInterval(typingIntervalRef.current);
       const output = data[currentTab]?.[stage]?.output ?? [];
-      setMessages(prev => [...prev, { role: 'user', text: typingText }, { role: 'ai', output, tab: currentTab }]);
+      setMessages(prev => [...prev, { role: 'user', text: typingText, user: selectedUser }, { role: 'ai', output, tab: currentTab }]);
       setTypingText('');
       setUserTyped(true);
       setTimeout(() => { if (chatContainerRef.current) chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight; }, 50);
@@ -117,39 +175,10 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
     
 
     const renderAIOutput = (output, tab) => {
-      if (!output || output.length === 0) return <span style={{ color: '#6b7280', fontSize: 12 }}>No output available yet.</span>;
-
-      if (tab === 'Factory Finder') {
-        const summary = typeof output[0] === 'string' ? output[0] : null;
-        const suppliers = output.slice(summary ? 1 : 0);
-        return (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            {summary && <p style={{ margin: 0, fontSize: 12, color: '#374151' }}>{summary}</p>}
-            {suppliers.map((s, idx) => {
-              const name = s.find?.(x => x.name)?.name;
-              const url = s.find?.(x => x.url)?.url;
-              const desc = s.find?.(x => x.description)?.description;
-              const images = s.find?.(x => x.productImages)?.productImages ?? [];
-              return (
-                <div key={idx} style={{ background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: 8, padding: 10 }}>
-                  <p style={{ margin: '0 0 4px', fontWeight: 600, fontSize: 12, color: '#111827' }}>{name}</p>
-                  <p style={{ margin: '0 0 6px', fontSize: 11, color: '#6b7280', lineHeight: 1.4 }}>{desc}</p>
-                  <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                    {images.map((img, i) => (
-                      <img key={i} src={img} alt="" style={{ width: 52, height: 52, objectFit: 'cover', borderRadius: 6, border: '1px solid #e5e7eb' }} />
-                    ))}
-                  </div>
-                  {url && <a href={url} target="_blank" rel="noreferrer" style={{ fontSize: 10, color: '#2563eb', wordBreak: 'break-all' }}>{url}</a>}
-                </div>
-              );
-            })}
-          </div>
-        );
-      }
-
-      const desc = output[0]?.description;
-      if (desc) return <p style={{ margin: 0, fontSize: 12, color: '#374151' }}>{desc}</p>;
-      return <p style={{ margin: 0, fontSize: 12, color: '#374151' }}>{JSON.stringify(output)}</p>;
+      if (tab === 'Factory Finder')       return <FactoryFinderOutput output={output} />;
+      if (tab === 'Generate Quotation')   return <QuotationGeneratorOutput output={output} />;
+      if (tab === 'Handle Files')         return <HandleFilesOutput output={output} />;
+      if (tab === 'Catalog Generator')    return <CatalogGeneratorOutput output={output} />;
     };
     
     return(
@@ -172,7 +201,7 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
                   onMouseEnter={() => setPreviewHovered(true)}
                   onMouseLeave={() => setPreviewHovered(false)}>
                     {/*Preview - iMessage chat*/}
-                    <div ref={chatContainerRef} style={{ width: '100%', height: '100%', overflowY: 'auto', padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: 12, boxSizing: 'border-box' }}>
+                    <div ref={chatContainerRef} style={{ width: '100%', height: '100%', overflowY: 'auto', padding: '30px 16px', display: 'flex', flexDirection: 'column', gap: 12, boxSizing: 'border-box' }}>
                       {messages.length === 0 && (
                         <div style={{ margin: 'auto', textAlign: 'center', color: '#9ca3af', fontSize: 13 }}>
                           <i className={handleIcon()} style={{ fontSize: 28, marginBottom: 8, display: 'block', color: currentTab === tabs[0] ? '#1fc9ed' : currentTab === tabs[1] ? '#fcc10a' : currentTab === tabs[2] ? '#e02f3e' : '#049669' }} />
@@ -180,11 +209,17 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
                         </div>
                       )}
                       {messages.map((msg, idx) => (
-                        <div key={idx} style={{ display: 'flex', justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start' }}>
+                        <div key={idx} style={{ display: 'flex', justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start', alignItems: 'flex-end', gap: 8 }}>
                           {msg.role === 'user' ? (
-                            <div style={{ maxWidth: '70%', background: '#2563eb', color: 'white', borderRadius: '18px 18px 4px 18px', padding: '10px 14px', fontSize: 13, lineHeight: 1.5 }}>
-                              {msg.text}
-                            </div>
+                            <>
+                              <div style={{ maxWidth: '70%', background: '#2563eb', color: 'white', borderRadius: '18px 18px 4px 18px', padding: '10px 14px', fontSize: 13, lineHeight: 1.5 }}>
+                                {msg.text}
+                              </div>
+                              <div style={{ width: 30, height: 30, borderRadius: '5px', background: '#f3f4f6', border: `2px solid ${msg.user.color}`,
+                              display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginBottom: 0, padding: 15 }}>
+                                <i className="fa fa-user" style={{ fontSize: 18, color: msg.user.color }} />
+                              </div>
+                            </>
                           ) : (
                             <div style={{ maxWidth: '85%', background: '#f3f4f6', border: '1px solid #e5e7eb', borderRadius: '18px 18px 18px 4px', padding: '10px 14px', fontSize: 13 }}>
                               {renderAIOutput(msg.output, msg.tab)}
@@ -242,6 +277,8 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
                                 key={tab}
                                 onClick={() => {
                                   setCurrentTab(tab);
+                                  clearInterval(tabIntervalRef.current);
+                                  startTabInterval();
                                   setTabDropdownClosing(true);
                                   setTimeout(() => { setTabDropdownOpen(false); setTabDropdownClosing(false); }, 250);
                                 }}
@@ -261,11 +298,111 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
                           </div>
                         )}
                       </div>
-                      <div style={{ width: 32, height: 32, border: '1px solid #d1d5db', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, color: '#6b7280', cursor: 'pointer' }}>
-                        <i className="fa fa-upload" style={{ fontSize: 16, color: '#1a2e44' }}/>
+                      <div ref={userDropdownRef} style={{ position: 'relative', flexShrink: 0 }}>
+                        <div
+                          onClick={() => {
+                            if (userDropdownOpen) {
+                              setUserDropdownClosing(true);
+                              setTimeout(() => { setUserDropdownOpen(false); setUserDropdownClosing(false); }, 250);
+                              startTabInterval();
+                            } else {
+                              setUserDropdownOpen(true);
+                              clearInterval(tabIntervalRef.current);
+                            }
+                          }}
+                          style={{ width: 32, height: 32, border: '1px solid #d1d5db', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'white', cursor: 'pointer' }}>
+                          <i className="fa fa-user" style={{ fontSize: 16, color: selectedUser.color }} />
+                        </div>
+                        {userDropdownOpen && (
+                          <div style={{
+                            position: 'absolute', bottom: '110%', left: 0, width: 160,
+                            background: 'white', border: '1px solid #d1d5db', borderRadius: 6,
+                            boxShadow: '0 4px 12px rgba(0,0,0,0.12)', overflow: 'hidden', zIndex: 50,
+                            transformOrigin: 'bottom',
+                            animation: `${userDropdownClosing ? 'tabShrink' : 'tabExpand'} 0.25s ease forwards`,
+                          }}>
+                            {users.map(u => (
+                              <div key={u.name}
+                                onClick={() => {
+                                  setSelectedUser(u);
+                                  setUserDropdownClosing(true);
+                                  setTimeout(() => { setUserDropdownOpen(false); setUserDropdownClosing(false); }, 250);
+                                }}
+                                style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 12px', fontSize: 12, fontWeight: selectedUser?.name === u.name ? 600 : 500, color: '#111827', cursor: 'pointer', background: selectedUser?.name === u.name ? '#f0f9ff' : 'white' }}
+                                onMouseEnter={e => { if (selectedUser?.name !== u.name) e.currentTarget.style.background = '#f3f4f6'; }}
+                                onMouseLeave={e => { e.currentTarget.style.background = selectedUser?.name === u.name ? '#f0f9ff' : 'white'; }}>
+                                <i className="fa fa-user" style={{ fontSize: 13, color: u.color }} />
+                                {u.name}
+                              </div>
+                            ))}
+                          </div>
+                        )}
                       </div>
-                      <div style={{ width: 32, height: 32, border: '1px solid #d1d5db', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'white', cursor: 'pointer', flexShrink: 0 }}>
-                        <i className="fas fa-info-circle" style={{ fontSize: 16, color: '#1a2e44' }} />
+                      <div ref={uploadDropdownRef} style={{ position: 'relative', flexShrink: 0 }}>
+                        <div
+                          onClick={() => {
+                            if (uploadDropdownOpen) {
+                              setUploadDropdownClosing(true);
+                              setTimeout(() => { setUploadDropdownOpen(false); setUploadDropdownClosing(false); }, 250);
+                              startTabInterval();
+                            } else {
+                              setUploadDropdownOpen(true);
+                              clearInterval(tabIntervalRef.current);
+                            }
+                          }}
+                          style={{ width: 32, height: 32, border: '1px solid #d1d5db', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, color: '#6b7280', cursor: 'pointer', background: 'white' }}>
+                          <i className="fa fa-upload" style={{ fontSize: 16, color: '#1a2e44' }} />
+                        </div>
+                        {uploadDropdownOpen && (
+                          <div style={{
+                            position: 'absolute', bottom: '110%', left: 0, width: 240,
+                            background: 'white', border: '1px solid #d1d5db', borderRadius: 8,
+                            boxShadow: '0 4px 16px rgba(0,0,0,0.12)', padding: 10, zIndex: 50,
+                            transformOrigin: 'bottom left',
+                            animation: `${uploadDropdownClosing ? 'tabShrink' : 'tabExpand'} 0.25s ease forwards`,
+                          }}>
+                            <p style={{ margin: '0 0 8px', fontSize: 12, fontWeight: 600, color: '#111827' }}>Upload Files</p>
+                            {currentTab === tabs[0] && (
+                              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 6, marginBottom: 10 }}>
+                                {uploadImages.map((src, i) => {
+                                  const isSelected = selectedProductImage === i;
+                                  return (
+                                    <div key={i}
+                                      onClick={() => setSelectedProductImage(isSelected ? null : i)}
+                                      style={{ borderRadius: 6, overflow: 'hidden', aspectRatio: '1', cursor: 'pointer', boxSizing: 'border-box',
+                                        border: isSelected ? '2px solid #1fc9ed' : '2px solid #e5e7eb',
+                                        boxShadow: isSelected ? '0 0 0 3px rgba(31,201,237,0.2)' : 'none',
+                                        transition: 'border 0.15s, box-shadow 0.15s',
+                                      }}>
+                                      <img src={src} alt={`product ${i + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            )}
+                            {currentTab === tabs[2] && (
+                              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 6, marginBottom: 10 }}>
+                                {handleFilesItems.map((item, i) => {
+                                  const isSelected = selectedHandleFile === item.name;
+                                  return (
+                                    <div key={i}
+                                      onClick={() => setSelectedHandleFile(isSelected ? null : item.name)}
+                                      style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 4, padding: '10px 6px', borderRadius: 6, cursor: 'pointer', 
+                                        border: isSelected ? '2px solid #e02f3e' : '2px solid #e5e7eb', boxSizing: 'border-box', background: isSelected ? '#fff5f5' : '#f9fafb',
+                                        boxShadow: isSelected ? '0 0 0 3px rgba(224,47,62,0.15)' : 'none', transition: 'border 0.15s, background 0.15s, box-shadow 0.15s',
+                                      }}>
+                                      <i className="fas fa-file-powerpoint" style={{ fontSize: 22, color: '#e02f3e' }} />
+                                      <span style={{ fontSize: 9, color: isSelected ? '#e02f3e' : '#6b7280', fontWeight: isSelected ? 600 : 400, textAlign: 'center', wordBreak: 'break-all' }}>{item.name}</span>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            )}
+                            <button style={{ width: '100%', padding: '7px 0', fontSize: 12, fontWeight: 600, background: '#1a2e44', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontFamily: 'inherit' }}>
+                              Process Files
+                            </button>
+                          </div>
+                        )}
                       </div>
                       <input type='text'
                         onFocus={() => { setIsFocused(true); clearInterval(tabIntervalRef.current); }}
@@ -279,13 +416,13 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
                         value={typingText}
                       />
                       <div style={{ position: 'relative', display: 'inline-block' }}>
-                        <div style={{ position: 'absolute', bottom: '130%', left: '100%', transform: 'translateX(-50%)', background: '#1fc9ed', color: 'white', fontSize: 11, fontWeight: 600,
+                        <div style={{ position: 'absolute', bottom: '125%', left: '60%', transform: 'translateX(-50%)', background: '#08253f', color: 'white', fontSize: 14, fontWeight: 600,
                           padding: '4px 10px', borderRadius: 6, whiteSpace: 'nowrap', pointerEvents: 'none', display: 'flex',
-                          opacity: showClickMe ? 1 : 0, transition: 'opacity 0.6s ease' }}>
+                          opacity: showClickMe && currentTab === tabs[0] ? 1 : 0, transition: 'opacity 0.6s ease' }}>
                           Click me
-                          <div style={{ position: 'absolute', top: '100%', left: '30%', transform: 'translateX(-50%)', width: 0, height: 0, borderLeft: '5px solid transparent', borderRight: '5px solid transparent', borderTop: '5px solid #1fc9ed' }} />
+                          <div style={{ position: 'absolute', top: '100%', left: '30%', transform: 'translateX(-50%)', width: 0, height: 0, borderLeft: '5px solid transparent', borderRight: '5px solid transparent', borderTop: '5px solid #08253f' }} />
                         </div>
-                        <button style={{ fontSize: 12, fontWeight: 600, padding: '10px', background: '#1fc9ed', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontFamily: 'inherit' }}
+                        <button style={{ fontSize: 14, fontWeight: 600, padding: '8px', background: '#08253f', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontFamily: 'inherit' }}
                         onClick={() => handleSend()}>
                           Send</button>
                       </div>

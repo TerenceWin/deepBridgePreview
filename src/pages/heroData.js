@@ -1,12 +1,19 @@
-import factoryFinder1_1_1 from '../images/heroSection/Factory Finder 1-1-1.webp';
-import factoryFinder1_1_2 from '../images/heroSection/Factory Finder 1-1-2.webp';
-import factoryFinder1_1_3 from '../images/heroSection/Factory Finder 1-1-3.webp';
-import factoryFinder1_2_1 from '../images/heroSection/Factory Finder 1-2-1.webp';
-import factoryFinder1_2_2 from '../images/heroSection/Factory Finder 1-2-2.webp';
-import factoryFinder1_2_3 from '../images/heroSection/Factory Finder 1-2-3.webp';
-import factoryFinder1_3_1 from '../images/heroSection/Factory Finder 1-3-1.webp';
-import factoryFinder2_1_1 from '../images/heroSection/Factory Finder 2-1-1.webp';
-import factoryFinder2_1_2 from '../images/heroSection/Factory Finder 2-1-2.webp';
+import factoryFinder1_1_1 from '../images/heroSection/factoryFinder/Factory Finder 1-1-1.webp';
+import factoryFinder1_1_2 from '../images/heroSection/factoryFinder/Factory Finder 1-1-2.webp';
+import factoryFinder1_1_3 from '../images/heroSection/factoryFinder/Factory Finder 1-1-3.webp';
+import factoryFinder1_2_1 from '../images/heroSection/factoryFinder/Factory Finder 1-2-1.webp';
+import factoryFinder1_2_2 from '../images/heroSection/factoryFinder/Factory Finder 1-2-2.webp';
+import factoryFinder1_2_3 from '../images/heroSection/factoryFinder/Factory Finder 1-2-3.webp';
+import factoryFinder1_3_1 from '../images/heroSection/factoryFinder/Factory Finder 1-3-1.webp';
+import factoryFinder2_1_1 from '../images/heroSection/factoryFinder/Factory Finder 2-1-1.webp';
+import factoryFinder2_1_2 from '../images/heroSection/factoryFinder/Factory Finder 2-1-2.webp';
+
+import testProduct1 from '../images/heroSection/testProduct1.jpeg';
+import testProduct2 from '../images/heroSection/testProduct2.jpeg';
+import testProduct3 from '../images/heroSection/testProduct3.webp';
+import testProduct4 from '../images/heroSection/testProduct4.png';
+import testProduct5 from '../images/heroSection/testProduct5.jpg';
+import testProduct5webp from '../images/heroSection/testProduct5.webp';
 
 const data = {
   'Factory Finder' : [
@@ -51,7 +58,8 @@ const data = {
   'Handle Files' : [
     {
         input: "BSCI audit certificate PDF", 
-        output: [{description: 'Parsed audit score, expiry date, factory name, compliance status'}],
+        output: [
+          {}, ],
         type: 'document'
     }, 
   ], 
