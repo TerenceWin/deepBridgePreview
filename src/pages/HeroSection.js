@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MAX_WIDTH, NAV_HEIGHT, SECTION_PAD, SECTION_PAD_SM } from '../components/layout';
-import data from './heroData.js'
+import data, { handleFilesFollowUps } from './heroData.js'
+import { handleFile1, handleFile2, handleFile3 } from './handleFilesData.js'
 import FactoryFinderOutput from './FactoryFinder.js'
 import QuotationGeneratorOutput from './QuotationGenerator.js'
 import HandleFilesOutput from './HandleFiles.js'
@@ -27,11 +28,12 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
     const [isFocused, setIsFocused] = useState(false);
     const [typingText, setTypingText] = useState('');
     const typingIntervalRef = useRef(null);
-    const [stage, setStage] = useState(0);
+    const [userStages, setUserStages] = useState({});
     const currentStageRef = useRef(null);
     const [messages, setMessages] = useState([]);
     const chatContainerRef = useRef(null);
     
+    const [saveToast, setSaveToast] = useState(null);
     const [showClickMe, setShowClickMe] = useState(false);
     const [tabDropdownOpen, setTabDropdownOpen] = useState(false);
     const [tabDropdownClosing, setTabDropdownClosing] = useState(false);
@@ -44,6 +46,8 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
     const [uploadDropdownClosing, setUploadDropdownClosing] = useState(false);
     const uploadDropdownRef = useRef(null);
     const [selectedHandleFile, setSelectedHandleFile] = useState(null);
+    const [processedFile, setProcessedFile] = useState(null);
+    const [processedFilesSet, setProcessedFilesSet] = useState(new Set());
     const [selectedProductImage, setSelectedProductImage] = useState(null);
     const uploadImages = [testProduct1, testProduct2, testProduct3, testProduct4, testProduct5, testProduct5webp];
     const handleFilesItems = [
@@ -59,17 +63,22 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
     ];
 
 
-    //Clear & Reset Chat history
+    //Clear & Reset Chat history + all user stages on tab switch
     useEffect(() => {
-      setStage(0);
+      setUserStages({});
       setMessages([]);
+      setProcessedFile(null);
+      setProcessedFilesSet(new Set());
     }, [currentTab]);
 
     //Typing Animation
     useEffect(() => {
       clearInterval(typingIntervalRef.current);
       setTypingText('');
-      const tabText = data[currentTab]?.[stage]?.input;
+      const stage = userStages[selectedUser.name] ?? 0;
+      const tabText = (currentTab === 'Handle Files' && stage > 0 && processedFile)
+        ? handleFilesFollowUps[processedFile]?.[selectedUser.name]?.[stage - 1]?.input
+        : data[currentTab]?.[selectedUser.name]?.[stage]?.input;
       if (!tabText) return;
       let i = 0;
       typingIntervalRef.current = setInterval(() => {
@@ -78,7 +87,7 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
         if (i === tabText.length) clearInterval(typingIntervalRef.current);
       }, 15);
       return () => clearInterval(typingIntervalRef.current);
-    }, [currentTab, stage]);
+    }, [currentTab, selectedUser.name, userStages, processedFile]);
 
     const handleTabIcon = (tab) => {
       if (tab === tabs[0]) return "fas fa-industry";
@@ -159,25 +168,66 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
       if (!typingText.trim()) return;
       clearInterval(tabIntervalRef.current);
       clearInterval(typingIntervalRef.current);
-      const output = data[currentTab]?.[stage]?.output ?? [];
+      const stage = userStages[selectedUser.name] ?? 0;
+      let output;
+      let isLast;
+      if (currentTab === 'Handle Files' && stage > 0 && processedFile) {
+        const followUps = handleFilesFollowUps[processedFile]?.[selectedUser.name] ?? [];
+        output = followUps[stage - 1]?.output ?? [];
+        isLast = stage >= followUps.length;
+      } else {
+        output = data[currentTab]?.[selectedUser.name]?.[stage]?.output ?? [];
+        const totalStages = data[currentTab]?.[selectedUser.name]?.length ?? 0;
+        isLast = stage >= totalStages - 1;
+      }
       setMessages(prev => [...prev, { role: 'user', text: typingText, user: selectedUser }, { role: 'ai', output, tab: currentTab }]);
       setTypingText('');
       setUserTyped(true);
       setTimeout(() => { if (chatContainerRef.current) chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight; }, 50);
-      const totalStages = data[currentTab]?.length ?? 0;
-      if (stage < totalStages - 1) {
-        setStage(prev => prev + 1);
-      } else {
+      if (isLast) {
+        setUserStages(prev => ({ ...prev, [selectedUser.name]: stage + 1 }));
         handleModal();
+      } else {
+        setUserStages(prev => ({ ...prev, [selectedUser.name]: stage + 1 }));
       }
     };
 
     
 
+    const fileDataMap = {
+      'handleFiles1.pptx': handleFile1,
+      'handleFiles2.pptx': handleFile2,
+      'handleFiles3.pptx': handleFile3,
+    };
+
+    const handleProcessFiles = () => {
+      if (!selectedHandleFile) return;
+      if (processedFilesSet.has(selectedHandleFile)) return;
+      const fileData = fileDataMap[selectedHandleFile];
+      setMessages(prev => [
+        ...prev,
+        { role: 'user', text: 'Upload and Process files', user: selectedUser, fileUpload: selectedHandleFile },
+        { role: 'ai', output: [{ type: 'fileSuccess', fileName: selectedHandleFile }], tab: currentTab },
+        { role: 'ai', output: [{ type: 'fileDetails', fileData }], tab: currentTab },
+        { role: 'ai', output: [{ type: 'fileFollowUp' }], tab: currentTab },
+      ]);
+      setTypingText('');
+      setUserTyped(true);
+      setUploadDropdownClosing(true);
+      setTimeout(() => { setUploadDropdownOpen(false); setUploadDropdownClosing(false); }, 250);
+      clearInterval(tabIntervalRef.current);
+      setTimeout(() => { if (chatContainerRef.current) chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight; }, 50);
+      setProcessedFile(selectedHandleFile);
+      setProcessedFilesSet(prev => new Set([...prev, selectedHandleFile]));
+      const resetStages = {};
+      users.forEach(u => { resetStages[u.name] = 1; });
+      setUserStages(resetStages);
+    };
+
     const renderAIOutput = (output, tab) => {
       if (tab === 'Factory Finder')       return <FactoryFinderOutput output={output} />;
       if (tab === 'Generate Quotation')   return <QuotationGeneratorOutput output={output} />;
-      if (tab === 'Handle Files')         return <HandleFilesOutput output={output} />;
+      if (tab === 'Handle Files')         return <HandleFilesOutput output={output} users={users} userStages={userStages} onSave={(msg) => { setSaveToast(msg); setTimeout(() => setSaveToast(null), 3500); }} />;
       if (tab === 'Catalog Generator')    return <CatalogGeneratorOutput output={output} />;
     };
     
@@ -197,7 +247,7 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
             <div style={{ width: '100%', backgroundColor: '#08253f', borderRadius: 8, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: 5, overflow: 'hidden', fontFamily: 'inherit', padding: 10, boxSizing: 'border-box' }}>
 
               {/*Chat Section*/}
-                <div style={{ width: '100%', height: isDesktop ? 500 :410, backgroundColor: 'white', border: '1px solid black', borderRadius: 10, position: 'relative'}}
+                <div style={{ width: '100%', height: isDesktop ? 600 : 550, backgroundColor: 'white', border: '1px solid black', borderRadius: 10, position: 'relative'}}
                   onMouseEnter={() => setPreviewHovered(true)}
                   onMouseLeave={() => setPreviewHovered(false)}>
                     {/*Preview - iMessage chat*/}
@@ -208,12 +258,25 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
                           Try sending a message
                         </div>
                       )}
-                      {messages.map((msg, idx) => (
-                        <div key={idx} style={{ display: 'flex', justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start', alignItems: 'flex-end', gap: 8 }}>
+                      {messages.map((msg, idx) => {
+                        const prevUserMsg = msg.role === 'user' ? messages.slice(0, idx).filter(m => m.role === 'user').at(-1) : null;
+                        const showName = msg.role === 'user' && prevUserMsg?.user?.name !== msg.user?.name;
+                        return (
+                        <div key={idx} style={{ display: 'flex', flexDirection: 'column', alignItems: msg.role === 'user' ? 'flex-end' : 'flex-start', gap: 2 }}>
+                          {showName && (
+                            <span style={{ fontSize: 10, fontWeight: 600, color: msg.user.color, paddingRight: 42 }}>{msg.user.name}</span>
+                          )}
+                          <div style={{ display: 'flex', justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start', alignItems: 'flex-end', gap: 8, width: '100%' }}>
                           {msg.role === 'user' ? (
                             <>
-                              <div style={{ maxWidth: '70%', background: '#2563eb', color: 'white', borderRadius: '18px 18px 4px 18px', padding: '10px 14px', fontSize: 13, lineHeight: 1.5 }}>
-                                {msg.text}
+                              <div style={{ maxWidth: '70%', background: '#2563eb', color: 'white', borderRadius: '18px 18px 4px 18px', padding: '10px 14px', fontSize: 13, lineHeight: 1.5, display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                                {msg.fileUpload ? (
+                                  <>
+                                    <i className="fas fa-file-powerpoint" style={{ fontSize: 13, color: '#ffb3b3', flexShrink: 0 }} />
+                                    <span style={{ fontSize: 11, opacity: 0.85, flexShrink: 0 }}>{msg.fileUpload}</span>
+                                    <span>{msg.text}</span>
+                                  </>
+                                ) : msg.text}
                               </div>
                               <div style={{ width: 30, height: 30, borderRadius: '5px', background: '#f3f4f6', border: `2px solid ${msg.user.color}`,
                               display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginBottom: 0, padding: 15 }}>
@@ -221,14 +284,24 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
                               </div>
                             </>
                           ) : (
-                            <div style={{ maxWidth: '85%', background: '#f3f4f6', border: '1px solid #e5e7eb', borderRadius: '18px 18px 18px 4px', padding: '10px 14px', fontSize: 13 }}>
+                            <div style={{ maxWidth: 'calc(85% + 100px)', background: '#f3f4f6', border: '1px solid #e5e7eb', borderRadius: '18px 18px 18px 4px', padding: '10px 14px', fontSize: 13, display: 'flex', flexDirection: 'column' }}>
                               {renderAIOutput(msg.output, msg.tab)}
                             </div>
                           )}
+                          </div>
                         </div>
-                      ))}
+                        );
+                      })}
                     </div>
 
+
+                    {/*Save Toast*/}
+                    {saveToast && (
+                      <div style={{ position: 'absolute', bottom: 16, left: '10px', transform: 'translateX(-50%)', background: '#1a2e44', color: 'white', fontSize: 12, padding: '8px 16px', borderRadius: 8, whiteSpace: 'nowrap', boxShadow: '0 4px 12px rgba(0,0,0,0.2)', animation: 'scrollUp 0.3s ease forwards', zIndex: 10, display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <i className="fas fa-check-circle" style={{ color: '#4ade80' }} />
+                        {saveToast}
+                      </div>
+                    )}
 
                     {/*Hover Blur Background */}
                     <div style={{
@@ -236,7 +309,7 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
                       animation: previewHovered ? 'fadeIn 0.3s ease forwards' : 'fadeOut 0.3s ease forwards', opacity: previewHovered ? 1 : 0,
                       pointerEvents: previewHovered ? 'auto' : 'none', backgroundColor: 'rgba(4, 17, 28, 0.6)', backdropFilter: 'blur(6px)',
                     }}>
-                        <p > Text</p>
+                        <p >Text</p>
                         <button style={{width: 100, height: 30}} onClick={(e) => { e.stopPropagation(); handleModal(); }}>Book a demo</button>
                     </div>
 
@@ -384,10 +457,12 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
                               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 6, marginBottom: 10 }}>
                                 {handleFilesItems.map((item, i) => {
                                   const isSelected = selectedHandleFile === item.name;
+                                  const isProcessed = processedFilesSet.has(item.name);
                                   return (
                                     <div key={i}
-                                      onClick={() => setSelectedHandleFile(isSelected ? null : item.name)}
-                                      style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 4, padding: '10px 6px', borderRadius: 6, cursor: 'pointer', 
+                                      onClick={() => !isProcessed && setSelectedHandleFile(isSelected ? null : item.name)}
+                                      style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 4, padding: '10px 6px', borderRadius: 6,
+                                        cursor: isProcessed ? 'not-allowed' : 'pointer', opacity: isProcessed ? 0.4 : 1,
                                         border: isSelected ? '2px solid #e02f3e' : '2px solid #e5e7eb', boxSizing: 'border-box', background: isSelected ? '#fff5f5' : '#f9fafb',
                                         boxShadow: isSelected ? '0 0 0 3px rgba(224,47,62,0.15)' : 'none', transition: 'border 0.15s, background 0.15s, box-shadow 0.15s',
                                       }}>
@@ -398,7 +473,9 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
                                 })}
                               </div>
                             )}
-                            <button style={{ width: '100%', padding: '7px 0', fontSize: 12, fontWeight: 600, background: '#1a2e44', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontFamily: 'inherit' }}>
+                            <button
+                              onClick={handleProcessFiles}
+                              style={{ width: '100%', padding: '7px 0', fontSize: 12, fontWeight: 600, background: selectedHandleFile ? '#1a2e44' : '#9ca3af', color: 'white', border: 'none', borderRadius: 6, cursor: selectedHandleFile ? 'pointer' : 'not-allowed', fontFamily: 'inherit' }}>
                               Process Files
                             </button>
                           </div>
@@ -415,17 +492,19 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
                         style={{ flex: 1, fontSize: 13, padding: '8px 12px', border: '1px solid #d1d5db', borderRadius: 6, color: 'black', background: 'white', fontFamily: 'inherit'}}
                         value={typingText}
                       />
-                      <div style={{ position: 'relative', display: 'inline-block' }}>
-                        <div style={{ position: 'absolute', bottom: '125%', left: '60%', transform: 'translateX(-50%)', background: '#08253f', color: 'white', fontSize: 14, fontWeight: 600,
-                          padding: '4px 10px', borderRadius: 6, whiteSpace: 'nowrap', pointerEvents: 'none', display: 'flex',
-                          opacity: showClickMe && currentTab === tabs[0] ? 1 : 0, transition: 'opacity 0.6s ease' }}>
-                          Click me
-                          <div style={{ position: 'absolute', top: '100%', left: '30%', transform: 'translateX(-50%)', width: 0, height: 0, borderLeft: '5px solid transparent', borderRight: '5px solid transparent', borderTop: '5px solid #08253f' }} />
+                      {!(currentTab === tabs[2] && (userStages[selectedUser.name] ?? 0) === 0) && (
+                        <div style={{ position: 'relative', display: 'inline-block' }}>
+                          <div style={{ position: 'absolute', bottom: '125%', left: '60%', transform: 'translateX(-50%)', background: '#08253f', color: 'white', fontSize: 14, fontWeight: 600,
+                            padding: '4px 10px', borderRadius: 6, whiteSpace: 'nowrap', pointerEvents: 'none', display: 'flex',
+                            opacity: showClickMe && currentTab === tabs[0] ? 1 : 0, transition: 'opacity 0.6s ease' }}>
+                            Click me
+                            <div style={{ position: 'absolute', top: '100%', left: '30%', transform: 'translateX(-50%)', width: 0, height: 0, borderLeft: '5px solid transparent', borderRight: '5px solid transparent', borderTop: '5px solid #08253f' }} />
+                          </div>
+                          <button style={{ fontSize: 14, fontWeight: 600, padding: '8px', background: '#08253f', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontFamily: 'inherit' }}
+                          onClick={() => handleSend()}>
+                            Send</button>
                         </div>
-                        <button style={{ fontSize: 14, fontWeight: 600, padding: '8px', background: '#08253f', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontFamily: 'inherit' }}
-                        onClick={() => handleSend()}>
-                          Send</button>
-                      </div>
+                      )}
                     </div>
                   </div>
 
