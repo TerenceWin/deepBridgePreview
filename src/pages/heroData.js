@@ -1,4 +1,5 @@
 import factoryFinder1_1_1 from '../images/heroSection/factoryFinder/Factory Finder 1-1-1.webp';
+import vacuumCleaner1 from '../images/heroSection/quotationGenerator/vaccumCleaner1.png';
 import factoryFinder1_1_2 from '../images/heroSection/factoryFinder/Factory Finder 1-1-2.webp';
 import factoryFinder1_1_3 from '../images/heroSection/factoryFinder/Factory Finder 1-1-3.webp';
 import factoryFinder1_2_1 from '../images/heroSection/factoryFinder/Factory Finder 1-2-1.webp';
@@ -21,6 +22,7 @@ const data = {
         ],
         type: 'text',
       },
+
       {
         input: "Waterproof LED strip lights, CE certified, export experience to Europe",
         output: [
@@ -136,9 +138,69 @@ const data = {
 
   'Generate Quotation': {
     'Marcus Lin': [
-      { input: "Product ID: SKU-00341, Markup: 22%, Sender: marcus@deep-bridge.com", output: [{ description: 'PDF quotation for SKU-00341 with 22% markup applied, Marcus Lin branding, ready-to-send format.' }], type: 'text' },
-      { input: "Product ID: SKU-00892, Markup: 18%, include shipping estimate to LA", output: [{ description: 'Quotation with FOB + estimated freight to Los Angeles included, 18% margin applied.' }], type: 'text' },
-      { input: "Product ID: SKU-01105, Markup: 30%, add payment terms Net 30", output: [{ description: 'Formal quotation with 30% markup, Net 30 payment terms, and product spec sheet attached.' }], type: 'text' },
+      {
+        input: "Do we have new vacuum cleaners",
+        output: [{
+          type: 'productFound',
+          description: "Yes, Chloe found this vacuum cleaner 2 days ago.",
+          product: {
+            name: "Cordless Stick Vacuum Cleaner VC-2200",
+            price: "USD 28.50 / unit",
+            moq: "500 units",
+            specifications: ["12,000 Pa suction power", "2,200 mAh lithium battery", "45 min runtime (low mode)", "0.6L dust capacity", "Weight: 1.2 kg"],
+            certificates: ["CE", "RoHS", "FCC"],
+            image: vacuumCleaner1,
+          },
+        }],
+      },
+      {
+        input: "Offer this to our vacuum cleaner customers in Europe",
+        output: [{
+          type: 'customerList',
+          description: "We have 12 customers that have bought vacuum cleaners from us previously.",
+          customers: [
+            { company: 'CleanHome GmbH',         contact: 'Julia Bauer',         markup: '15%' },
+            { company: 'Nordic Clean AB',         contact: 'Erik Lindqvist',      markup: '18%' },
+            { company: 'Maison Propre SAS',       contact: 'Pierre Lefèvre',      markup: '20%' },
+            { company: 'HygieneFirst B.V.',       contact: 'Sanne de Vries',      markup: '17%' },
+            { company: 'VacuPro S.R.L.',          contact: 'Marco Ferretti',      markup: '14%' },
+            { company: 'ClearSpace Ltd.',         contact: 'Oliver Bennett',      markup: '22%' },
+            { company: 'Sauber & Sauber AG',      contact: 'Heike Müller',        markup: '16%' },
+            { company: 'PureAir Iberia S.L.',     contact: 'Carlos Navarro',      markup: '19%' },
+            { company: 'BrightFloor OÜ',          contact: 'Andres Tamm',         markup: '21%' },
+            { company: 'PolishPro Sp. z o.o.',    contact: 'Agnieszka Kowalska',  markup: '13%' },
+            { company: 'Vacuform A/S',            contact: 'Mikkel Hansen',       markup: '17%' },
+            { company: 'CleanTech d.o.o.',        contact: 'Maja Novak',          markup: '15%' },
+          ],
+        }],
+      },
+      {
+        input: "Can you update mark up for customer B to 8% instead",
+        output: [{ type: 'markupSaved', description: "Done — Nordic Clean AB's markup updated to 8%." }],
+      },
+      {
+        input: "Ok send it to them",
+        output: [{
+          type: 'emailDraft',
+          subject: "New Product Offer: Cordless Stick Vacuum Cleaner VC-2200",
+          preview: "Dear [Customer Name],\n\nWe are pleased to present a new sourcing opportunity — the Cordless Stick Vacuum Cleaner VC-2200, recently added to our catalogue. Please find your customised quotation attached.\n\nBest regards,\nMarcus Lin · DeepBridge Sourcing",
+          sentTo: 12,
+          summary: [
+            { company: 'CleanHome GmbH',         contact: 'Julia Bauer',         markup: '15%', status: 'Sent' },
+            { company: 'Nordic Clean AB',         contact: 'Erik Lindqvist',      markup: '8%',  status: 'Sent' },
+            { company: 'Maison Propre SAS',       contact: 'Pierre Lefèvre',      markup: '20%', status: 'Sent' },
+            { company: 'HygieneFirst B.V.',       contact: 'Sanne de Vries',      markup: '17%', status: 'Sent' },
+            { company: 'VacuPro S.R.L.',          contact: 'Marco Ferretti',      markup: '14%', status: 'Sent' },
+            { company: 'ClearSpace Ltd.',         contact: 'Oliver Bennett',      markup: '22%', status: 'Sent' },
+            { company: 'Sauber & Sauber AG',      contact: 'Heike Müller',        markup: '16%', status: 'Sent' },
+            { company: 'PureAir Iberia S.L.',     contact: 'Carlos Navarro',      markup: '19%', status: 'Sent' },
+            { company: 'BrightFloor OÜ',          contact: 'Andres Tamm',         markup: '21%', status: 'Sent' },
+            { company: 'PolishPro Sp. z o.o.',    contact: 'Agnieszka Kowalska',  markup: '13%', status: 'Sent' },
+            { company: 'Vacuform A/S',            contact: 'Mikkel Hansen',       markup: '17%', status: 'Sent' },
+            { company: 'CleanTech d.o.o.',        contact: 'Maja Novak',          markup: '15%', status: 'Sent' },
+          ],
+        }],
+      },
     ],
     'Priya Nair': [
       { input: "Product ID: SKU-00210, Markup: 20%, Sender: priya@deep-bridge.com", output: [{ description: 'PDF quotation for SKU-00210 with 20% markup, Priya Nair branding, bilingual EN/FR format.' }], type: 'text' },
