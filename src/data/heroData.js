@@ -1,3 +1,10 @@
+import bugZapper1 from '../images/catalogGenerator/bugZapper1.jpeg';
+import bugZapper2 from '../images/catalogGenerator/bugZapper2.jpeg';
+import bugZapper3 from '../images/catalogGenerator/bugZapper3.png';
+import bugZapper4 from '../images/catalogGenerator/bugZapper4.jpeg';
+import bugZapper5 from '../images/catalogGenerator/bugZapper5.jpeg';
+import bugZapper6 from '../images/catalogGenerator/bugZapper6.jpeg';
+import bugZapper7 from '../images/catalogGenerator/bugZapper7.jpeg';
 import factoryFinder1_1_1 from '../images/heroSection/factoryFinder/Factory Finder 1-1-1.webp';
 import vacuumCleaner1 from '../images/heroSection/quotationGenerator/vaccumCleaner1.png';
 import factoryFinder1_1_2 from '../images/heroSection/factoryFinder/Factory Finder 1-1-2.webp';
@@ -229,26 +236,52 @@ const data = {
 
   'Catalog Generator': {
     'Marcus Lin': [
-      { input: "Brand logo, 8 product images, product names + descriptions", output: [{ description: 'Branded PDF catalog generated: 8 product pages, consistent layout, company logo header, downloadable file.' }], type: 'logo/images/text' },
-      { input: "Add pricing and MOQ table to existing catalog draft", output: [{ description: 'Pricing and MOQ table inserted on page 2. Unit price, MOQ, and lead time columns populated.' }], type: 'document' },
-      { input: "Generate a 1-page product flyer for SKU-00341", output: [{ description: '1-page flyer created: hero image, key specs, price point, QR code linking to product page.' }], type: 'logo/images/text' },
+      {
+        input: "Select an image",
+        output: [],
+      },
+      {
+        input: "Generates outdoors images using the selected images.",
+        output: [{
+          description: 'Generated 2 outdoor product images from your selection.',
+          products: [
+            { name: 'Bug Zapper Pro 20W',    sku: 'BZ-001', price: '$24.90', image: bugZapper1 },
+            { name: 'Bug Zapper Hanging 15W', sku: 'BZ-004', price: '$19.80', image: bugZapper4 },
+          ],
+        }],
+      },
+      {
+        input: "Generates a Box Package Design, with width: 113.0mm, length: 168.0mm, and height: 318mm",
+        output: [{
+          description: 'Box packaging design generated — 113.0 × 168.0 × 318mm, dieline layout applied, print-ready with bleed marks.',
+          products: [
+            { image: bugZapper2 },
+          ],
+        }],
+      },
+      {
+        input: "Generates more commercial indoor images that highlights that use case of this product",
+        output: [{
+          description: 'Generated 2 commercial indoor images — ambient lighting, lifestyle staging, and close-up use case angles.',
+          products: [
+            { image: bugZapper5 },
+            { image: bugZapper6 },
+          ],
+        }],
+      },
+      {
+        input: "Create a poster with the first image you generated and indoor product images and product description below",
+        output: [{
+          description: 'Poster generated — hero outdoor image combined with indoor lifestyle shots, product description and key specs laid out below. Print and digital sizes exported.',
+          products: [
+            { image: bugZapper3 },
+          ],
+        }],
+      },
     ],
-    'Priya Nair': [
-      { input: "Company branding + 6 product photos + bilingual EN/FR descriptions", output: [{ description: 'Bilingual EN/FR catalog generated with 6 product pages, brand colors applied, print-ready PDF.' }], type: 'logo/images/text' },
-      { input: "Create a seasonal lookbook layout for spring collection", output: [{ description: 'Spring lookbook created: lifestyle imagery layout, 8 pages, pastel palette, IG-ready export included.' }], type: 'logo/images/text' },
-      { input: "Add sustainability section and eco-cert badges to catalog", output: [{ description: 'Sustainability section added on page 1. OEKO-TEX and eco-cert badges placed on relevant product pages.' }], type: 'document' },
-      { input: "Export catalog as both PDF and PowerPoint", output: [{ description: 'Catalog exported: catalog_priya_v1.pdf (print-ready) and catalog_priya_v1.pptx (editable) generated.' }], type: 'document' },
-    ],
-    'Ethan Wolfe': [
-      { input: "Tech product catalog: 5 SKUs, spec sheets, compliance badges", output: [{ description: 'Tech catalog generated: 5 product pages with full spec tables, CE/FCC/RoHS badges, dark theme layout.' }], type: 'logo/images/text' },
-      { input: "Add comparison table for SKU-01204 vs SKU-01380", output: [{ description: 'Side-by-side comparison table added. Key specs, price delta, and feature highlights clearly displayed.' }], type: 'document' },
-      { input: "Generate QR codes for each product page linking to spec PDFs", output: [{ description: 'QR codes generated and placed on each of the 5 product pages. Each links to respective spec PDF.' }], type: 'logo/images/text' },
-    ],
-    'Chloe Park': [
-      { input: "Wellness brand catalog: yoga mats, bands, foam rollers + lifestyle shots", output: [{ description: 'Wellness catalog generated: 6 pages, lifestyle photography layout, pastel tones, brand font applied.' }], type: 'logo/images/text' },
-      { input: "Add customer review quotes and star ratings to product pages", output: [{ description: 'Review quotes and 5-star ratings added to 3 product pages. Testimonial section appended on last page.' }], type: 'document' },
-      { input: "Create a wholesale order form to attach at end of catalog", output: [{ description: 'Wholesale order form created: SKU, color, size, qty columns, payment terms, and signature field included.' }], type: 'document' },
-    ],
+    'Priya Nair':  [],
+    'Ethan Wolfe': [],
+    'Chloe Park':  [],
   },
 };
 

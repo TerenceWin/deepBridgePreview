@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MAX_WIDTH, NAV_HEIGHT, SECTION_PAD, SECTION_PAD_SM } from '../components/layout';
-import data, { handleFilesFollowUps } from './heroData.js'
-import { handleFile1, handleFile2, handleFile3 } from './handleFilesData.js'
-import FactoryFinderOutput, { FactoryFinderUpload } from './FactoryFinder.js'
-import QuotationGeneratorOutput, { QuotationGeneratorUpload } from './QuotationGenerator.js'
-import HandleFilesOutput, { HandleFilesUpload } from './HandleFiles.js'
-import CatalogGeneratorOutput, { CatalogGeneratorUpload } from './CatalogGenerator.js'
+import data, { handleFilesFollowUps } from '../data/heroData.js'
+import { handleFile1, handleFile2, handleFile3 } from '../data/handleFilesData.js'
+import FactoryFinderOutput, { FactoryFinderUpload } from './heroTab/FactoryFinder.js'
+import QuotationGeneratorOutput, { QuotationGeneratorUpload } from './heroTab/QuotationGenerator.js'
+import HandleFilesOutput, { HandleFilesUpload } from './heroTab/HandleFiles.js'
+import CatalogGeneratorOutput, { CatalogGeneratorUpload } from './heroTab/CatalogGenerator.js'
 import testProduct1 from '../images/heroSection/testProduct1.jpeg';
 import testProduct2 from '../images/heroSection/testProduct2.jpeg';
 import testProduct3 from '../images/heroSection/testProduct3.webp';
@@ -16,6 +16,12 @@ import testProduct5webp from '../images/heroSection/testProduct5.webp';
 import handleFiles1 from '../images/heroSection/handleFiles/handleFiles1.pptx';
 import handleFiles2 from '../images/heroSection/handleFiles/handleFiles2.pptx';
 import handleFiles3 from '../images/heroSection/handleFiles/handleFiles3.pptx';
+import bugZapper9  from '../images/catalogGenerator/bugZapper9.jpeg';
+import bugZapper10 from '../images/catalogGenerator/bugZapper10.jpeg';
+import bugZapper11 from '../images/catalogGenerator/bugZapper11.jpeg';
+import bugZapper12 from '../images/catalogGenerator/bugZapper12.jpeg';
+import bugZapper13 from '../images/catalogGenerator/bugZapper13.jpeg';
+import bugZapper14 from '../images/catalogGenerator/bugZapper14.jpeg';
 
 export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
     const tabs = ["Factory Finder", "Generate Quotation", "Handle Files", "Catalog Generator"];
@@ -52,7 +58,9 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
     const [processedFile, setProcessedFile] = useState(null);
     const [processedFilesSet, setProcessedFilesSet] = useState(new Set());
     const [selectedProductImage, setSelectedProductImage] = useState(null);
+    const [selectedCatalogImages, setSelectedCatalogImages] = useState([]);
     const uploadImages = [testProduct1, testProduct2, testProduct3, testProduct4, testProduct5, testProduct5webp];
+    const catalogUploadImages = [bugZapper9, bugZapper10, bugZapper11, bugZapper12, bugZapper13, bugZapper14];
     const handleFilesItems = [
       { file: handleFiles1, name: 'handleFiles1.pptx' },
       { file: handleFiles2, name: 'handleFiles2.pptx' },
@@ -129,6 +137,20 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
     }, []);
 
     useEffect(() => {
+      if (chatContainerRef.current)
+        chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }, [messages]);
+
+    useEffect(() => {
+      if (!isAiTyping) return;
+      const id = setInterval(() => {
+        if (chatContainerRef.current)
+          chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+      }, 100);
+      return () => clearInterval(id);
+    }, [isAiTyping]);
+
+    useEffect(() => {
       const handleClickOutside = (e) => {
         if (tabDropdownOpen && tabDropdownRef.current && !tabDropdownRef.current.contains(e.target)) {
           setTabDropdownClosing(true);
@@ -198,7 +220,8 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
             ? { role: 'ai', output, tab: currentTab, showThought: true, animate: true, id: thinkingId }
             : m
         ));
-        startAiTyping(output, isLast ? handleModal : undefined);
+        const isEmailDraft = output[0]?.type === 'emailDraft';
+        startAiTyping(output, (isLast && !isEmailDraft) ? handleModal : undefined);
         setTimeout(() => { if (chatContainerRef.current) chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight; }, 50);
       }, 1000);
     };
@@ -210,6 +233,14 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
     };
 
     const handleProcessFiles = () => {
+      if (currentTab === tabs[3]) {
+        if (selectedCatalogImages.length === 0) return;
+        setUserStages(prev => ({ ...prev, [selectedUser.name]: (prev[selectedUser.name] ?? 0) + 1 }));
+        setUploadDropdownClosing(true);
+        setTimeout(() => { setUploadDropdownOpen(false); setUploadDropdownClosing(false); }, 250);
+        clearInterval(tabIntervalRef.current);
+        return;
+      }
       if (!selectedHandleFile) return;
       if (processedFilesSet.has(selectedHandleFile)) return;
       const fileData = fileDataMap[selectedHandleFile];
@@ -272,7 +303,7 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
 
     const renderAIOutput = (output, tab, animate = false) => {
       if (tab === 'Factory Finder')       return <FactoryFinderOutput output={output} animate={animate} />;
-      if (tab === 'Generate Quotation')   return <QuotationGeneratorOutput output={output} animate={animate} />;
+      if (tab === 'Generate Quotation')   return <QuotationGeneratorOutput output={output} animate={animate} onEmailSent={handleModal} />;
       if (tab === 'Handle Files')         return <HandleFilesOutput output={output} users={users} userStages={userStages} onSave={(msg) => { setSaveToast(msg); setTimeout(() => setSaveToast(null), 3500); }} animate={animate} />;
       if (tab === 'Catalog Generator')    return <CatalogGeneratorOutput output={output} animate={animate} />;
     };
@@ -354,6 +385,11 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
                                     </div>
                                   )}
                                   {renderAIOutput(msg.output, msg.tab, msg.animate)}
+                                  <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 8 }}>
+                                    <button style={{ fontSize: 10, fontWeight: 600, color: '#6b7280', background: 'white', border: '1px solid #e5e7eb', borderRadius: 5, padding: '3px 10px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>
+                                      <i className="fas fa-pen" style={{ fontSize: 9 }} /> Edit
+                                    </button>
+                                  </div>
                                 </>
                               )}
                             </div>
@@ -521,12 +557,17 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
                             {currentTab === tabs[0] && <FactoryFinderUpload uploadImages={uploadImages} selectedProductImage={selectedProductImage} setSelectedProductImage={setSelectedProductImage} />}
                             {currentTab === tabs[1] && <QuotationGeneratorUpload />}
                             {currentTab === tabs[2] && <HandleFilesUpload items={handleFilesItems} selectedFile={selectedHandleFile} setSelectedFile={setSelectedHandleFile} processedSet={processedFilesSet} />}
-                            {currentTab === tabs[3] && <CatalogGeneratorUpload />}
-                            <button
-                              onClick={handleProcessFiles}
-                              style={{ width: '100%', padding: '7px 0', fontSize: 12, fontWeight: 600, background: selectedHandleFile ? '#1a2e44' : '#9ca3af', color: 'white', border: 'none', borderRadius: 6, cursor: selectedHandleFile ? 'pointer' : 'not-allowed', fontFamily: 'inherit' }}>
-                              Process Files
-                            </button>
+                            {currentTab === tabs[3] && <CatalogGeneratorUpload uploadImages={catalogUploadImages} selectedImages={selectedCatalogImages} setSelectedImages={setSelectedCatalogImages} />}
+                            {(() => {
+                              const canProcess = currentTab === tabs[3] ? selectedCatalogImages.length > 0 : !!selectedHandleFile;
+                              return (
+                                <button
+                                  onClick={handleProcessFiles}
+                                  style={{ width: '100%', padding: '7px 0', fontSize: 12, fontWeight: 600, background: canProcess ? '#1a2e44' : '#9ca3af', color: 'white', border: 'none', borderRadius: 6, cursor: canProcess ? 'pointer' : 'not-allowed', fontFamily: 'inherit' }}>
+                                  Process Files
+                                </button>
+                              );
+                            })()}
                           </div>
                         )}
                       </div>

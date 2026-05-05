@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import TypingText, { DelayedVisible } from '../components/TypingText';
+import TypingText, { DelayedVisible } from '../../components/TypingText';
 
 export function QuotationGeneratorUpload() {
   return (
@@ -112,8 +112,21 @@ function CustomerListCard({ item, animate }) {
   );
 }
 
-function EmailDraftCard({ item, animate }) {
+const previewEmails = ['julia.bauer@cleanhome.de', 'erik.lindqvist@nordicclean.se', 'pierre.lefevre@maisonpropre.fr'];
+const checks = ['Recipient added', 'Subject is present', 'Message body is present', 'Sender account selected'];
+
+function EmailDraftCard({ item, animate, onSend }) {
   const [sent, setSent] = useState(false);
+
+  const handleSendEmail = () => {
+    setSent(true);
+    if (onSend) {
+      const summaryDuration = item.summary.reduce(
+        (acc, r) => acc + (r.company.length + r.contact.length + r.markup.length) * 5, 0
+      ) + 400;
+      setTimeout(onSend, summaryDuration);
+    }
+  };
 
   if (sent) {
     let runningDelay = 0;
@@ -156,34 +169,147 @@ function EmailDraftCard({ item, animate }) {
     );
   }
 
+  const extraCount = item.sentTo - previewEmails.length;
+  const subjectDelay = 0;
+  const bodyDelay = item.subject.length * 5;
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-      <div style={{ border: '1px solid #e5e7eb', borderRadius: 8, overflow: 'hidden', background: 'white' }}>
-        <div style={{ padding: '8px 12px', background: '#f9fafb', borderBottom: '1px solid #e5e7eb', display: 'flex', alignItems: 'center', gap: 6 }}>
-          <i className="fas fa-envelope" style={{ fontSize: 11, color: '#6b7280' }} />
-          <span style={{ fontSize: 11, fontWeight: 600, color: '#111827' }}>
-            <TypingText text={item.subject} animate={animate} delay={0} />
-          </span>
-        </div>
-        <div style={{ padding: '10px 12px' }}>
-          <p style={{ margin: '0 0 6px', fontSize: 10, color: '#9ca3af' }}>
-            To: <TypingText text={`${item.sentTo} customers`} animate={animate} delay={item.subject.length * 5} />
-          </p>
-          <p style={{ margin: 0, fontSize: 11, color: '#374151', lineHeight: 1.6, whiteSpace: 'pre-line' }}>
-            <TypingText text={item.preview} animate={animate} delay={(item.subject.length + String(item.sentTo).length) * 5} />
-          </p>
+    <div style={{ border: '1px solid #e5e7eb', borderRadius: 10, overflow: 'hidden', background: 'white', fontSize: 11 }}>
+
+      {/* Header */}
+      <div style={{ background: '#2563eb', color: 'white', padding: '8px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <i className="fas fa-envelope" style={{ fontSize: 11 }} />
+            <span style={{ fontWeight: 700, fontSize: 12, letterSpacing: '0.1px' }}>Drafted Email</span>
+          </div>
         </div>
       </div>
-      <button
-        onClick={() => setSent(true)}
-        style={{ alignSelf: 'flex-end', padding: '7px 18px', fontSize: 11, fontWeight: 700, background: '#1a2e44', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
-        <i className="fas fa-paper-plane" style={{ fontSize: 10 }} /> Send to All
-      </button>
+
+      {/* To field */}
+      <div style={{ padding: '8px 14px', borderBottom: '1px solid #f3f4f6' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 6 }}>
+          <i className="fas fa-envelope" style={{ fontSize: 9, color: '#6b7280' }} />
+          <span style={{ fontSize: 10, fontWeight: 700, color: '#374151' }}>To</span>
+        </div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, alignItems: 'center' }}>
+          {previewEmails.map((email, i) => (
+            <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: 5, background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 20, padding: '2px 8px', fontSize: 10, color: '#1d4ed8' }}>
+              {email}
+              <i className="fas fa-times-circle" style={{ fontSize: 9, color: '#93c5fd', cursor: 'pointer' }} />
+            </span>
+          ))}
+          {extraCount > 0 && (
+            <span style={{ fontSize: 10, color: '#6b7280', fontStyle: 'italic' }}>+{extraCount} more</span>
+          )}
+        </div>
+      </div>
+
+      {/* Add CC row */}
+      <div style={{ padding: '5px 14px', borderBottom: '1px solid #f3f4f6', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <button style={{ fontSize: 10, color: '#6b7280', background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', gap: 4 }}>
+          <i className="fas fa-plus" style={{ fontSize: 9 }} /> Add CC
+        </button>
+        <span style={{ fontSize: 9, color: '#9ca3af' }}>Optional recipient fields</span>
+      </div>
+
+      {/* From + Subject */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderBottom: '1px solid #f3f4f6' }}>
+        <div style={{ padding: '7px 14px', borderRight: '1px solid #f3f4f6' }}>
+          <div style={{ fontSize: 9, fontWeight: 700, color: '#6b7280', marginBottom: 3, display: 'flex', alignItems: 'center', gap: 4 }}>
+            <i className="fas fa-user" /> From
+          </div>
+          <span style={{ fontSize: 10, color: '#374151' }}>sourcing@deepbridge.com (Private) — Primary</span>
+        </div>
+        <div style={{ padding: '7px 14px' }}>
+          <div style={{ fontSize: 9, fontWeight: 700, color: '#6b7280', marginBottom: 3, display: 'flex', alignItems: 'center', gap: 4 }}>
+            <i className="fas fa-tag" /> Subject
+          </div>
+          <span style={{ fontSize: 10, color: '#374151' }}>
+            <TypingText text={item.subject} animate={animate} delay={subjectDelay} />
+          </span>
+        </div>
+      </div>
+
+      {/* Message header */}
+      <div style={{ padding: '6px 14px', borderBottom: '1px solid #f3f4f6', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+          <i className="fas fa-file-alt" style={{ fontSize: 10, color: '#6b7280' }} />
+          <span style={{ fontSize: 11, fontWeight: 700, color: '#111827' }}>Message</span>
+        </div>
+        <button style={{ fontSize: 10, color: '#374151', background: 'white', border: '1px solid #d1d5db', borderRadius: 5, padding: '2px 9px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>
+          <i className="fas fa-eye" style={{ fontSize: 9 }} /> Preview
+        </button>
+      </div>
+
+      {/* Toolbar */}
+      <div style={{ padding: '5px 14px', borderBottom: '1px solid #f3f4f6', display: 'flex', alignItems: 'center', gap: 5, background: '#f9fafb', flexWrap: 'wrap' }}>
+        {[['B', 700, false, false], ['I', 400, true, false], ['U', 400, false, true]].map(([lbl, fw, italic, underline]) => (
+          <button key={lbl} style={{ width: 22, height: 22, fontSize: 11, fontWeight: fw, fontStyle: italic ? 'italic' : 'normal', textDecoration: underline ? 'underline' : 'none', background: 'white', border: '1px solid #e5e7eb', borderRadius: 3, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#374151' }}>{lbl}</button>
+        ))}
+        <div style={{ height: 14, width: 1, background: '#e5e7eb' }} />
+        <span style={{ fontSize: 9, color: '#6b7280' }}>Size</span>
+        <div style={{ border: '1px solid #e5e7eb', borderRadius: 3, padding: '1px 7px', fontSize: 10, background: 'white', color: '#374151' }}>14</div>
+        <div style={{ height: 14, width: 1, background: '#e5e7eb' }} />
+        <span style={{ fontSize: 9, color: '#6b7280' }}>Color</span>
+        <div style={{ width: 14, height: 14, background: '#111827', borderRadius: 3, border: '1px solid #d1d5db', cursor: 'pointer' }} />
+        <div style={{ height: 14, width: 1, background: '#e5e7eb' }} />
+        <i className="fas fa-image" style={{ fontSize: 12, color: '#6b7280', cursor: 'pointer' }} />
+        <div style={{ height: 14, width: 1, background: '#e5e7eb' }} />
+        <button style={{ fontSize: 9, color: '#2563eb', background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 4, padding: '2px 7px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 3 }}>
+          <i className="fas fa-link" style={{ fontSize: 8 }} /> Link
+        </button>
+        <button style={{ fontSize: 9, color: '#2563eb', background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 4, padding: '2px 7px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 3 }}>
+          <i className="fas fa-image" style={{ fontSize: 8 }} /> Image
+        </button>
+      </div>
+
+      {/* Message body */}
+      <div style={{ padding: '10px 14px' }}>
+        <p style={{ margin: 0, fontSize: 11, color: '#374151', lineHeight: 1.8, whiteSpace: 'pre-line' }}>
+          <TypingText text={item.preview} animate={animate} delay={bodyDelay} />
+        </p>
+      </div>
+
+      {/* Loaded saved draft status */}
+      <div style={{ padding: '4px 14px', background: '#f9fafb', borderTop: '1px solid #f3f4f6' }}>
+        <span style={{ fontSize: 9, color: '#16a34a', display: 'flex', alignItems: 'center', gap: 4 }}>
+          <i className="fas fa-circle" style={{ fontSize: 6 }} /> Loaded saved draft
+        </span>
+      </div>
+
+      {/* Checklist */}
+      <div style={{ padding: '8px 14px', borderTop: '1px solid #f3f4f6', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px 8px' }}>
+        {checks.map((c, i) => (
+          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: '#374151' }}>
+            <i className="fas fa-check-circle" style={{ color: '#22c55e', fontSize: 11 }} />
+            {c}
+          </div>
+        ))}
+      </div>
+
+      {/* Bottom actions */}
+      <div style={{ padding: '8px 14px', borderTop: '1px solid #e5e7eb', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <button style={{ fontSize: 11, fontWeight: 600, color: '#dc2626', background: 'white', border: '1px solid #fca5a5', borderRadius: 6, padding: '5px 13px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5 }}>
+          <i className="fas fa-trash-alt" style={{ fontSize: 9 }} /> Discard
+        </button>
+        <div style={{ display: 'flex', gap: 6 }}>
+          <button style={{ fontSize: 11, fontWeight: 600, color: '#374151', background: 'white', border: '1px solid #d1d5db', borderRadius: 6, padding: '5px 13px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5 }}>
+            <i className="fas fa-save" style={{ fontSize: 9 }} /> Save to Draft
+          </button>
+          <button
+            onClick={handleSendEmail}
+            style={{ fontSize: 11, fontWeight: 700, color: 'white', background: '#2563eb', border: 'none', borderRadius: 6, padding: '5px 14px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5 }}>
+            <i className="fas fa-paper-plane" style={{ fontSize: 9 }} /> Send Email
+          </button>
+        </div>
+      </div>
+
     </div>
   );
 }
 
-export default function QuotationGeneratorOutput({ output, animate = false }) {
+export default function QuotationGeneratorOutput({ output, animate = false, onEmailSent }) {
   if (!output || output.length === 0)
     return <span style={{ color: '#6b7280', fontSize: 12 }}>No output available yet.</span>;
 
@@ -204,7 +330,7 @@ export default function QuotationGeneratorOutput({ output, animate = false }) {
     );
 
   if (item?.type === 'emailDraft')
-    return <EmailDraftCard item={item} animate={animate} />;
+    return <EmailDraftCard item={item} animate={animate} onSend={onEmailSent} />;
 
   // existing description + lineItems flow (used by Priya, Ethan, Chloe)
   const description = item?.description;

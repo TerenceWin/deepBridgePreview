@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import TypingText from '../components/TypingText';
-import handleFilesPicture1 from '../images/heroSection/handleFiles/handleFilesPicture1.png';
-import handleFilesPicture2 from '../images/heroSection/handleFiles/handleFilesPicture2.png';
-import handleFilesPicture3 from '../images/heroSection/handleFiles/handleFilesPicture3.png';
+import TypingText from '../../components/TypingText';
+import handleFilesPicture1 from '../../images/heroSection/handleFiles/handleFilesPicture1.png';
+import handleFilesPicture2 from '../../images/heroSection/handleFiles/handleFilesPicture2.png';
+import handleFilesPicture3 from '../../images/heroSection/handleFiles/handleFilesPicture3.png';
 
 export function HandleFilesUpload({ items, selectedFile, setSelectedFile, processedSet }) {
   return (

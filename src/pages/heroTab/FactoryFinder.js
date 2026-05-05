@@ -1,5 +1,5 @@
 import React from 'react';
-import TypingText, { DelayedVisible } from '../components/TypingText';
+import TypingText, { DelayedVisible } from '../../components/TypingText';
 
 export function FactoryFinderUpload({ uploadImages, selectedProductImage, setSelectedProductImage }) {
   return (
