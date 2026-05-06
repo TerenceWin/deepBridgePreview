@@ -1,24 +1,11 @@
 import React from 'react';
 import TypingText, { DelayedVisible } from '../../components/TypingText';
 
-export function FactoryFinderUpload({ uploadImages, selectedProductImage, setSelectedProductImage }) {
+export function FactoryFinderUpload() {
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 6, marginBottom: 10 }}>
-      {uploadImages.map((src, i) => {
-        const isSelected = selectedProductImage === i;
-        return (
-          <div key={i}
-            onClick={() => setSelectedProductImage(isSelected ? null : i)}
-            style={{ borderRadius: 6, overflow: 'hidden', aspectRatio: '1', cursor: 'pointer', boxSizing: 'border-box',
-              border: isSelected ? '2px solid #1fc9ed' : '2px solid #e5e7eb',
-              boxShadow: isSelected ? '0 0 0 3px rgba(31,201,237,0.2)' : 'none',
-              transition: 'border 0.15s, box-shadow 0.15s',
-            }}>
-            <img src={src} alt={`product ${i + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-          </div>
-        );
-      })}
-    </div>
+    <p style={{ margin: '0 0 10px', fontSize: 11, color: '#6b7280', lineHeight: 1.5 }}>
+      No file required — describe the product you're sourcing and our AI will find matching factories and suppliers for you.
+    </p>
   );
 }
 
@@ -58,9 +45,14 @@ export default function FactoryFinderOutput({ output, animate = false }) {
               <TypingText text={desc} animate={animate} delay={d} />
             </p>
             <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-              {images.map((img, i) => (
-                <img key={i} src={img} alt="" style={{ width: 52, height: 52, objectFit: 'cover', borderRadius: 6, border: '1px solid #e5e7eb' }} />
-              ))}
+              {images.map((img, i) => {
+                const imgDelay = d + (name.length + desc.length + url.length) * 5 + i * 100;
+                return (
+                  <DelayedVisible key={i} delay={imgDelay} animate={animate} style={{ borderRadius: 6, overflow: 'hidden', flexShrink: 0 }}>
+                    <img src={img} alt="" style={{ width: 52, height: 52, objectFit: 'cover', display: 'block' }} />
+                  </DelayedVisible>
+                );
+              })}
             </div>
             {url && (
               <a href={url} target="_blank" rel="noreferrer" style={{ fontSize: 10, color: '#2563eb', wordBreak: 'break-all' }}>

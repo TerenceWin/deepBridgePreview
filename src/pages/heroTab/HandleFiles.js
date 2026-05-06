@@ -42,7 +42,7 @@ function FieldRow({ label, value, animate = false }) {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 2, marginBottom: 6 }}>
       <span style={{ fontSize: 10, fontWeight: 600, color: '#6b7280' }}>{label}</span>
       <span style={{ fontSize: 11, color: '#374151', lineHeight: 1.4 }}>
-        {animate ? <TypingText text={String(displayValue)} animate={animate} /> : displayValue}
+        {animate ? <TypingText text={String(displayValue)} animate={animate} speed={30} /> : displayValue}
       </span>
     </div>
   );
@@ -82,28 +82,24 @@ function FileDetailCard({ fileData, onSave, users = [], userStages = {}, animate
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 {users.map((u, i) => {
                   const initials = u.name.split(' ').map(w => w[0]).join('');
-                  const stage = userStages[u.name] ?? 1;
-                  const hasEngaged = stage > 1;
                   return (
-                    <div key={i} title={`${u.name} — ${hasEngaged ? 'sent follow-up' : 'no activity yet'}`}
+                    <div key={i} title={u.name}
                       style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3 }}>
                       <div style={{ position: 'relative', width: 28, height: 28 }}>
-                        <div style={{ width: 28, height: 28, borderRadius: '50%', background: hasEngaged ? u.color + '22' : '#f3f4f6', border: `2px solid ${hasEngaged ? u.color : '#d1d5db'}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                          <span style={{ fontSize: 9, fontWeight: 700, color: hasEngaged ? u.color : '#9ca3af' }}>{initials}</span>
+                        <div style={{ width: 28, height: 28, borderRadius: '50%', background: u.color + '22', border: `2px solid ${u.color}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <span style={{ fontSize: 9, fontWeight: 700, color: u.color }}>{initials}</span>
                         </div>
-                        {hasEngaged && (
-                          <div style={{ position: 'absolute', bottom: -2, right: -2, width: 10, height: 10, borderRadius: '50%', background: '#22c55e', border: '1.5px solid white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <i className="fas fa-check" style={{ fontSize: 5, color: 'white' }} />
-                          </div>
-                        )}
+                        <div style={{ position: 'absolute', bottom: -2, right: -2, width: 10, height: 10, borderRadius: '50%', background: '#22c55e', border: '1.5px solid white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <i className="fas fa-check" style={{ fontSize: 5, color: 'white' }} />
+                        </div>
                       </div>
-                      <span style={{ fontSize: 8, color: hasEngaged ? u.color : '#9ca3af', fontWeight: hasEngaged ? 600 : 400 }}>{initials}</span>
+                      <span style={{ fontSize: 8, color: u.color, fontWeight: 600 }}>{initials}</span>
                     </div>
                   );
                 })}
               </div>
               <span style={{ fontSize: 9, color: '#9ca3af' }}>
-                {users.filter(u => (userStages[u.name] ?? 1) > 1).length} of {users.length} users have engaged
+                {users.length} of {users.length} users have been shared
               </span>
             </div>
           )}
@@ -122,7 +118,7 @@ function FileDetailCard({ fileData, onSave, users = [], userStages = {}, animate
               <span style={{ fontSize: 10, fontWeight: 600, color: '#6b7280' }}>Features</span>
               <div style={{ marginTop: 2 }}>
                 {(fileData.features || []).map((f, i) => (
-                  <div key={i} style={{ fontSize: 11, color: '#374151', lineHeight: 1.5 }}>— <TypingText text={f} animate={animate} /></div>
+                  <div key={i} style={{ fontSize: 11, color: '#374151', lineHeight: 1.5 }}>— <TypingText text={f} animate={animate} speed={30} /></div>
                 ))}
               </div>
             </div>
@@ -130,7 +126,7 @@ function FileDetailCard({ fileData, onSave, users = [], userStages = {}, animate
               <span style={{ fontSize: 10, fontWeight: 600, color: '#6b7280' }}>Specifications</span>
               <div style={{ marginTop: 2 }}>
                 {(fileData.specificationsList || []).map((s, i) => (
-                  <div key={i} style={{ fontSize: 11, color: '#374151', lineHeight: 1.5 }}>— <TypingText text={s} animate={animate} /></div>
+                  <div key={i} style={{ fontSize: 11, color: '#374151', lineHeight: 1.5 }}>— <TypingText text={s} animate={animate} speed={30} /></div>
                 ))}
               </div>
             </div>

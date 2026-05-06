@@ -20,13 +20,13 @@ export function CatalogGeneratorUpload({ uploadImages = [], selectedImages = [],
               onClick={() => toggle(i)}
               style={{
                 borderRadius: 6, overflow: 'hidden', aspectRatio: '1', cursor: 'pointer', boxSizing: 'border-box',
-                border: isSelected ? '2px solid #1fc9ed' : '2px solid #e5e7eb',
-                boxShadow: isSelected ? '0 0 0 3px rgba(31,201,237,0.2)' : 'none',
+                border: isSelected ? '2px solid #139568' : '2px solid #e5e7eb',
+                boxShadow: isSelected ? '0 0 0 3px rgba(19,149,104,0.2)' : 'none',
                 transition: 'border 0.15s, box-shadow 0.15s', position: 'relative',
               }}>
               <img src={src} alt={`product ${i + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               {isSelected && (
-                <div style={{ position: 'absolute', top: 4, right: 4, width: 16, height: 16, borderRadius: '50%', background: '#1fc9ed', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ position: 'absolute', top: 4, right: 4, width: 16, height: 16, borderRadius: '50%', background: '#139568', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <i className="fas fa-check" style={{ fontSize: 8, color: 'white' }} />
                 </div>
               )}
@@ -35,7 +35,7 @@ export function CatalogGeneratorUpload({ uploadImages = [], selectedImages = [],
         })}
       </div>
       {selectedImages.length > 0 && (
-        <p style={{ margin: '6px 0 0', fontSize: 10, color: '#1fc9ed', fontWeight: 600 }}>
+        <p style={{ margin: '6px 0 0', fontSize: 10, color: '#139568', fontWeight: 600 }}>
           {selectedImages.length} image{selectedImages.length > 1 ? 's' : ''} selected
         </p>
       )}
@@ -53,18 +53,27 @@ export default function CatalogGeneratorOutput({ output, animate = false }) {
   if (description && products.length === 0)
     return <p style={{ margin: 0, fontSize: 12, color: '#374151' }}><TypingText text={description} animate={animate} /></p>;
 
-  const productDelays = products.map((_, i) => animate ? (description?.length ?? 0) * 5 + i * 300 : 0);
+  const descDelay = animate ? (description?.length ?? 0) * 5 : 0;
+  const fullItems  = products.filter(p => p.layout === 'full');
+  const gridItems  = products.filter(p => p.layout !== 'full');
+
+  let runningDelay = descDelay;
+  const fullDelays = fullItems.map(() => { const d = runningDelay; runningDelay += 300; return d; });
+  const gridDelays = gridItems.map(() => { const d = runningDelay; runningDelay += 300; return d; });
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
       {description && <p style={{ margin: 0, fontSize: 12, color: '#374151' }}><TypingText text={description} animate={animate} delay={0} /></p>}
-      {products.length > 0 && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-          {products.map((product, i) => (
-            <DelayedVisible key={i} delay={productDelays[i]} animate={animate} style={{ borderRadius: 8, overflow: 'hidden', border: '1px solid #e5e7eb' }}>
-              {product.image && (
-                <img src={product.image} alt="" style={{ width: '100%', height: 700, objectFit: 'cover', display: 'block' }} />
-              )}
+      {fullItems.map((product, i) => (
+        <DelayedVisible key={`full-${i}`} delay={fullDelays[i]} animate={animate} style={{ borderRadius: 8, overflow: 'hidden', border: '1px solid #e5e7eb', background: '#f3f4f6', padding: '10px'}}>
+          <img src={product.image} alt="" style={{ width: '100%', height: 350, objectFit: 'contain', display: 'block' }} />
+        </DelayedVisible>
+      ))}
+      {gridItems.length > 0 && (
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
+          {gridItems.map((product, i) => (
+            <DelayedVisible key={`grid-${i}`} delay={gridDelays[i]} animate={animate} style={{ borderRadius: 8, overflow: 'hidden', border: '1px solid #e5e7eb' }}>
+              <img src={product.image} alt="" style={{ width: '100%', height: 350, objectFit: 'cover', display: 'block' }} />
             </DelayedVisible>
           ))}
         </div>

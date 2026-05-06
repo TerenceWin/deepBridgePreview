@@ -7,12 +7,6 @@ import FactoryFinderOutput, { FactoryFinderUpload } from './heroTab/FactoryFinde
 import QuotationGeneratorOutput, { QuotationGeneratorUpload } from './heroTab/QuotationGenerator.js'
 import HandleFilesOutput, { HandleFilesUpload } from './heroTab/HandleFiles.js'
 import CatalogGeneratorOutput, { CatalogGeneratorUpload } from './heroTab/CatalogGenerator.js'
-import testProduct1 from '../images/heroSection/testProduct1.jpeg';
-import testProduct2 from '../images/heroSection/testProduct2.jpeg';
-import testProduct3 from '../images/heroSection/testProduct3.webp';
-import testProduct4 from '../images/heroSection/testProduct4.png';
-import testProduct5 from '../images/heroSection/testProduct5.jpg';
-import testProduct5webp from '../images/heroSection/testProduct5.webp';
 import handleFiles1 from '../images/heroSection/handleFiles/handleFiles1.pptx';
 import handleFiles2 from '../images/heroSection/handleFiles/handleFiles2.pptx';
 import handleFiles3 from '../images/heroSection/handleFiles/handleFiles3.pptx';
@@ -31,35 +25,32 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
     const [previewHovered, setPreviewHovered] = useState(false);
     const tabIntervalRef = useRef(null);
 
-    const [isFocused, setIsFocused] = useState(false);
     const [typingText, setTypingText] = useState('');
     const typingIntervalRef = useRef(null);
+    const inputRef = useRef(null);
     const [userStages, setUserStages] = useState({});
-    const currentStageRef = useRef(null);
     const [messages, setMessages] = useState([]);
     const chatContainerRef = useRef(null);
-    
+
     const messageIdCounter = useRef(0);
     const [isAiTyping, setIsAiTyping] = useState(false);
     const aiTypingTimerRef = useRef(null);
     const [saveToast, setSaveToast] = useState(null);
-    const [showClickMe, setShowClickMe] = useState(false);
     const [tabDropdownOpen, setTabDropdownOpen] = useState(false);
     const [tabDropdownClosing, setTabDropdownClosing] = useState(false);
     const tabDropdownRef = useRef(null);
-    const [selectedUser, setSelectedUser] = useState({ name: 'Marcus Lin', color: '#1fc9ed' });
-    const [userDropdownOpen, setUserDropdownOpen] = useState(false);
-    const [userDropdownClosing, setUserDropdownClosing] = useState(false);
-    const userDropdownRef = useRef(null);
+    const selectedUser = { name: 'Marcus Lin', color: '#1fc9ed' };
     const [uploadDropdownOpen, setUploadDropdownOpen] = useState(false);
     const [uploadDropdownClosing, setUploadDropdownClosing] = useState(false);
     const uploadDropdownRef = useRef(null);
     const [selectedHandleFile, setSelectedHandleFile] = useState(null);
     const [processedFile, setProcessedFile] = useState(null);
     const [processedFilesSet, setProcessedFilesSet] = useState(new Set());
-    const [selectedProductImage, setSelectedProductImage] = useState(null);
     const [selectedCatalogImages, setSelectedCatalogImages] = useState([]);
-    const uploadImages = [testProduct1, testProduct2, testProduct3, testProduct4, testProduct5, testProduct5webp];
+    const [stagedCatalogImages, setStagedCatalogImages] = useState([]);
+    const [catalogProcessed, setCatalogProcessed] = useState(false);
+    const [stagedHandleFile, setStagedHandleFile] = useState(null);
+    const [demoTriggered, setDemoTriggered] = useState(false);
     const catalogUploadImages = [bugZapper9, bugZapper10, bugZapper11, bugZapper12, bugZapper13, bugZapper14];
     const handleFilesItems = [
       { file: handleFiles1, name: 'handleFiles1.pptx' },
@@ -80,16 +71,30 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
       setMessages([]);
       setProcessedFile(null);
       setProcessedFilesSet(new Set());
+      setStagedCatalogImages([]);
+      setCatalogProcessed(false);
+      setStagedHandleFile(null);
+      setDemoTriggered(false);
+      setIsAiTyping(false);
+      clearTimeout(aiTypingTimerRef.current);
     }, [currentTab]);
 
-    //Typing Animation
+    //Typing Animation — only starts after AI response animation completes
     useEffect(() => {
       clearInterval(typingIntervalRef.current);
       setTypingText('');
+      if (isAiTyping) return;
       const stage = userStages[selectedUser.name] ?? 0;
-      const tabText = (currentTab === 'Handle Files' && stage > 0 && processedFile)
-        ? handleFilesFollowUps[processedFile]?.[selectedUser.name]?.[stage - 1]?.input
-        : data[currentTab]?.[selectedUser.name]?.[stage]?.input;
+      let tabText;
+      if (currentTab === tabs[3] && catalogProcessed) {
+        tabText = data[currentTab]?.[selectedUser.name]?.[1]?.input;
+      } else if (currentTab === tabs[2] && stagedHandleFile) {
+        tabText = "Generate a Document Detail file for this file";
+      } else if (currentTab === 'Handle Files' && stage > 0 && processedFile) {
+        tabText = handleFilesFollowUps[processedFile]?.[selectedUser.name]?.[stage - 1]?.input;
+      } else {
+        tabText = data[currentTab]?.[selectedUser.name]?.[stage]?.input;
+      }
       if (!tabText) return;
       let i = 0;
       typingIntervalRef.current = setInterval(() => {
@@ -98,7 +103,7 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
         if (i === tabText.length) clearInterval(typingIntervalRef.current);
       }, 15);
       return () => clearInterval(typingIntervalRef.current);
-    }, [currentTab, selectedUser.name, userStages, processedFile]);
+    }, [currentTab, selectedUser.name, userStages, processedFile, catalogProcessed, stagedHandleFile, isAiTyping]);
 
     const handleTabIcon = (tab) => {
       if (tab === tabs[0]) return "fas fa-industry";
@@ -132,14 +137,13 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
     }, []);
 
     useEffect(() => {
-      const t = setTimeout(() => setShowClickMe(true), 3000);
-      return () => clearTimeout(t);
-    }, []);
-
-    useEffect(() => {
       if (chatContainerRef.current)
         chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }, [messages]);
+
+    useEffect(() => {
+      if (inputRef.current) inputRef.current.scrollLeft = inputRef.current.scrollWidth;
+    }, [typingText]);
 
     useEffect(() => {
       if (!isAiTyping) return;
@@ -163,18 +167,6 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
 
     useEffect(() => {
       const handleClickOutside = (e) => {
-        if (userDropdownOpen && userDropdownRef.current && !userDropdownRef.current.contains(e.target)) {
-          setUserDropdownClosing(true);
-          setTimeout(() => { setUserDropdownOpen(false); setUserDropdownClosing(false); }, 250);
-          startTabInterval();
-        }
-      };
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, [userDropdownOpen]);
-
-    useEffect(() => {
-      const handleClickOutside = (e) => {
         if (uploadDropdownOpen && uploadDropdownRef.current && !uploadDropdownRef.current.contains(e.target)) {
           setUploadDropdownClosing(true);
           setTimeout(() => { setUploadDropdownOpen(false); setUploadDropdownClosing(false); }, 250);
@@ -193,17 +185,61 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
       if (!typingText.trim()) return;
       clearInterval(tabIntervalRef.current);
       clearInterval(typingIntervalRef.current);
+      setIsAiTyping(true);
       const stage = userStages[selectedUser.name] ?? 0;
       let output;
       let isLast;
-      if (currentTab === 'Handle Files' && stage > 0 && processedFile) {
+      let nextStage;
+      if (currentTab === tabs[2] && stagedHandleFile) {
+        const fileNameToProcess = stagedHandleFile;
+        const fileData = fileDataMap[fileNameToProcess];
+        const thinkingId = ++messageIdCounter.current;
+        setMessages(prev => [...prev,
+          { role: 'user', text: typingText, user: selectedUser, fileUpload: fileNameToProcess, id: ++messageIdCounter.current },
+          { role: 'ai', isThinking: true, id: thinkingId },
+        ]);
+        setTypingText('');
+        setUserTyped(true);
+        setProcessedFile(fileNameToProcess);
+        setStagedHandleFile(null);
+        const resetStages = {};
+        users.forEach(u => { resetStages[u.name] = 1; });
+        setUserStages(resetStages);
+        setTimeout(() => { if (chatContainerRef.current) chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight; }, 50);
+        setTimeout(() => {
+          const fileSuccessOutput = [{ type: 'fileSuccess', fileName: fileNameToProcess }];
+          const fileFollowUpOutput = [{ type: 'fileFollowUp' }];
+          setMessages(prev => {
+            const idx = prev.findIndex(m => m.id === thinkingId);
+            if (idx === -1) return prev;
+            const next = [...prev];
+            next.splice(idx, 1,
+              { role: 'ai', output: fileSuccessOutput, tab: currentTab, showThought: true, animate: true, id: ++messageIdCounter.current },
+              { role: 'ai', output: [{ type: 'fileDetails', fileData }], tab: currentTab, showThought: false, animate: true, id: ++messageIdCounter.current },
+              { role: 'ai', output: fileFollowUpOutput, tab: currentTab, showThought: false, animate: true, id: ++messageIdCounter.current },
+            );
+            return next;
+          });
+          startAiTyping([...fileSuccessOutput, { type: 'fileDetails', fileData }, ...fileFollowUpOutput]);
+          setTimeout(() => { if (chatContainerRef.current) chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight; }, 50);
+        }, 1000);
+        return;
+      } else if (currentTab === tabs[3] && catalogProcessed) {
+        output = data[currentTab]?.[selectedUser.name]?.[1]?.output ?? [];
+        const totalStages = data[currentTab]?.[selectedUser.name]?.length ?? 0;
+        isLast = 1 >= totalStages - 1;
+        nextStage = 2;
+        setCatalogProcessed(false);
+      } else if (currentTab === 'Handle Files' && stage > 0 && processedFile) {
         const followUps = handleFilesFollowUps[processedFile]?.[selectedUser.name] ?? [];
         output = followUps[stage - 1]?.output ?? [];
         isLast = stage >= followUps.length;
+        nextStage = stage + 1;
       } else {
         output = data[currentTab]?.[selectedUser.name]?.[stage]?.output ?? [];
         const totalStages = data[currentTab]?.[selectedUser.name]?.length ?? 0;
         isLast = stage >= totalStages - 1;
+        nextStage = stage + 1;
       }
       const thinkingId = ++messageIdCounter.current;
       setMessages(prev => [...prev,
@@ -212,7 +248,8 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
       ]);
       setTypingText('');
       setUserTyped(true);
-      setUserStages(prev => ({ ...prev, [selectedUser.name]: stage + 1 }));
+      setStagedCatalogImages([]);
+      setUserStages(prev => ({ ...prev, [selectedUser.name]: nextStage }));
       setTimeout(() => { if (chatContainerRef.current) chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight; }, 50);
       setTimeout(() => {
         setMessages(prev => prev.map(m =>
@@ -221,7 +258,7 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
             : m
         ));
         const isEmailDraft = output[0]?.type === 'emailDraft';
-        startAiTyping(output, (isLast && !isEmailDraft) ? handleModal : undefined);
+        startAiTyping(output, (isLast && !isEmailDraft) ? () => setTimeout(() => { handleModal(); setDemoTriggered(true); }, 1000) : undefined);
         setTimeout(() => { if (chatContainerRef.current) chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight; }, 50);
       }, 1000);
     };
@@ -234,8 +271,9 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
 
     const handleProcessFiles = () => {
       if (currentTab === tabs[3]) {
-        if (selectedCatalogImages.length === 0) return;
-        setUserStages(prev => ({ ...prev, [selectedUser.name]: (prev[selectedUser.name] ?? 0) + 1 }));
+        if (selectedCatalogImages.length !== catalogUploadImages.length) return;
+        setStagedCatalogImages([...catalogUploadImages]);
+        setCatalogProcessed(true);
         setUploadDropdownClosing(true);
         setTimeout(() => { setUploadDropdownOpen(false); setUploadDropdownClosing(false); }, 250);
         clearInterval(tabIntervalRef.current);
@@ -243,58 +281,31 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
       }
       if (!selectedHandleFile) return;
       if (processedFilesSet.has(selectedHandleFile)) return;
-      const fileData = fileDataMap[selectedHandleFile];
-      const thinkingId = ++messageIdCounter.current;
-      setMessages(prev => [
-        ...prev,
-        { role: 'user', text: 'Upload and Process files', user: selectedUser, fileUpload: selectedHandleFile, id: ++messageIdCounter.current },
-        { role: 'ai', isThinking: true, id: thinkingId },
-      ]);
-      setTypingText('');
-      setUserTyped(true);
+      setStagedHandleFile(selectedHandleFile);
+      setProcessedFilesSet(prev => new Set([...prev, selectedHandleFile]));
       setUploadDropdownClosing(true);
       setTimeout(() => { setUploadDropdownOpen(false); setUploadDropdownClosing(false); }, 250);
       clearInterval(tabIntervalRef.current);
-      setTimeout(() => { if (chatContainerRef.current) chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight; }, 50);
-      setProcessedFile(selectedHandleFile);
-      setProcessedFilesSet(prev => new Set([...prev, selectedHandleFile]));
-      const resetStages = {};
-      users.forEach(u => { resetStages[u.name] = 1; });
-      setUserStages(resetStages);
-      setTimeout(() => {
-        const fileSuccessOutput = [{ type: 'fileSuccess', fileName: selectedHandleFile }];
-        const fileFollowUpOutput = [{ type: 'fileFollowUp' }];
-        setMessages(prev => {
-          const idx = prev.findIndex(m => m.id === thinkingId);
-          if (idx === -1) return prev;
-          const next = [...prev];
-          next.splice(idx, 1,
-            { role: 'ai', output: fileSuccessOutput, tab: currentTab, showThought: true, animate: true, id: ++messageIdCounter.current },
-            { role: 'ai', output: [{ type: 'fileDetails', fileData }], tab: currentTab, showThought: false, animate: false, id: ++messageIdCounter.current },
-            { role: 'ai', output: fileFollowUpOutput, tab: currentTab, showThought: false, animate: true, id: ++messageIdCounter.current },
-          );
-          return next;
-        });
-        startAiTyping([...fileSuccessOutput, ...fileFollowUpOutput]);
-        setTimeout(() => { if (chatContainerRef.current) chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight; }, 50);
-      }, 1000);
     };
 
+    const IMAGE_KEYS = new Set(['image', 'productImages', 'src', 'fileData']);
     const countOutputChars = (output) => {
       let n = 0;
-      const walk = (v) => {
+      const walk = (v, key) => {
+        if (IMAGE_KEYS.has(key)) return;
         if (typeof v === 'string') n += v.length;
-        else if (Array.isArray(v)) v.forEach(walk);
-        else if (v && typeof v === 'object') Object.values(v).forEach(walk);
+        else if (Array.isArray(v)) v.forEach(item => walk(item, null));
+        else if (v && typeof v === 'object') Object.entries(v).forEach(([k, val]) => walk(val, k));
       };
-      walk(output);
+      walk(output, null);
       return n;
     };
 
     const startAiTyping = (output, onDone) => {
       clearTimeout(aiTypingTimerRef.current);
       setIsAiTyping(true);
-      const duration = countOutputChars(output) * 5 + 200;
+      const hasFileDetails = Array.isArray(output) && output.some(o => o?.type === 'fileDetails');
+      const duration = countOutputChars(output) * 5 + (hasFileDetails ? 6000 : 200);
       aiTypingTimerRef.current = setTimeout(() => {
         setIsAiTyping(false);
         onDone?.();
@@ -303,7 +314,7 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
 
     const renderAIOutput = (output, tab, animate = false) => {
       if (tab === 'Factory Finder')       return <FactoryFinderOutput output={output} animate={animate} />;
-      if (tab === 'Generate Quotation')   return <QuotationGeneratorOutput output={output} animate={animate} onEmailSent={handleModal} />;
+      if (tab === 'Generate Quotation')   return <QuotationGeneratorOutput output={output} animate={animate} onEmailSent={() => { handleModal(); setDemoTriggered(true); }} />;
       if (tab === 'Handle Files')         return <HandleFilesOutput output={output} users={users} userStages={userStages} onSave={(msg) => { setSaveToast(msg); setTimeout(() => setSaveToast(null), 3500); }} animate={animate} />;
       if (tab === 'Catalog Generator')    return <CatalogGeneratorOutput output={output} animate={animate} />;
     };
@@ -319,6 +330,7 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
           @keyframes tabShrink   { from { opacity: 1; transform: scaleY(1); } to { opacity: 0; transform: scaleY(0); } }
           @keyframes thinkingBounce { 0%, 80%, 100% { transform: scale(0.4); opacity: 0.4; } 40% { transform: scale(1); opacity: 1; } }
           @keyframes clickMePulse { 0%, 100% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.12); } }
+          @keyframes sendButtonPulse { 0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(8,37,63,0.5); } 50% { transform: scale(1.05); box-shadow: 0 0 0 6px rgba(8,37,63,0); } }
         `}</style>
 
           {/*Hero Section*/}
@@ -334,37 +346,26 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
                       {messages.length === 0 && (
                         <div style={{ margin: 'auto', textAlign: 'center', color: '#9ca3af', fontSize: 13 }}>
                           <i className={handleIcon()} style={{ fontSize: 28, marginBottom: 8, display: 'block', color: currentTab === tabs[0] ? '#1fc9ed' : currentTab === tabs[1] ? '#fcc10a' : currentTab === tabs[2] ? '#e02f3e' : '#049669' }} />
-                          {currentTab === tabs[0] ? 'Try sending a message or upload an image' :
-                           currentTab === tabs[1] ? 'Try uploading a file or ask database for a specific product.' :
-                           currentTab === tabs[2] ? 'Try uploading a file' :
+                          {currentTab === tabs[0] ? 'Try sending a message.' :
+                           currentTab === tabs[1] ? 'Try sending a message.' :
+                           currentTab === tabs[2] ? 'Try uploading a file.' :
                            'Try uploading an image'}
                         </div>
                       )}
                       {messages.map((msg, idx) => {
-                        const prevUserMsg = msg.role === 'user' ? messages.slice(0, idx).filter(m => m.role === 'user').at(-1) : null;
-                        const showName = msg.role === 'user' && prevUserMsg?.user?.name !== msg.user?.name;
                         return (
                         <div key={msg.id ?? idx} style={{ display: 'flex', flexDirection: 'column', alignItems: msg.role === 'user' ? 'flex-end' : 'flex-start', gap: 2 }}>
-                          {showName && (
-                            <span style={{ fontSize: 10, fontWeight: 600, color: msg.user.color, paddingRight: 42 }}>{msg.user.name}</span>
-                          )}
                           <div style={{ display: 'flex', justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start', alignItems: 'flex-end', gap: 8, width: '100%' }}>
                           {msg.role === 'user' ? (
-                            <>
-                              <div style={{ maxWidth: '70%', background: '#2563eb', color: 'white', borderRadius: '18px 18px 4px 18px', padding: '10px 14px', fontSize: 13, lineHeight: 1.5, display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                                {msg.fileUpload ? (
-                                  <>
-                                    <i className="fas fa-file-powerpoint" style={{ fontSize: 13, color: '#ffb3b3', flexShrink: 0 }} />
-                                    <span style={{ fontSize: 11, opacity: 0.85, flexShrink: 0 }}>{msg.fileUpload}</span>
-                                    <span>{msg.text}</span>
-                                  </>
-                                ) : msg.text}
-                              </div>
-                              <div style={{ width: 30, height: 30, borderRadius: '5px', background: '#f3f4f6', border: `2px solid ${msg.user.color}`,
-                              display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginBottom: 0, padding: 15 }}>
-                                <i className="fa fa-user" style={{ fontSize: 18, color: msg.user.color }} />
-                              </div>
-                            </>
+                            <div style={{ maxWidth: '70%', background: '#2563eb', color: 'white', borderRadius: '18px 18px 4px 18px', padding: '10px 14px', fontSize: 13, lineHeight: 1.5, display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                              {msg.fileUpload ? (
+                                <>
+                                  <i className="fas fa-file-powerpoint" style={{ fontSize: 13, color: '#ffb3b3', flexShrink: 0 }} />
+                                  <span style={{ fontSize: 11, opacity: 0.85, flexShrink: 0 }}>{msg.fileUpload}</span>
+                                  <span>{msg.text}</span>
+                                </>
+                              ) : msg.text}
+                            </div>
                           ) : (
                             <div style={{ width: 600, background: '#f3f4f6', border: '1px solid #e5e7eb', borderRadius: '18px 18px 18px 4px', padding: '10px 14px', fontSize: 13, display: 'flex', flexDirection: 'column' }}>
                               {msg.isThinking ? (
@@ -385,11 +386,6 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
                                     </div>
                                   )}
                                   {renderAIOutput(msg.output, msg.tab, msg.animate)}
-                                  <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 8 }}>
-                                    <button style={{ fontSize: 10, fontWeight: 600, color: '#6b7280', background: 'white', border: '1px solid #e5e7eb', borderRadius: 5, padding: '3px 10px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>
-                                      <i className="fas fa-pen" style={{ fontSize: 9 }} /> Edit
-                                    </button>
-                                  </div>
                                 </>
                               )}
                             </div>
@@ -424,7 +420,7 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
                         </p>
                       </div>
                       <button
-                        onClick={(e) => { e.stopPropagation(); handleModal(); }}
+                        onClick={(e) => { e.stopPropagation(); handleModal(); setDemoTriggered(true); }}
                         style={{ padding: '10px 28px', fontSize: 14, fontWeight: 300, color: 'white', background: '#2cabe1', border: 'none', borderRadius: 8, cursor: 'pointer', letterSpacing: '0.2px', transition: 'background 0.2s'}}
                         onMouseEnter={e => {e.currentTarget.style.backgroundColor = "#1782b4"; }}
                         onMouseLeave={e => {e.currentTarget.style.backgroundColor = "#2cabe1"; }}>
@@ -434,9 +430,24 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
 
                 </div>
                 {/*Bottom Chat tools*/}
-                <div style={{ width: '100%', height: 120, backgroundColor: 'white',border: '1px solid #8e8e8e', borderRadius: 8, display: 'flex', flexDirection: 'column', justifyContent:'space-between', padding: 8}}>
+                <div style={{ width: '100%', backgroundColor: 'white', border: '1px solid #8e8e8e', borderRadius: 8, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: 8, gap: 8 }}>
                 {/*Chat input*/}
-                  <div style={{width: '100%', height: 60, border: '1px solid #8e8e8e', borderRadius: 8}}>
+                  <div style={{ width: '100%', border: '1px solid #8e8e8e', borderRadius: 8, display: 'flex', flexDirection: 'column' }}>
+                    {stagedCatalogImages.length > 0 && (
+                      <div style={{ padding: '8px 12px 4px', display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                        {stagedCatalogImages.map((src, i) => (
+                          <img key={i} src={src} alt="" style={{ width: 56, height: 48, objectFit: 'cover', borderRadius: 6, border: '1px solid #e5e7eb' }} />
+                        ))}
+                      </div>
+                    )}
+                    {stagedHandleFile && (
+                      <div style={{ padding: '8px 12px 4px', display: 'flex', gap: 6 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '4px 8px', background: '#fff5f5', border: '1px solid #fecaca', borderRadius: 6 }}>
+                          <i className="fas fa-file-powerpoint" style={{ fontSize: 12, color: '#e02f3e' }} />
+                          <span style={{ fontSize: 10, color: '#e02f3e', fontWeight: 600 }}>{stagedHandleFile}</span>
+                        </div>
+                      </div>
+                    )}
                     <div style={{ padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 10 }}>
                       <div ref={tabDropdownRef} style={{ position: 'relative', width: 180 }}>
                         <button
@@ -490,46 +501,6 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
                           </div>
                         )}
                       </div>
-                      <div ref={userDropdownRef} style={{ position: 'relative', flexShrink: 0 }}>
-                        <div
-                          onClick={() => {
-                            if (userDropdownOpen) {
-                              setUserDropdownClosing(true);
-                              setTimeout(() => { setUserDropdownOpen(false); setUserDropdownClosing(false); }, 250);
-                              startTabInterval();
-                            } else {
-                              setUserDropdownOpen(true);
-                              clearInterval(tabIntervalRef.current);
-                            }
-                          }}
-                          style={{ width: 32, height: 32, border: '1px solid #d1d5db', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'white', cursor: 'pointer' }}>
-                          <i className="fa fa-user" style={{ fontSize: 16, color: selectedUser.color }} />
-                        </div>
-                        {userDropdownOpen && (
-                          <div style={{
-                            position: 'absolute', bottom: '110%', left: 0, width: 160,
-                            background: 'white', border: '1px solid #d1d5db', borderRadius: 6,
-                            boxShadow: '0 4px 12px rgba(0,0,0,0.12)', overflow: 'hidden', zIndex: 50,
-                            transformOrigin: 'bottom',
-                            animation: `${userDropdownClosing ? 'tabShrink' : 'tabExpand'} 0.25s ease forwards`,
-                          }}>
-                            {users.map(u => (
-                              <div key={u.name}
-                                onClick={() => {
-                                  setSelectedUser(u);
-                                  setUserDropdownClosing(true);
-                                  setTimeout(() => { setUserDropdownOpen(false); setUserDropdownClosing(false); }, 250);
-                                }}
-                                style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 12px', fontSize: 12, fontWeight: selectedUser?.name === u.name ? 600 : 500, color: '#111827', cursor: 'pointer', background: selectedUser?.name === u.name ? '#f0f9ff' : 'white' }}
-                                onMouseEnter={e => { if (selectedUser?.name !== u.name) e.currentTarget.style.background = '#f3f4f6'; }}
-                                onMouseLeave={e => { e.currentTarget.style.background = selectedUser?.name === u.name ? '#f0f9ff' : 'white'; }}>
-                                <i className="fa fa-user" style={{ fontSize: 13, color: u.color }} />
-                                {u.name}
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
                       <div ref={uploadDropdownRef} style={{ position: 'relative', flexShrink: 0 }}>
                         <div
                           onClick={() => {
@@ -540,6 +511,7 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
                             } else {
                               setUploadDropdownOpen(true);
                               clearInterval(tabIntervalRef.current);
+                              if (currentTab === tabs[3]) setSelectedCatalogImages(catalogUploadImages.map((_, i) => i));
                             }
                           }}
                           style={{ width: 32, height: 32, border: '1px solid #d1d5db', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, color: '#6b7280', cursor: 'pointer', background: 'white' }}>
@@ -554,12 +526,14 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
                             animation: `${uploadDropdownClosing ? 'tabShrink' : 'tabExpand'} 0.25s ease forwards`,
                           }}>
                             <p style={{ margin: '0 0 8px', fontSize: 12, fontWeight: 600, color: '#111827' }}>Upload Files</p>
-                            {currentTab === tabs[0] && <FactoryFinderUpload uploadImages={uploadImages} selectedProductImage={selectedProductImage} setSelectedProductImage={setSelectedProductImage} />}
+                            {currentTab === tabs[0] && <FactoryFinderUpload />}
                             {currentTab === tabs[1] && <QuotationGeneratorUpload />}
                             {currentTab === tabs[2] && <HandleFilesUpload items={handleFilesItems} selectedFile={selectedHandleFile} setSelectedFile={setSelectedHandleFile} processedSet={processedFilesSet} />}
                             {currentTab === tabs[3] && <CatalogGeneratorUpload uploadImages={catalogUploadImages} selectedImages={selectedCatalogImages} setSelectedImages={setSelectedCatalogImages} />}
                             {(() => {
-                              const canProcess = currentTab === tabs[3] ? selectedCatalogImages.length > 0 : !!selectedHandleFile;
+                              const canProcess = currentTab === tabs[3]
+                                ? !catalogProcessed && selectedCatalogImages.length === catalogUploadImages.length
+                                : !stagedHandleFile && !!selectedHandleFile;
                               return (
                                 <button
                                   onClick={handleProcessFiles}
@@ -572,27 +546,25 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
                         )}
                       </div>
                       <input type='text'
-                        onFocus={() => { setIsFocused(true); clearInterval(tabIntervalRef.current); }}
-                        onBlur={() => { setIsFocused(false); startTabInterval(); }}
+                        ref={inputRef}
+                        onFocus={() => { clearInterval(tabIntervalRef.current); }}
+                        onBlur={() => { startTabInterval(); }}
                         onChange={e => {
                           setTypingText(e.target.value);
                           handleModal();
                         }}
-                        onKeyDown={e => { if (e.key === 'Enter') handleSend(); }}
+                        onKeyDown={e => {
+                          const stage = userStages[selectedUser.name] ?? 0;
+                          const hideSend = !(catalogProcessed || stagedHandleFile) && stage === 0 && (currentTab === tabs[2] || currentTab === tabs[3]);
+                          if (e.key === 'Enter' && !hideSend) handleSend();
+                        }}
                         style={{ flex: 1, fontSize: 13, padding: '8px 12px', border: '1px solid #d1d5db', borderRadius: 6, color: 'black', background: 'white', fontFamily: 'inherit'}}
                         value={typingText}
                       />
-                      {!(currentTab === tabs[2] && (userStages[selectedUser.name] ?? 0) === 0) && (
+                      {!((!(catalogProcessed || stagedHandleFile) && (userStages[selectedUser.name] ?? 0) === 0) && (currentTab === tabs[2] || currentTab === tabs[3])) && (
                         <div style={{ position: 'relative', display: 'inline-block' }}>
-                          {/* <div style={{ position: 'absolute', bottom: '125%', left: '60%', transform: 'translateX(-50%)', background: '#08253f', color: 'white', fontSize: 14, fontWeight: 600,
-                            padding: '4px 10px', borderRadius: 6, whiteSpace: 'nowrap', pointerEvents: 'none', display: 'flex',
-                            opacity: showClickMe && currentTab === tabs[0] && !isAiTyping ? 1 : 0, transition: 'opacity 0.6s ease',
-                            animation: showClickMe && currentTab === tabs[0] && !isAiTyping ? 'clickMePulse 1.2s ease-in-out infinite' : 'none' }}>
-                            Click me
-                            <div style={{ position: 'absolute', top: '100%', left: '30%', transform: 'translateX(-50%)', width: 0, height: 0, borderLeft: '5px solid transparent', borderRight: '5px solid transparent', borderTop: '5px solid #08253f' }} />
-                          </div> */}
                           <button
-                            style={{ fontSize: 14, fontWeight: 600, padding: '8px', background: '#08253f', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontFamily: 'inherit' }}
+                            style={{ fontSize: 14, fontWeight: 600, padding: '8px', background: '#08253f', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontFamily: 'inherit', animation: (!isAiTyping && !demoTriggered) ? 'sendButtonPulse 1.5s ease-in-out infinite' : 'none' }}
                             onClick={() => handleSend()}>
                             Send
                           </button>
@@ -600,20 +572,6 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
                       )}
                     </div>
                   </div>
-
-                  {/*Chat History*/}
-                  <div style={{width: '100%', height: 30, display: 'flex', alignItems: 'center', gap: 20, padding: '0px 10px', boxSizing: 'border-box'}}>
-                    {[
-                      { label: 'TS_50001', time: 'Apr 27, 09:40 PM' },
-                      { label: 'build a quotation...', time: 'Apr 27, 09:38 PM' },
-                      { label: 'give me an examp...', time: 'Apr 27, 09:05 PM' },
-                      ].map(chip => (
-                        <div key={chip.label} style={{ fontSize: 11, color: '#6b7280', cursor: 'pointer', background: '#f3f4f6', border: '1px solid #e5e7eb', borderRadius: 20, padding: '0 10px', display: 'flex', alignItems: 'center', gap: 6 }}>
-                          <span style={{ color: '#374151', fontWeight: 500 }}>{chip.label}</span> {chip.time}
-                        </div>
-                      ))
-                    }
-                  </div>{/*Chat History*/}
                 </div>{/*Bottom Chat tools*/}
             </div>
           </div>

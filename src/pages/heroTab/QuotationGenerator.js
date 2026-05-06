@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import TypingText, { DelayedVisible } from '../../components/TypingText';
 
+const sendEmailPulse = `
+  @keyframes sendEmailPulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(37,99,235,0.5); }
+    50% { transform: scale(1.05); box-shadow: 0 0 0 6px rgba(37,99,235,0); }
+  }
+`;
+
 export function QuotationGeneratorUpload() {
   return (
     <p style={{ margin: '0 0 10px', fontSize: 11, color: '#6b7280', lineHeight: 1.5 }}>
@@ -33,7 +40,9 @@ function ProductFoundCard({ item, animate }) {
       </p>
       <div style={{ border: '1px solid #e5e7eb', borderRadius: 8, overflow: 'hidden', background: 'white' }}>
         <div style={{ display: 'grid', gridTemplateColumns: '200px 1fr' }}>
-          <img src={p.image} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRight: '1px solid #e5e7eb' }} />
+          <DelayedVisible delay={item.description.length * 5} animate={animate} style={{ overflow: 'hidden', borderRight: '1px solid #e5e7eb' }}>
+            <img src={p.image} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          </DelayedVisible>
           <div style={{ padding: '10px 12px', display: 'flex', flexDirection: 'column', gap: 6 }}>
             <p style={{ margin: 0, fontWeight: 700, fontSize: 12, color: '#111827' }}>
               <TypingText text={p.name} animate={animate} delay={item.description.length * 5} />
@@ -112,7 +121,7 @@ function CustomerListCard({ item, animate }) {
   );
 }
 
-const previewEmails = ['julia.bauer@cleanhome.de', 'erik.lindqvist@nordicclean.se', 'pierre.lefevre@maisonpropre.fr'];
+const previewEmails = ['julia.bauer@cleanhome.de'];
 const checks = ['Recipient added', 'Subject is present', 'Message body is present', 'Sender account selected'];
 
 function EmailDraftCard({ item, animate, onSend }) {
@@ -289,17 +298,18 @@ function EmailDraftCard({ item, animate, onSend }) {
       </div>
 
       {/* Bottom actions */}
-      <div style={{ padding: '8px 14px', borderTop: '1px solid #e5e7eb', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <style>{sendEmailPulse}</style>
+    <div style={{ padding: '8px 14px', borderTop: '1px solid #e5e7eb', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <button style={{ fontSize: 11, fontWeight: 600, color: '#dc2626', background: 'white', border: '1px solid #fca5a5', borderRadius: 6, padding: '5px 13px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5 }}>
           <i className="fas fa-trash-alt" style={{ fontSize: 9 }} /> Discard
         </button>
-        <div style={{ display: 'flex', gap: 6 }}>
+        <div style={{ display: 'flex', gap: 16 }}>
           <button style={{ fontSize: 11, fontWeight: 600, color: '#374151', background: 'white', border: '1px solid #d1d5db', borderRadius: 6, padding: '5px 13px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5 }}>
             <i className="fas fa-save" style={{ fontSize: 9 }} /> Save to Draft
           </button>
           <button
             onClick={handleSendEmail}
-            style={{ fontSize: 11, fontWeight: 700, color: 'white', background: '#2563eb', border: 'none', borderRadius: 6, padding: '5px 14px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5 }}>
+            style={{ fontSize: 11, fontWeight: 700, color: 'white', background: '#2563eb', border: 'none', borderRadius: 6, padding: '5px 14px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5, animation: 'sendEmailPulse 1.4s ease-in-out infinite' }}>
             <i className="fas fa-paper-plane" style={{ fontSize: 9 }} /> Send Email
           </button>
         </div>

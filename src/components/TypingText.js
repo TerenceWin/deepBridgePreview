@@ -18,7 +18,7 @@ export function DelayedVisible({ delay = 0, animate = true, style, children }) {
   );
 }
 
-export default function TypingText({ text, style, animate = true, delay = 0 }) {
+export default function TypingText({ text, style, animate = true, delay = 0, speed = 5 }) {
   const chars = text ?? '';
   const [count, setCount] = useState(animate ? 0 : chars.length);
 
@@ -32,10 +32,10 @@ export default function TypingText({ text, style, animate = true, delay = 0 }) {
         i++;
         setCount(i);
         if (i >= chars.length) clearInterval(intervalId);
-      }, 5);
+      }, speed);
     }, delay);
     return () => { clearTimeout(timerId); clearInterval(intervalId); };
-  }, [text, animate, delay]); // eslint-disable-line
+  }, [text, animate, delay, speed]); // eslint-disable-line
 
   return <span style={style}>{chars.slice(0, count)}</span>;
 }
