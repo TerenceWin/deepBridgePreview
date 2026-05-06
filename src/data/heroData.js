@@ -175,28 +175,44 @@ const data = {
 
 export default data;
 
+const riskFlagsFollowUp = {
+  input: "Supplier: Guangdong Metalworks Co. — review their quotation package for TS_50378",
+  output: [{
+    type: 'riskFlags',
+    summary: { critical: 2, warning: 1, clear: 2 },
+    flags: [
+      {
+        severity: 'critical',
+        category: 'CERTIFICATE',
+        title: 'CE certificate expired',
+        description: 'Provided CE cert expired Mar 2024. EU buyer orders will be blocked at customs without a valid certificate.',
+        action: 'Ask supplier to resubmit',
+      },
+      {
+        severity: 'critical',
+        category: 'DOCUMENTATION',
+        title: 'No test report attached',
+        description: 'Quotation references ASTM F963 compliance but no third-party test report was included in the package.',
+        action: 'Request test report',
+      },
+      {
+        severity: 'warning',
+        category: 'COMPLIANCE',
+        title: 'MOQ inconsistency',
+        description: 'Email states MOQ 300 units but quotation PDF shows 500 units. Confirm before sharing with buyer.',
+        action: 'Clarify with supplier',
+      },
+    ],
+  }],
+};
+
 export const handleFilesFollowUps = {
   'handleFiles1.pptx': {
     'Marcus Lin': [
       { input: "What is the HS code and applicable tariff for this product?", output: [{ description: 'HS code 85081100. Under US-China tariffs (Section 301), additional duties may apply — recommend checking current HTS rates before importing.' }] },
       { input: "Can the supplier reduce the MOQ for a trial order?", output: [{ description: 'MOQ is 3,000 units at $9.80/unit. Supplier may negotiate 1,500 units at ~$11.20/unit for a trial — recommend requesting via sourcing agent.' }] },
       { input: "Is CE certification sufficient for EU market entry?", output: [{ description: 'CE and RoHS certifications cover EU market entry for this category. No additional product approvals required.' }] },
-    ],
-  },
-
-  'handleFiles2.pptx': {
-    'Marcus Lin': [
-      { input: "What LED colors are available and what does each treat?", output: [{ description: '7 LED colors included. Typically: red (collagen), blue (acne), green (pigmentation), yellow (skin tone), cyan, purple, white. Request wavelength lab report before making treatment claims.' }] },
-      { input: "Is the IPX6 waterproof rating sufficient for bathroom use?", output: [{ description: 'IPX6 is splash-proof and withstands water jets — suitable for bathroom use. Not submersible. Adequate for the intended personal care use case.' }] },
-      { input: "What is the MOQ and can we get samples before ordering?", output: [{ description: 'MOQ is 5,000 units at $18/unit. Standard practice: request 2–5 pre-production samples at ~$50–$80/unit before committing. Confirm with supplier.' }] },
-    ],
-  },
-
-  'handleFiles3.pptx': {
-    'Marcus Lin': [
-      { input: "What is EMS technology and how does it differ from standard vibration massagers?", output: [{ description: 'EMS (Electrical Muscle Stimulation) sends low-level electrical pulses to activate muscle tissue — targets deeper than surface vibration. Combined here with vibrating massage rollers for dual stimulation.' }] },
-      { input: "Calculate total FOB value for a full 40HQ container.", output: [{ description: 'FOB price: $12.95/unit. 40HQ capacity: 53,000 units — total FOB value ~$686,350. Recommend negotiating pricing at full container volume.' }] },
-      { input: "Are CE, RoHS, and FCC sufficient for selling in both EU and US?", output: [{ description: 'CE and RoHS cover EU. FCC covers US Part 15. Note: EMS devices may require additional FDA Class II clearance in the US — verify product classification before launch.' }] },
+      riskFlagsFollowUp,
     ],
   },
 };

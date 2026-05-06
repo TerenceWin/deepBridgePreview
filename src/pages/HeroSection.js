@@ -2,14 +2,12 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MAX_WIDTH, NAV_HEIGHT, SECTION_PAD, SECTION_PAD_SM } from '../components/layout';
 import data, { handleFilesFollowUps } from '../data/heroData.js'
-import { handleFile1, handleFile2, handleFile3 } from '../data/handleFilesData.js'
+import { handleFile1 } from '../data/handleFilesData.js'
 import FactoryFinderOutput, { FactoryFinderUpload } from './heroTab/FactoryFinder.js'
 import QuotationGeneratorOutput, { QuotationGeneratorUpload } from './heroTab/QuotationGenerator.js'
-import HandleFilesOutput, { HandleFilesUpload } from './heroTab/HandleFiles.js'
+import HandleFilesOutput, { HandleFilesUpload, computeFileDetailsDuration } from './heroTab/HandleFiles.js'
 import CatalogGeneratorOutput, { CatalogGeneratorUpload } from './heroTab/CatalogGenerator.js'
 import handleFiles1 from '../images/heroSection/handleFiles/handleFiles1.pptx';
-import handleFiles2 from '../images/heroSection/handleFiles/handleFiles2.pptx';
-import handleFiles3 from '../images/heroSection/handleFiles/handleFiles3.pptx';
 import bugZapper9  from '../images/catalogGenerator/bugZapper9.jpeg';
 import bugZapper10 from '../images/catalogGenerator/bugZapper10.jpeg';
 import bugZapper11 from '../images/catalogGenerator/bugZapper11.jpeg';
@@ -54,8 +52,6 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
     const catalogUploadImages = [bugZapper9, bugZapper10, bugZapper11, bugZapper12, bugZapper13, bugZapper14];
     const handleFilesItems = [
       { file: handleFiles1, name: 'handleFiles1.pptx' },
-      { file: handleFiles2, name: 'handleFiles2.pptx' },
-      { file: handleFiles3, name: 'handleFiles3.pptx' },
     ];
     const users = [
       { name: 'Marcus Lin',    color: '#1fc9ed' },
@@ -216,11 +212,18 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
             next.splice(idx, 1,
               { role: 'ai', output: fileSuccessOutput, tab: currentTab, showThought: true, animate: true, id: ++messageIdCounter.current },
               { role: 'ai', output: [{ type: 'fileDetails', fileData }], tab: currentTab, showThought: false, animate: true, id: ++messageIdCounter.current },
-              { role: 'ai', output: fileFollowUpOutput, tab: currentTab, showThought: false, animate: true, id: ++messageIdCounter.current },
             );
             return next;
           });
-          startAiTyping([...fileSuccessOutput, { type: 'fileDetails', fileData }, ...fileFollowUpOutput]);
+          const followUpText = 'You can now ask follow-up questions about these files or reference their document IDs.';
+          startAiTyping([...fileSuccessOutput, { type: 'fileDetails', fileData }], () => {
+            setIsAiTyping(true);
+            setMessages(prev => [...prev,
+              { role: 'ai', output: fileFollowUpOutput, tab: currentTab, showThought: false, animate: true, id: ++messageIdCounter.current },
+            ]);
+            clearTimeout(aiTypingTimerRef.current);
+            aiTypingTimerRef.current = setTimeout(() => setIsAiTyping(false), followUpText.length * 5 + 400);
+          }, computeFileDetailsDuration(fileData, users.length));
           setTimeout(() => { if (chatContainerRef.current) chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight; }, 50);
         }, 1000);
         return;
@@ -265,8 +268,6 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
 
     const fileDataMap = {
       'handleFiles1.pptx': handleFile1,
-      'handleFiles2.pptx': handleFile2,
-      'handleFiles3.pptx': handleFile3,
     };
 
     const handleProcessFiles = () => {
@@ -301,11 +302,11 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
       return n;
     };
 
-    const startAiTyping = (output, onDone) => {
+    const startAiTyping = (output, onDone, overrideDuration) => {
       clearTimeout(aiTypingTimerRef.current);
       setIsAiTyping(true);
       const hasFileDetails = Array.isArray(output) && output.some(o => o?.type === 'fileDetails');
-      const duration = countOutputChars(output) * 5 + (hasFileDetails ? 6000 : 200);
+      const duration = overrideDuration ?? (countOutputChars(output) * 5 + (hasFileDetails ? 8000 : 200));
       aiTypingTimerRef.current = setTimeout(() => {
         setIsAiTyping(false);
         onDone?.();
