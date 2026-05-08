@@ -36,7 +36,7 @@ export default function Nav() {
         background: navBg,
         backdropFilter: scrolled ? 'blur(12px)' : 'none',
         borderBottom: (scrolled || menuOpen) ? '0.5px solid #E2DED6' : '0.5px solid transparent',
-        padding: '0 48px', height: 72,
+        padding: '0 72px', height: 72,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         position: 'fixed', top: 0, left: 0, right: 0, zIndex: 200,
         transition: 'background 0.3s, border-color 0.3s',

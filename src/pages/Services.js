@@ -55,7 +55,7 @@ export default function Services() {
           </div>
         </div>
       </div>
-      <div style={{ background: navy, padding: '72px 48px', textAlign: 'center' }}>
+      <div style={{ background: navy, padding: '72px 72px', textAlign: 'center' }}>
         <h2 style={{ fontSize: 32, fontWeight: 500, color: 'white', marginBottom: 14, letterSpacing: '-0.03em' }}>See these tools with your own data</h2>
         <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.5)', maxWidth: 380, margin: '0 auto 32px', lineHeight: 1.7 }}>A 30-minute demo using real examples from your workflow.</p>
         <Link to="/pricing" style={{ display: 'inline-block', background: sky, color: 'white', borderRadius: 8, padding: '13px 28px', fontSize: 14, fontWeight: 500, textDecoration: 'none' }}>View pricing</Link>
