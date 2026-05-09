@@ -20,7 +20,6 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
 
     const [currentTab, setCurrentTab] = useState(tabs[0]);
     const [userTyped, setUserTyped] = useState(false);
-    const [previewHovered, setPreviewHovered] = useState(false);
     const tabIntervalRef = useRef(null);
 
     const [typingText, setTypingText] = useState('');
@@ -179,10 +178,40 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
     // -> Check if input is last, Yes? -> display 'Book a demo'
     const handleSend = () => {
       if (!typingText.trim()) return;
+
+      // Resolve the current stage's original text
+      const stage = userStages[selectedUser.name] ?? 0;
+      let stageText;
+      if (currentTab === tabs[3] && catalogProcessed) {
+        stageText = data[currentTab]?.[selectedUser.name]?.[1]?.input;
+      } else if (currentTab === tabs[2] && stagedHandleFile) {
+        stageText = "Generate a Document Detail file for this file";
+      } else if (currentTab === 'Handle Files' && stage > 0 && processedFile) {
+        stageText = handleFilesFollowUps[processedFile]?.[selectedUser.name]?.[stage - 1]?.input;
+      } else {
+        stageText = data[currentTab]?.[selectedUser.name]?.[stage]?.input;
+      }
+
+      // If textarea differs from stage text → Book a Demo + re-animate stage text
+      if (typingText.trim() !== (stageText ?? '').trim()) {
+        handleModal();
+        setDemoTriggered(true);
+        const textToRetype = stageText ?? '';
+        let i = 0;
+        clearInterval(typingIntervalRef.current);
+        setTypingText('');
+        typingIntervalRef.current = setInterval(() => {
+          i++;
+          setTypingText(textToRetype.slice(0, i));
+          if (i >= textToRetype.length) clearInterval(typingIntervalRef.current);
+        }, 15);
+        return;
+      }
+
+      // Normal flow — send message and show AI response
       clearInterval(tabIntervalRef.current);
       clearInterval(typingIntervalRef.current);
       setIsAiTyping(true);
-      const stage = userStages[selectedUser.name] ?? 0;
       let output;
       let isLast;
       let nextStage;
@@ -339,9 +368,7 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
             <div style={{ width: '100%', backgroundColor: '#08253f', borderRadius: 8, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: 5, overflow: 'hidden', fontFamily: 'inherit', padding: 10, boxSizing: 'border-box' }}>
 
               {/*Chat Section*/}
-                <div style={{ width: '100%', height: isDesktop ? 600 : 550, backgroundColor: 'white', border: '1px solid black', borderRadius: 10, position: 'relative'}}
-                  onMouseEnter={() => setPreviewHovered(true)}
-                  onMouseLeave={() => setPreviewHovered(false)}>
+                <div style={{ width: '100%', height: isDesktop ? 600 : 550, backgroundColor: 'white', border: '1px solid black', borderRadius: 10, position: 'relative'}}>
                     {/*Preview - iMessage chat*/}
                     <div ref={chatContainerRef} style={{ width: '100%', height: '100%', overflowY: 'auto', padding: '30px 16px', display: 'flex', flexDirection: 'column', gap: 12, boxSizing: 'border-box' }}>
                       {messages.length === 0 && (
@@ -405,29 +432,6 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
                         {saveToast}
                       </div>
                     )}
-
-                    {/*Hover Blur Background */}
-                    <div style={{
-                      width: '100%', height: '100%', borderRadius: 8, display: userTyped ? 'none' : 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: 16, position: 'absolute', top: 0, left: 0,
-                      animation: previewHovered ? 'fadeIn 0.3s ease forwards' : 'fadeOut 0.3s ease forwards', opacity: previewHovered ? 1 : 0,
-                      pointerEvents: previewHovered ? 'auto' : 'none', backgroundColor: 'rgba(4, 17, 28, 0.72)', backdropFilter: 'blur(6px)',
-                    }}>
-                      <div style={{ textAlign: 'center', padding: '0 32px' }}>
-                        <p style={{ margin: '0 0 8px', fontSize: 20, fontWeight: 700, color: 'white', lineHeight: 1.3, letterSpacing: '-0.3px' }}>
-                          See what DeepBridge can do for your business
-                        </p>
-                        <p style={{ margin: 0, fontSize: 13, color: 'rgba(255,255,255,0.65)', lineHeight: 1.6 }}>
-                          From sourcing to quotations — let our AI handle the heavy lifting so your team can focus on closing deals.
-                        </p>
-                      </div>
-                      <button
-                        onClick={(e) => { e.stopPropagation(); handleModal(); setDemoTriggered(true); }}
-                        style={{ padding: '10px 28px', fontSize: 14, fontWeight: 300, color: 'white', background: '#2cabe1', border: 'none', borderRadius: 8, cursor: 'pointer', letterSpacing: '0.2px', transition: 'background 0.2s'}}
-                        onMouseEnter={e => {e.currentTarget.style.backgroundColor = "#1782b4"; }}
-                        onMouseLeave={e => {e.currentTarget.style.backgroundColor = "#2cabe1"; }}>
-                        Book a Demo
-                      </button>
-                    </div>
 
                 </div>
                 {/*Bottom Chat tools*/}
@@ -552,7 +556,6 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
                         onBlur={() => { startTabInterval(); }}
                         onChange={e => {
                           setTypingText(e.target.value);
-                          handleModal();
                         }}
                         onKeyDown={e => {
                           const stage = userStages[selectedUser.name] ?? 0;
@@ -565,7 +568,7 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
                       {!((!(catalogProcessed || stagedHandleFile) && (userStages[selectedUser.name] ?? 0) === 0) && (currentTab === tabs[2] || currentTab === tabs[3])) && (
                         <div style={{ position: 'relative', display: 'inline-block' }}>
                           <button
-                            style={{ fontSize: 14, fontWeight: 600, padding: '8px', background: '#08253f', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontFamily: 'inherit', animation: (!isAiTyping && !demoTriggered) ? 'sendButtonPulse 1.5s ease-in-out infinite' : 'none' }}
+                            style={{ fontSize: 14, fontWeight: 600, padding: '8px', background: '#08253f', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontFamily: 'inherit', animation: !isAiTyping ? 'sendButtonPulse 1.5s ease-in-out infinite' : 'none' }}
                             onClick={() => handleSend()}>
                             Send
                           </button>

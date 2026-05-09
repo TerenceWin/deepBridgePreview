@@ -49,7 +49,7 @@ export default function FactoryFinderOutput({ output, animate = false }) {
                 const imgDelay = d + (name.length + desc.length + url.length) * 5 + i * 100;
                 return (
                   <DelayedVisible key={i} delay={imgDelay} animate={animate} style={{ borderRadius: 6, overflow: 'hidden', flexShrink: 0 }}>
-                    <img src={img} alt="" style={{ width: 52, height: 52, objectFit: 'cover', display: 'block' }} />
+                    <img src={img} alt="" style={{ width: 104, height: 104, objectFit: 'cover', display: 'block' }} />
                   </DelayedVisible>
                 );
               })}

@@ -1,7 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import PageHero from '../components/PageHero';
 import { MAX_WIDTH, SECTION_PAD, SECTION_PAD_SM } from '../components/layout';
+import DemoModal from '../components/DemoModal';
+import FactoryFinderDemo from './servicesPageDemo/FactoryFinderDemo.js';
+import QuotationWorkflowDemo from './servicesPageDemo/QuotationWorkflowDemo.js';
+import CatalogGeneratorDemo from './servicesPageDemo/CatalogGeneratorDemo.js';
+import RiskFlagsDemo from './servicesPageDemo/RiskFlagsDemo.js';
+import SupplierMemoryDemo from './servicesPageDemo/SupplierMemoryDemo.js';
 
 const sky = '#29ABE2';
 const navy = '#0A2540';
@@ -15,7 +21,7 @@ const services = [
   { num: '03', title: 'Supplier Memory', problem: 'Useful supplier information is buried in old emails and attachments.', text: 'Search past supplier emails, attachments, and product offers instantly. If a factory has shared something similar before, Deep Bridge helps you find it without digging through inboxes.' },
   { num: '04', title: 'Factory Finder', problem: 'Sourcing knowledge sits in peoples heads, not in systems.', text: 'Identify relevant factories from old emails, product descriptions, or images. Deep Bridge helps teams reuse past sourcing knowledge and uncover which suppliers may already provide similar products.' },
   { num: '05', title: 'Catalog and Brochure Generation', problem: 'Creating customer-facing materials takes too long and too much back and forth.', text: 'Turn existing product information into customer-facing materials faster. Deep Bridge helps create catalogs, brochures, and product summaries with less manual formatting.' },
-  { num: '06', title: 'Opportunity Visibility', problem: 'Important enquiries get lost in the noise of daily operations.', text: 'See which enquiries, offers, and accounts deserve attention first. Deep Bridge helps teams spot stronger opportunities and focus on higher value work.' },
+  // { num: '06', title: 'Opportunity Visibility', problem: 'Important enquiries get lost in the noise of daily operations.', text: 'See which enquiries, offers, and accounts deserve attention first. Deep Bridge helps teams spot stronger opportunities and focus on higher value work.' },
 ];
 
 const coming = [
@@ -23,19 +29,71 @@ const coming = [
   { title: 'Supplier Information Network', text: 'A growing layer of supplier knowledge to help teams find relevant factories, compare past activity, and make sourcing decisions with more context.' },
 ];
 
+const QUOTATION_INDEX = 0;
+const RISK_FLAGS_INDEX = 1;
+const SUPPLIER_MEMORY_INDEX = 2;
+const FACTORY_FINDER_INDEX = 3;
+const CATALOG_INDEX = 4;
+
 export default function Services() {
+  const [openIndex, setOpenIndex] = useState(null);
+  const [modal, setModal] = useState(false);
+
+  const toggle = (i) => setOpenIndex(openIndex === i ? null : i);
+
   return (
     <div style={{ background: '#F7F5F0' }}>
-      <PageHero label="Services" title="Core workflows for export teams" subtitle="Six tools built around how export teams actually work, from first enquiry to final follow-up." dark />
+      <DemoModal isOpen={modal} onClose={() => setModal(false)} />
+      <PageHero label="Services" title="Core workflows for export teams" subtitle="Five tools built around how export teams actually work, from first enquiry to final follow-up." dark />
       <div style={{ background: 'white' }}>
         <div style={{ maxWidth: MAX_WIDTH, margin: '0 auto', padding: SECTION_PAD }}>
           <div style={{ fontSize: 10, letterSpacing: '2.5px', color: sky, textTransform: 'uppercase', marginBottom: 32 }}>Core workflows</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 1, background: border, borderRadius: 12, overflow: 'hidden' }}>
             {services.map((s, i) => (
-              <div key={i} className="db-svc-row" style={{ background: 'white', padding: '28px 32px', display: 'grid', gridTemplateColumns: '72px 1fr 1fr', gap: 32, alignItems: 'start' }}>
-                <div style={{ fontSize: 11, letterSpacing: 2, color: sky, textTransform: 'uppercase', fontWeight: 500, paddingTop: 3 }}>{s.num}</div>
-                <div><div style={{ fontSize: 16, fontWeight: 500, color: navy, marginBottom: 8, letterSpacing: '-0.02em' }}>{s.title}</div><div style={{ fontSize: 13, color: sky, lineHeight: 1.6, fontStyle: 'italic' }}>{s.problem}</div></div>
-                <div style={{ fontSize: 14, color: slate, lineHeight: 1.8 }}>{s.text}</div>
+              <div key={i}>
+                <div
+                  className="db-svc-row"
+                  onClick={() => toggle(i)}
+                  style={{ background: 'white', padding: '28px 32px', display: 'grid', gridTemplateColumns: '72px 1fr 1fr auto', gap: 32, alignItems: 'start', cursor: 'pointer' }}
+                >
+                  <div style={{ fontSize: 11, letterSpacing: 2, color: sky, textTransform: 'uppercase', fontWeight: 500, paddingTop: 3 }}>{s.num}</div>
+                  <div>
+                    <div style={{ fontSize: 16, fontWeight: 500, color: navy, marginBottom: 8, letterSpacing: '-0.02em' }}>{s.title}</div>
+                    <div style={{ fontSize: 13, color: sky, lineHeight: 1.6, fontStyle: 'italic' }}>{s.problem}</div>
+                  </div>
+                  <div style={{ fontSize: 14, color: slate, lineHeight: 1.8 }}>{s.text}</div>
+                  <div style={{ fontSize: 18, color: slate, userSelect: 'none', transition: 'transform 0.3s ease', transform: openIndex === i ? 'rotate(180deg)' : 'rotate(0deg)', paddingTop: 2 }}>⌄</div>
+                </div>
+                <div style={{
+                  background: 'white',
+                  maxHeight: openIndex === i ? 900 : 0,
+                  overflow: 'hidden',
+                  transition: 'max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                }}>
+                  {i === QUOTATION_INDEX ? (
+                    <div style={{ borderTop: `1px solid ${border}`, padding: '24px 32px' }}>
+                      <QuotationWorkflowDemo handleModal={() => setModal(true)} />
+                    </div>
+                  ) : i === RISK_FLAGS_INDEX ? (
+                    <div style={{ borderTop: `1px solid ${border}`, padding: '24px 32px' }}>
+                      <RiskFlagsDemo handleModal={() => setModal(true)} />
+                    </div>
+                  ) : i === SUPPLIER_MEMORY_INDEX ? (
+                    <div style={{ borderTop: `1px solid ${border}`, padding: '24px 32px' }}>
+                      <SupplierMemoryDemo handleModal={() => setModal(true)} />
+                    </div>
+                  ) : i === FACTORY_FINDER_INDEX ? (
+                    <div style={{ borderTop: `1px solid ${border}`, padding: '24px 32px' }}>
+                      <FactoryFinderDemo handleModal={() => setModal(true)} />
+                    </div>
+                  ) : i === CATALOG_INDEX ? (
+                    <div style={{ borderTop: `1px solid ${border}`, padding: '24px 32px' }}>
+                      <CatalogGeneratorDemo handleModal={() => setModal(true)} />
+                    </div>
+                  ) : (
+                    <div style={{ height: 600, borderTop: `1px solid ${border}` }} />
+                  )}
+                </div>
               </div>
             ))}
           </div>

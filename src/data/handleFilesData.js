@@ -5,7 +5,7 @@ const handleFile1 = {
   summary: 'This document is a preliminary quotation for a BLDC ResQVac with safety hammer and blade, model TS_50378. It includes full product specifications, packaging, and pricing.',
   remarks: 'Payment Terms: 30% Deposit, Balance against B/L copy. Quote valid for 2 months from 24 February 2025.',
   productCategory: 'Electronics & Tools',
-  supplierName: 'Unknown Supplier',
+  supplierName: 'Guangdong Metalworks Co.',
   supplierProductCode: 'TS_50378',
   quotationDate: '2025-02-24',
   validForDays: 60,

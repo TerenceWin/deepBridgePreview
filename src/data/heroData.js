@@ -15,6 +15,10 @@ import factoryFinder1_2_2 from '../images/heroSection/factoryFinder/Factory Find
 import factoryFinder1_3_1 from '../images/heroSection/factoryFinder/Factory Finder 1-3-1.webp';
 import factoryFinder2_1_1 from '../images/heroSection/factoryFinder/Factory Finder 2-1-1.webp';
 import factoryFinder2_1_2 from '../images/heroSection/factoryFinder/Factory Finder 2-1-2.webp';
+import factoryFinder3_1_1 from '../images/heroSection/factoryFinder/Factory Finder 3-1-1.jpg';
+import factoryFinder3_1_2 from '../images/heroSection/factoryFinder/Factory Finder 3-1-2.jpg';
+import factoryFinder3_2_1 from '../images/heroSection/factoryFinder/Factory Finder 3-2-1.jpg';
+import factoryFinder3_2_2 from '../images/heroSection/factoryFinder/Factory Finder 3-2-2.jpg';
 import vacuumCleaner1 from '../images/heroSection/quotationGenerator/vaccumCleaner1.png';
 
 const data = {
@@ -42,8 +46,8 @@ const data = {
         input: "Bamboo cutting boards, food-safe finish, MOQ 200, Zhejiang",
         output: [
           "Found 2 suppliers for 'Bamboo cutting boards'. Source: online + database.",
-          [{ name: 'Anji Tianzhu Bamboo Industry Co., Ltd' }, { url: 'https://anjitzbamboo.en.made-in-china.com/' }, { description: 'Bamboo kitchenware manufacturer, food-safe lacquer finish, custom engraving available, MOQ 200 units.' }, { productImages: [factoryFinder1_1_1, factoryFinder1_2_1] }],
-          [{ name: 'Zhejiang Greenlife Bamboo Products Co.' }, { url: 'https://zjgreenlife.en.made-in-china.com/' }, { description: 'Eco-friendly bamboo cutting boards, FDA-approved food-safe coating, various sizes available.' }, { productImages: [factoryFinder1_3_1, factoryFinder2_1_1] }],
+          [{ name: 'Anji Tianzhu Bamboo Industry Co., Ltd' }, { url: 'https://anjitzbamboo.en.made-in-china.com/' }, { description: 'Bamboo kitchenware manufacturer, food-safe lacquer finish, custom engraving available, MOQ 200 units.' }, { productImages: [factoryFinder3_1_1, factoryFinder3_1_2] }],
+          [{ name: 'Zhejiang Greenlife Bamboo Products Co.' }, { url: 'https://zjgreenlife.en.made-in-china.com/' }, { description: 'Eco-friendly bamboo cutting boards, FDA-approved food-safe coating, various sizes available.' }, { productImages: [factoryFinder3_2_1, factoryFinder3_2_2] }],
         ],
         type: 'text',
       },
@@ -164,8 +168,8 @@ const data = {
         output: [{
           description: 'Package box mockup generated — 113 × 158 × 318mm dieline with the poster artwork applied to the front panel. Side panels left clean for barcode and product info.',
           products: [
-            { image: bugZapper15, layout: 'full' },
             { image: bugZapper2, layout: 'full' },
+            { image: bugZapper15, layout: 'full' },
           ],
         }],
       },
@@ -212,7 +216,6 @@ export const handleFilesFollowUps = {
       { input: "What is the HS code and applicable tariff for this product?", output: [{ description: 'HS code 85081100. Under US-China tariffs (Section 301), additional duties may apply — recommend checking current HTS rates before importing.' }] },
       { input: "Can the supplier reduce the MOQ for a trial order?", output: [{ description: 'MOQ is 3,000 units at $9.80/unit. Supplier may negotiate 1,500 units at ~$11.20/unit for a trial — recommend requesting via sourcing agent.' }] },
       { input: "Is CE certification sufficient for EU market entry?", output: [{ description: 'CE and RoHS certifications cover EU market entry for this category. No additional product approvals required.' }] },
-      riskFlagsFollowUp,
     ],
   },
 };

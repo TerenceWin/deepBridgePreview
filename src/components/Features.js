@@ -9,7 +9,7 @@ const features = [
   { tag: 'HKD · USD · RMB · SGD',        title: 'Multi-Market Execution',      desc: 'Handles multi-currency, multi-language, and multi-brand operations from a single system. Built for HK, SEA, and China-origin trade flows.' },
   { tag: 'Generate · Version · Link',    title: 'Quotation & Order Engine',    desc: 'Generates structured quotations from extracted requirements, tracks versions, and links to the final order so spec changes are never lost.' },
 ];
-
+  
 function Features() {
   return (
     <section style={{ background: '#F8F7F3', padding: '88px 48px' }}>

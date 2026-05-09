@@ -39,7 +39,7 @@ const serviceHighlights = [
   { num: '03', title: 'Supplier Memory', text: 'Search past supplier emails and product offers instantly.' },
   { num: '04', title: 'Factory Finder', text: 'Identify relevant factories from old emails, descriptions, or images.' },
   { num: '05', title: 'Catalog Generation', text: 'Turn product information into customer-facing materials faster.' },
-  { num: '06', title: 'Opportunity Visibility', text: 'See which enquiries and accounts deserve attention first.' },
+  // { num: '06', title: 'Opportunity Visibility', text: 'See which enquiries and accounts deserve attention first.' },
 ];
 
 const stats = [
@@ -210,16 +210,16 @@ export default function Home() {
       </div>
       <div style={{ background: surface }}>
         <div className="db-section" style={{ maxWidth: MAX_WIDTH, margin: '0 auto', padding: SECTION_PAD }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 40, flexWrap: 'wrap', gap: 12 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
             <div>
               <div style={{ fontSize: 10, letterSpacing: '2.5px', color: sky, textTransform: 'uppercase', marginBottom: 14 }}>Services</div>
               <h2 style={{ fontSize: 36, fontWeight: 500, color: navy, lineHeight: 1.1, letterSpacing: '-0.03em' }}>Tools built around how export teams actually work</h2>
             </div>
             <Link to="/services" style={{ fontSize: 13, color: sky, textDecoration: 'none', fontWeight: 500, whiteSpace: 'nowrap', flexShrink: 0 }}>All services →</Link>
           </div>
-          <div className="db-three-col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 1, background: border, borderRadius: 12, overflow: 'hidden' }}>
+          <div className="db-three-col" style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 1, background: border, borderRadius: 12, overflow: 'hidden' }}>
             {serviceHighlights.map((s, i) => (
-              <div key={i} style={{ background: 'white', padding: '24px 20px' }}>
+              <div key={i} style={{ background: 'white', padding: '24px 20px', paddingBottom: '100px'}}>
                 <div style={{ fontSize: 10, letterSpacing: 2, color: sky, textTransform: 'uppercase', marginBottom: 8, fontWeight: 500 }}>{s.num}</div>
                 <div style={{ fontSize: 14, fontWeight: 500, color: navy, marginBottom: 6 }}>{s.title}</div>
                 <div style={{ fontSize: 13, color: slate, lineHeight: 1.7 }}>{s.text}</div>
