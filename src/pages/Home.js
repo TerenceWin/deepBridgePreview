@@ -243,7 +243,7 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div style={{ background: surface }}>
+      <div style={{ background: surface, margin: '0 0 50px 0' }}>
         <div className="db-section-sm" style={{ maxWidth: MAX_WIDTH, margin: '0 auto', padding: SECTION_PAD_SM }}>
           <div className="db-cta-card" style={{ background: navy, borderRadius: 16, padding: '60px 64px', display: 'grid', gridTemplateColumns: '1fr auto', gap: 48, alignItems: 'center' }}>
             <div>

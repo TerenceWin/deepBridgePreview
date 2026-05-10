@@ -15,6 +15,9 @@ import bugZapper12 from '../images/catalogGenerator/bugZapper12.jpeg';
 import bugZapper13 from '../images/catalogGenerator/bugZapper13.jpeg';
 import bugZapper14 from '../images/catalogGenerator/bugZapper14.jpeg';
 
+const navy = '#0A2540';
+const slate = '#5A6E85';
+
 export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
     const tabs = ["Factory Finder", "Generate Quotation", "Handle Files", "Catalog Generator"];
 
@@ -48,6 +51,105 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
     const [catalogProcessed, setCatalogProcessed] = useState(false);
     const [stagedHandleFile, setStagedHandleFile] = useState(null);
     const [demoTriggered, setDemoTriggered] = useState(false);
+    const [overlayMounted, setOverlayMounted] = useState(true);
+    const [overlayFadeIn, setOverlayFadeIn] = useState(true);
+    const overlayDismissedRef = useRef(false);
+    const overlayTimeoutRef = useRef(null);
+    const [guideStep, setGuideStep] = useState(null);
+    const [guideWatchMode, setGuideWatchMode] = useState(false);
+    const tabWalkthroughShownRef = useRef(new Set());
+    const tabWalkthroughTimerRef = useRef(null);
+
+    const guideSteps = [
+      {
+        label: 'UI Guide',
+        title: 'Chat Section',
+        text: "This is your main workspace. Messages from you and Deep Bridge's AI appear here as you interact with the demo in real time.",
+        style: { top: '43%', left: '50%', transform: 'translate(-50%, -50%)' },
+        width: 520,
+        textSizeBoost: 2,
+        arrow: null,
+      },
+      {
+        label: 'UI Guide',
+        title: 'Tool Switcher',
+        text: 'Switch between workflows — Factory Finder, Generate Quotation, Handle Files, and Catalog Generator — to explore each capability.',
+        style: { bottom: 90, left: 40 },
+        width: 260,
+        arrow: 'down-left',
+      },
+      {
+        label: 'UI Guide',
+        title: 'Upload',
+        text: 'Attach files or images here. Handle Files expects a PowerPoint; Catalog Generator uses product photos.',
+        style: { bottom: 90, left: 220 },
+        width: 260,
+        arrow: 'down-left',
+      },
+      {
+        label: 'UI Guide',
+        title: 'Textarea & Send',
+        text: 'A prompt is pre-filled for each tool. Hit Send to submit it, or edit the text first to try your own inputs.',
+        style: { bottom: 90, right: 40 },
+        width: 260,
+        arrow: 'down-right',
+      },
+      {
+        label: 'Tab Walkthrough',
+        title: 'Factory Finder',
+        prompt: 'The user provided a product type, OEM requirement, minimum order quantity constraint, and a sourcing region — giving the AI enough context to filter suppliers with precision.',
+        output: 'The AI identified matching suppliers and returned each with their company name, product images, a capability summary, and a direct link to their website for immediate follow-up.',
+        background: 'Queried an online supplier index and internal database simultaneously, applied filters for product category, region, and MOQ threshold, then ranked results by relevance.',
+        style: { bottom: 120, right: 40 },
+        width: 320,
+        arrow: null,
+      },
+      {
+        label: 'Tab Walkthrough',
+        title: 'Generate Quotation',
+        prompt: 'The user asked a conversational product availability question — no product code or structured query needed. This shows the AI can interpret intent and search the catalogue naturally.',
+        output: 'The AI located a recently added matching product and returned a full commercial card — unit price, MOQ, technical specifications, and compliance certifications — ready to quote directly to a customer.',
+        background: 'Scanned the product catalogue for recently added items, matched against the product category from the natural language query, and surfaced structured commercial data for immediate use.',
+        style: { bottom: 120, right: 40  },
+        width: 320,
+        arrow: null,
+      },
+      {
+        label: 'Tab Walkthrough',
+        title: 'Handle Files',
+        prompt: 'The user uploaded a supplier PowerPoint — the kind of unstructured file that would typically require manual reading. The AI is instructed to extract and organise its contents.',
+        output: 'The AI parsed the file and returned a structured document summary, pulling product name, specifications, certifications, pricing, and MOQ into a searchable record with a document ID for follow-up queries.',
+        background: 'Read and structured slide content from the uploaded PPTX, identified key commercial fields across slides, and stored the result so follow-up questions can reference any extracted detail.',
+        style: { bottom: 120, right: 40  },
+        width: 320,
+        arrow: null,
+      },
+      {
+        label: 'Tab Walkthrough',
+        title: 'Catalog Generator',
+        prompt: 'The user described the desired visual context in plain language — outdoor usage — rather than specifying image parameters. The AI interprets the creative intent and generates accordingly.',
+        output: 'The AI produced commercial-grade lifestyle images placing the product in realistic outdoor environments, ready for use in marketing materials or customer-facing catalogues.',
+        background: 'Analysed the uploaded product photos to understand the subject, then applied AI image generation to match the described environment, lighting, and usage context.',
+        style: {  bottom: 120, right: 40 },
+        width: 320,
+        arrow: null,
+      },
+    ];
+
+    const showOverlayFn = () => {
+      if (overlayDismissedRef.current) return;
+      clearTimeout(overlayTimeoutRef.current);
+      setOverlayMounted(true);
+      setOverlayFadeIn(true);
+    };
+    const hideOverlayFn = () => {
+      setOverlayFadeIn(false);
+      overlayTimeoutRef.current = setTimeout(() => setOverlayMounted(false), 300);
+    };
+    const dismissOverlayFn = () => {
+      overlayDismissedRef.current = true;
+      hideOverlayFn();
+    };
     const catalogUploadImages = [bugZapper9, bugZapper10, bugZapper11, bugZapper12, bugZapper13, bugZapper14];
     const handleFilesItems = [
       { file: handleFiles1, name: 'handleFiles1.pptx' },
@@ -148,6 +250,27 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
       }, 100);
       return () => clearInterval(id);
     }, [isAiTyping]);
+
+    // Auto-show tab walkthrough bubbles after each tab's stage 0 animation completes
+    useEffect(() => {
+      if (!guideWatchMode || isAiTyping || messages.length === 0) return;
+      const stage = userStages[selectedUser.name] ?? 0;
+      const shown = tabWalkthroughShownRef.current;
+      let stepToShow = null;
+      if (currentTab === 'Factory Finder' && stage >= 1 && !shown.has('Factory Finder')) {
+        shown.add('Factory Finder'); stepToShow = 4;
+      } else if (currentTab === 'Generate Quotation' && stage >= 1 && !shown.has('Generate Quotation')) {
+        shown.add('Generate Quotation'); stepToShow = 5;
+      } else if (currentTab === 'Handle Files' && processedFile !== null && !shown.has('Handle Files')) {
+        shown.add('Handle Files'); stepToShow = 6;
+      } else if (currentTab === 'Catalog Generator' && stage >= 2 && !shown.has('Catalog Generator')) {
+        shown.add('Catalog Generator'); stepToShow = 7;
+      }
+      if (stepToShow === null) return;
+      // Store timer in a ref so effect re-runs don't cancel it via cleanup
+      clearTimeout(tabWalkthroughTimerRef.current);
+      tabWalkthroughTimerRef.current = setTimeout(() => setGuideStep(stepToShow), 600);
+    }, [guideWatchMode, isAiTyping, currentTab, userStages, messages, processedFile]);
 
     useEffect(() => {
       const handleClickOutside = (e) => {
@@ -361,10 +484,83 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
           @keyframes thinkingBounce { 0%, 80%, 100% { transform: scale(0.4); opacity: 0.4; } 40% { transform: scale(1); opacity: 1; } }
           @keyframes clickMePulse { 0%, 100% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.12); } }
           @keyframes sendButtonPulse { 0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(8,37,63,0.5); } 50% { transform: scale(1.05); box-shadow: 0 0 0 6px rgba(8,37,63,0); } }
+          .db-overlay-btn { transition: transform 0.2s ease; }
+          .db-overlay-btn:hover { transform: translateY(-2px); }
+          .db-rotating-border { overflow: hidden; }
+          .db-rotating-border::before {
+            content: '';
+            position: absolute;
+            inset: -100%;
+            background: conic-gradient(from 0deg, transparent 0deg, rgba(255,255,255,0.95) 40deg, transparent 80deg);
+            animation: spinBorder 4s linear infinite;
+          }
+          @keyframes spinBorder { to { transform: rotate(360deg); } }
         `}</style>
 
           {/*Hero Section*/}
-          <div style={{ width: '100%', backgroundColor: 'rgba(255,255,255, 0.1)', borderRadius: 12, padding: 10, boxSizing: 'border-box' }} onClick={stopAnimation}>
+          <div
+            style={{ width: '100%', backgroundColor: 'rgba(255,255,255, 0.1)', borderRadius: 12, padding: 10, boxSizing: 'border-box', position: 'relative' }}
+            onClick={stopAnimation}
+          >
+            {overlayMounted && (
+              <div className="db-rotating-border" style={{ position: 'absolute', inset: 0, borderRadius: 12, zIndex: 100, animation: `${overlayFadeIn ? 'fadeIn' : 'fadeOut'} 0.3s ease forwards`, boxShadow: '0 0 30px rgba(255,255,255,0.12), 0 0 60px rgba(255,255,255,0.06)' }}>
+                <div style={{ position: 'absolute', inset: 5, borderRadius: 10, background: 'linear-gradient(135deg, #0e304e 0%, #092540 20%, #021527 100%)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 20 }}>
+                  <p style={{ color: 'white', fontSize: 48, fontWeight: 500, margin: 0, letterSpacing: '-0.01em' }}>How would you like to get started?</p>
+                  <div style={{ display: 'flex', gap: 52 }}>
+                    <button className="db-overlay-btn" onClick={() => { dismissOverlayFn(); setGuideStep(0); }} style={{ padding: '15px 32px', fontSize: 18, fontWeight: 600, background: 'white', color: '#092540', border: '1px solid #e2e8f0', borderRadius: 8, cursor: 'pointer', fontFamily: 'inherit', boxShadow: '0 4px 16px rgba(9,37,64,0.12), 0 1px 4px rgba(9,37,64,0.08)' }}>
+                      Use a Guide
+                    </button>
+                    <button className="db-overlay-btn" onClick={dismissOverlayFn} style={{ padding: '15px 32px', fontSize: 18, fontWeight: 600, background: 'transparent', color: 'white', border: '1px solid white', borderRadius: 8, cursor: 'pointer', fontFamily: 'inherit' }}>
+                      Demo myself
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+            {guideStep !== null && (() => {
+              const step = guideSteps[guideStep];
+              const b = step.textSizeBoost ?? 0;
+              return (
+                <div key={guideStep} style={{ position: 'absolute', ...step.style, zIndex: 99, width: step.width ?? 300, background: 'white', borderRadius: 10, padding: '16px 20px', boxShadow: '0 8px 32px rgba(0,0,0,0.2)', animation: 'fadeIn 0.25s ease forwards' }}>
+                  <div style={{ fontSize: 10 + b, color: '#29ABE2', letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 6 }}>{step.label} · Step {guideStep + 1} of {guideSteps.length}</div>
+                  <div style={{ fontSize: 13 + b, fontWeight: 600, color: navy, marginBottom: 8 }}>{step.title}</div>
+                  {step.prompt ? (
+                    <>
+                      <div style={{ background: '#f3f4f6', borderRadius: 6, padding: '6px 10px', fontSize: 11 + b, color: '#374151', marginBottom: 10, fontStyle: 'italic' }}>"{step.prompt}"</div>
+                      <div style={{ fontSize: 12 + b, color: slate, lineHeight: 1.65, marginBottom: 10 }}><span style={{ fontWeight: 600, color: navy }}>Response: </span>{step.output}</div>
+                      <div style={{ fontSize: 11 + b, color: '#8A9BB0', lineHeight: 1.6, borderTop: '1px solid #e5e7eb', paddingTop: 8 }}>
+                        <i className="fas fa-cog" style={{ marginRight: 5, fontSize: 10 + b }} />{step.background}
+                      </div>
+                    </>
+                  ) : (
+                    <div style={{ fontSize: 13 + b, color: slate, lineHeight: 1.7 }}>{step.text}</div>
+                  )}
+                  <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 14 }}>
+                    <button
+                      onClick={() => {
+                        if (guideStep === 3) {
+                          setGuideStep(null);
+                          setGuideWatchMode(true);
+                        } else if (guideStep >= 4) {
+                          setGuideStep(null);
+                        } else {
+                          setGuideStep(guideStep + 1);
+                        }
+                      }}
+                      style={{ padding: '7px 16px', fontSize: 12 + b, fontWeight: 600, background: navy, color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontFamily: 'inherit' }}
+                    >
+                      {guideStep === 3 ? 'Start Exploring →' : guideStep >= 4 ? 'Got it' : 'Next →'}
+                    </button>
+                  </div>
+                  {step.arrow === 'down-left' && (
+                    <div style={{ position: 'absolute', bottom: -8, left: 20, width: 0, height: 0, borderLeft: '8px solid transparent', borderRight: '8px solid transparent', borderTop: '8px solid white' }} />
+                  )}
+                  {step.arrow === 'down-right' && (
+                    <div style={{ position: 'absolute', bottom: -8, right: 20, width: 0, height: 0, borderLeft: '8px solid transparent', borderRight: '8px solid transparent', borderTop: '8px solid white' }} />
+                  )}
+                </div>
+              );
+            })()}
             <div style={{ width: '100%', backgroundColor: '#08253f', borderRadius: 8, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: 5, overflow: 'hidden', fontFamily: 'inherit', padding: 10, boxSizing: 'border-box' }}>
 
               {/*Chat Section*/}
@@ -560,18 +756,24 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop }){
                         onKeyDown={e => {
                           const stage = userStages[selectedUser.name] ?? 0;
                           const hideSend = !(catalogProcessed || stagedHandleFile) && stage === 0 && (currentTab === tabs[2] || currentTab === tabs[3]);
-                          if (e.key === 'Enter' && !hideSend) handleSend();
+                          if (e.key === 'Enter' && !hideSend && !(guideStep !== null && guideStep <= 3)) handleSend();
                         }}
                         style={{ flex: 1, fontSize: 13, padding: '8px 12px', border: '1px solid #d1d5db', borderRadius: 6, color: 'black', background: 'white', fontFamily: 'inherit'}}
                         value={typingText}
                       />
                       {!((!(catalogProcessed || stagedHandleFile) && (userStages[selectedUser.name] ?? 0) === 0) && (currentTab === tabs[2] || currentTab === tabs[3])) && (
                         <div style={{ position: 'relative', display: 'inline-block' }}>
-                          <button
-                            style={{ fontSize: 14, fontWeight: 600, padding: '8px', background: '#08253f', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontFamily: 'inherit', animation: !isAiTyping ? 'sendButtonPulse 1.5s ease-in-out infinite' : 'none' }}
-                            onClick={() => handleSend()}>
-                            Send
-                          </button>
+                          {(() => {
+                            const inUIGuide = guideStep !== null && guideStep <= 3;
+                            return (
+                              <button
+                                disabled={inUIGuide}
+                                style={{ fontSize: 14, fontWeight: 600, padding: '8px', background: inUIGuide ? '#9ca3af' : '#08253f', color: 'white', border: 'none', borderRadius: 6, cursor: inUIGuide ? 'not-allowed' : 'pointer', fontFamily: 'inherit', animation: !isAiTyping && !inUIGuide ? 'sendButtonPulse 1.5s ease-in-out infinite' : 'none' }}
+                                onClick={() => !inUIGuide && handleSend()}>
+                                Send
+                              </button>
+                            );
+                          })()}
                         </div>
                       )}
                     </div>
