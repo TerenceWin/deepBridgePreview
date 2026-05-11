@@ -130,7 +130,7 @@ function StorageBar({ cumFiles, overage }) {
   const pct      = Math.min((cumFiles / STORAGE_THRESHOLD) * 100, 100);
   const barColor = overage > 0 ? red : green;
   return (
-    <div style={{ marginBottom: 10 }}>
+    <div style={{ marginBottom: 10, marginTop: 0}}>
       <div style={{ height: 3, background: ruleStrong, borderRadius: 2, overflow: 'hidden' }}>
         <div style={{ height: '100%', width: `${pct}%`, background: barColor, borderRadius: 2, transition: 'width 0.3s, background 0.3s' }} />
       </div>
@@ -192,16 +192,15 @@ function CapIndicator({ current, theoretical, demand }) {
 // ─── main component ───────────────────────────────────────────────────────────
 export default function ImpactCalculator({ onDemo }) {
   const [tab, setTab] = useState('cost');
-  const [showFormulas, setShowFormulas] = useState(true);
+  const [showFormulas, setShowFormulas] = useState(false);
+  const [showAssumptions, setShowAssumptions] = useState(false);
 
   const [costInputs, setCostInputs] = useState({
     avgMonthlySalary:        28000,
-    designerMonthlySalary:   35000,
     quotationsPerMonth:        150,
     supplierOffersPerMonth:    200,
     catalogsPerMonth:           20,
     documentsCheckedPerMonth:  100,
-    monthsUsingDB:               6,
   });
 
   const [revenueInputs, setRevenueInputs] = useState({
@@ -213,10 +212,9 @@ export default function ImpactCalculator({ onDemo }) {
 
   // ── cost model (HTML algorithm) ────────────────────────────────────────────
   const cost = useMemo(() => {
-    const { avgMonthlySalary: sal, designerMonthlySalary: dsal,
+    const { avgMonthlySalary: sal,
             quotationsPerMonth: q, supplierOffersPerMonth: sp,
-            catalogsPerMonth: c, documentsCheckedPerMonth: d,
-            monthsUsingDB: mo } = costInputs;
+            catalogsPerMonth: c, documentsCheckedPerMonth: d } = costInputs;
 
     // hourly wage
     const hw = sal / HOURS_PER_MONTH;
@@ -224,7 +222,7 @@ export default function ImpactCalculator({ onDemo }) {
     // savings
     const qSav  = q  * QUOTATION_HOURS * hw;   // q × 0.4h × hourly wage
     const sSav  = sp * SUPPLIER_HOURS  * hw;   // sp × 0.4h × hourly wage
-    const cSav  = c  * (dsal / 8);             // c × (designer salary ÷ 8)
+    const cSav  = c  * (sal / 8);              // c × (salary ÷ 8)
     const dSav  = d  * DOCUMENT_HOURS  * hw;   // d × 0.5h × hourly wage
     const gross = qSav + sSav + cSav + dSav;
 
@@ -243,8 +241,7 @@ export default function ImpactCalculator({ onDemo }) {
     const compute = q * QUOTE_RATE + sp * SUPPLIER_RATE + c * CATALOG_RATE + d * DOC_RATE;
 
     // storage
-    const filesPerMonth = q + sp + c + d;
-    const cumFiles      = filesPerMonth * mo;
+    const cumFiles = d * 10;
     const overage       = Math.max(0, cumFiles - STORAGE_THRESHOLD);
     const storageCost   = overage * STORAGE_RATE;
 
@@ -257,7 +254,7 @@ export default function ImpactCalculator({ onDemo }) {
       hw, qSav, sSav, cSav, dSav, gross,
       qHrs, sHrs, dHrs, cDesignerMonths,
       qFTE, sFTE, dFTE,
-      compute, filesPerMonth, cumFiles, overage, storageCost,
+      compute, cumFiles, overage, storageCost,
       dbTotal, net, roi,
     };
   }, [costInputs]);
@@ -312,27 +309,27 @@ export default function ImpactCalculator({ onDemo }) {
 
       {/* ── COST TAB ── */}
       {tab === 'cost' && (
-        <div style={{ display: 'grid', gridTemplateColumns: '548px 548px', gap: 20, alignItems: 'start' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '548px 548px', gap: 20, alignItems: 'stretch' }}>
 
           {/* left — inputs */}
-          <div style={{ background: '#fff', border: `1px solid ${rule}`, borderRadius: 3, padding: '28px 24px' }}>
+          <div style={{ background: '#fff', border: `1px solid ${rule}`, borderRadius: 3, padding: '28px 24px', display: 'flex', flexDirection: 'column' }}>
             <div style={{ fontFamily: fontBody, fontSize: 18, fontWeight: 400, color: navy, marginBottom: 4 }}>Your team</div>
             <div style={{ fontFamily: fontBody, fontSize: 13, fontWeight: 300, color: slate, marginBottom: 24, lineHeight: 1.7 }}>Adjust to reflect your monthly activity.</div>
 
-            <Slider label="Monthly salary per person (HKD)"    value={c.avgMonthlySalary}        min={10000} max={80000} step={500}  onChange={e => setCostInputs({ ...c, avgMonthlySalary:        +e.target.value })} />
-            <Slider label="Designer monthly salary (HKD)"      value={c.designerMonthlySalary}   min={10000} max={80000} step={500}  onChange={e => setCostInputs({ ...c, designerMonthlySalary:   +e.target.value })} />
+            <Slider label="Monthly salary (HKD)"                value={c.avgMonthlySalary}        min={10000} max={80000} step={500}  onChange={e => setCostInputs({ ...c, avgMonthlySalary:        +e.target.value })} />
 
             <div style={{ fontFamily: fontBody, fontSize: 9, letterSpacing: '2px', color: slateLight, textTransform: 'uppercase', margin: '4px 0 14px' }}>Monthly volume</div>
 
             <Slider label="Quotations prepared"     value={c.quotationsPerMonth}        min={5}  max={500} step={5}   onChange={e => setCostInputs({ ...c, quotationsPerMonth:        +e.target.value })} />
             <Slider label="Supplier offers parsed"  value={c.supplierOffersPerMonth}    min={5}  max={600} step={5}   onChange={e => setCostInputs({ ...c, supplierOffersPerMonth:    +e.target.value })} />
             <Slider label="Catalogs / brochures"    value={c.catalogsPerMonth}          min={1}  max={80}  step={1}   onChange={e => setCostInputs({ ...c, catalogsPerMonth:          +e.target.value })} />
-            <Slider label="Documents checked"       value={c.documentsCheckedPerMonth}  min={10} max={400} step={10}  onChange={e => setCostInputs({ ...c, documentsCheckedPerMonth:  +e.target.value })} />
+            <Slider label="Documents checked"       value={c.documentsCheckedPerMonth}  min={10} max={400} step={10}  onChange={e => setCostInputs({ ...c, documentsCheckedPerMonth:  +e.target.value })} 
+              />
 
-            <div style={{ fontFamily: fontBody, fontSize: 9, letterSpacing: '2px', color: slateLight, textTransform: 'uppercase', margin: '4px 0 14px' }}>Platform tenure</div>
-
-            <div style={{ marginBottom: 8 }}>
-              <Slider label="Months using Deep Bridge" value={c.monthsUsingDB} min={1} max={36} step={1} onChange={e => setCostInputs({ ...c, monthsUsingDB: +e.target.value })} />
+            <div style={{ marginTop: 'auto' }}>
+              <div style={{ marginBottom: 6 }}>
+                <label style={{ fontFamily: fontBody, fontSize: 13, color: slate, fontWeight: 300 }}>Storage Bar</label>
+              </div>
               <StorageBar cumFiles={cost.cumFiles} overage={cost.overage} />
             </div>
 
@@ -352,7 +349,7 @@ export default function ImpactCalculator({ onDemo }) {
                   <div><Pill>hourly wage = salary ÷ 160h</Pill></div>
                   <div><Pill>quotation saving = n × 0.4h × hourly wage</Pill></div>
                   <div><Pill>supplier saving = n × 0.4h × hourly wage</Pill></div>
-                  <div><Pill>catalog saving = n × (designer salary ÷ 8)</Pill></div>
+                  <div><Pill>catalog saving = n × (monthly salary ÷ 8)</Pill></div>
                   <div><Pill>document saving = n × 0.5h × hourly wage</Pill></div>
                   <div style={{ margin: '4px 0' }}><hr style={{ border: 'none', borderTop: `1px solid ${rule}` }} /></div>
                   <div><Pill color={amber}>DB cost = HK$6,000 base</Pill></div>
@@ -361,19 +358,18 @@ export default function ImpactCalculator({ onDemo }) {
                   <div><Pill color={amber}>+ catalogs × HK$20</Pill></div>
                   <div><Pill color={amber}>+ documents × HK$0.80</Pill></div>
                   <div style={{ margin: '4px 0' }}><hr style={{ border: 'none', borderTop: `1px solid ${rule}` }} /></div>
-                  <div><Pill color={red}>files/month = quotations + offers + catalogs + docs</Pill></div>
-                  <div><Pill color={red}>cumulative files = files/month × months</Pill></div>
-                  <div><Pill color={red}>storage overage = max(0, cumulative − 10,000) × HK$1</Pill></div>
+                  <div><Pill color={red}>files stored = documents checked × 10</Pill></div>
+                  <div><Pill color={red}>storage overage = max(0, files stored − 10,000) × HK$1</Pill></div>
                 </div>
               )}
             </div>
           </div>
 
           {/* right — outputs */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12, height: '100%' }}>
 
             {/* savings breakdown */}
-            <div style={{ background: '#fff', border: `1px solid ${rule}`, borderRadius: 3, padding: '20px 24px' }}>
+            <div style={{ background: '#fff', border: `1px solid ${rule}`, borderRadius: 3, padding: '20px 24px', flex: 1 }}>
               <div style={{ fontFamily: fontBody, fontSize: 9, letterSpacing: '2px', color: slateLight, textTransform: 'uppercase', marginBottom: 14 }}>Savings breakdown</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 16 }}>
                 <SavingsRow
@@ -392,7 +388,7 @@ export default function ImpactCalculator({ onDemo }) {
                 />
                 <SavingsRow
                   name="Catalog creation"
-                  formula={`${c.catalogsPerMonth} × (HK$${c.designerMonthlySalary.toLocaleString()} ÷ 8)`}
+                  formula={`${c.catalogsPerMonth} × (HK$${c.avgMonthlySalary.toLocaleString()} ÷ 8)`}
                   hoursLabel={`${cost.cDesignerMonths.toFixed(1)} designer-months`}
                   fteLabel={`${cost.cDesignerMonths.toFixed(1)} designer-months`}
                   amount={currency(cost.cSav)}
@@ -446,11 +442,23 @@ export default function ImpactCalculator({ onDemo }) {
             <Slider label="Quoteable opportunities per month"    value={revenueInputs.quoteableOpportunities}   min={10}    max={600}    step={5}     onChange={e => setRevenueInputs({ ...revenueInputs, quoteableOpportunities:   +e.target.value })} />
             <Slider label="Conversion rate"                      value={revenueInputs.conversionRate}           min={1}     max={60}     step={1} suffix="%" onChange={e => setRevenueInputs({ ...revenueInputs, conversionRate:           +e.target.value })} />
             <Slider label="Average order value (HKD)"            value={revenueInputs.averageOrderValue}        min={20000} max={300000} step={5000}  onChange={e => setRevenueInputs({ ...revenueInputs, averageOrderValue:         +e.target.value })} />
-            <div style={{ borderTop: `1px solid ${rule}`, paddingTop: 16, marginTop: 4 }}>
-              <div style={{ fontFamily: fontBody, fontSize: 9, letterSpacing: '2px', color: slateLight, textTransform: 'uppercase', marginBottom: 10 }}>Assumptions</div>
-              <AssumptionNote>Quote prep drops from 30 to 10 minutes — 3× capacity for the same team.</AssumptionNote>
-              <AssumptionNote>Projected quotations = lower of theoretical capacity or quoteable opportunities.</AssumptionNote>
-              <AssumptionNote>Conversion rate and order value stay constant. Scenario model only.</AssumptionNote>
+            <div style={{ borderTop: `1px solid ${rule}`, paddingTop: 14, marginTop: 4 }}>
+              <button
+                onClick={() => setShowAssumptions(v => !v)}
+                style={{ display: 'flex', alignItems: 'center', gap: 6, fontFamily: fontBody, fontSize: 10, fontWeight: 500, letterSpacing: '0.5px', color: blue, background: 'none', border: 'none', cursor: 'pointer', padding: 0, marginBottom: showAssumptions ? 12 : 0 }}
+              >
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none" style={{ transform: showAssumptions ? 'rotate(90deg)' : 'none', transition: 'transform 0.2s' }}>
+                  <path d="M3 1l4 4-4 4" stroke={blue} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                Assumptions
+              </button>
+              {showAssumptions && (
+                <>
+                  <AssumptionNote>Quote prep drops from 30 to 10 minutes — 3× capacity for the same team.</AssumptionNote>
+                  <AssumptionNote>Projected quotations = lower of theoretical capacity or quoteable opportunities.</AssumptionNote>
+                  <AssumptionNote>Conversion rate and order value stay constant. Scenario model only.</AssumptionNote>
+                </>
+              )}
             </div>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>

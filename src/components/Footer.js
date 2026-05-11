@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { LogoFavicon } from './LogoMark';
+import { useMaxWidth } from './layout';
 
 const nav = [
   { label: 'Services', to: '/services' },
@@ -11,9 +12,10 @@ const nav = [
 ];
 
 export default function Footer() {
+  const maxWidth = useMaxWidth();
   return (
     <footer style={{ background: '#0A2540', color: 'white' }}>
-      <div style={{ maxWidth: 960, margin: '0 auto', padding: '64px 48px 40px' }}>
+      <div style={{ maxWidth, margin: '0 auto', padding: '64px 72px 40px' }}>
         <div className="db-footer-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 48, marginBottom: 56 }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>

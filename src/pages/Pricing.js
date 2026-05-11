@@ -23,21 +23,30 @@ function Card({ plan, onDemo }) {
   const ctaColor = plan.ctaStyle === 'outline' ? navy : 'white';
   const ctaBorder = plan.ctaStyle === 'outline' ? `1.5px solid ${navy}` : 'none';
   return (
-    <div style={{ background: 'white', border: plan.featured ? `1.5px solid ${sky}` : `0.5px solid ${border}`, borderRadius: 14, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ background: 'white', border: plan.featured ? `1.5px solid ${sky}` : `0.5px solid ${border}`, borderRadius: 14, overflow: 'hidden', display: 'grid', gridRow: 'span 5', gridTemplateRows: 'subgrid' }}>
+      {/* Row 1: badge */}
       <div style={{ height: BADGE_H, background: plan.featured ? sky : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         {plan.featured && <span style={{ color: 'white', fontSize: 10, letterSpacing: '2px', textTransform: 'uppercase', fontWeight: 500 }}>Recommended</span>}
       </div>
+      {/* Row 2: header */}
       <div style={{ padding: '20px 24px 16px', borderBottom: `0.5px solid ${border}` }}>
         <div style={{ fontSize: 10, letterSpacing: 2, color: sky, textTransform: 'uppercase', marginBottom: 8, fontWeight: 500 }}>{plan.num}</div>
         <div style={{ fontSize: 20, fontWeight: 500, color: navy, marginBottom: 6 }}>{plan.title}</div>
         <div style={{ fontSize: 13, color: slate, lineHeight: 1.6, marginBottom: 16 }}>{plan.tagline}</div>
         <div><span style={{ fontSize: 18, fontWeight: 500, color: navy }}>{plan.price}</span><span style={{ fontSize: 12, color: slate, marginLeft: 6, display: 'block', marginTop: 2 }}>{plan.period}</span></div>
       </div>
-      <div style={{ padding: '18px 24px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+      {/* Row 3: best for */}
+      <div style={{ padding: '18px 24px 20px' }}>
         <div style={{ fontSize: 10, letterSpacing: 2, color: slate, textTransform: 'uppercase', marginBottom: 10 }}>Best for</div>
-        <ul style={{ listStyle: 'none', marginBottom: 18 }}>{plan.bestFor.map((item, i) => (<li key={i} style={{ fontSize: 13, color: slate, lineHeight: 1.7, padding: '4px 0 4px 16px', position: 'relative', borderBottom: '0.5px solid #f0f0ec' }}><span style={{ position: 'absolute', left: 0, top: 11, width: 5, height: 5, borderRadius: '50%', background: sky, opacity: 0.5, display: 'inline-block' }} />{item}</li>))}</ul>
+        <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>{plan.bestFor.map((item, i) => (<li key={i} style={{ fontSize: 13, color: slate, lineHeight: 1.7, padding: '4px 0 4px 16px', position: 'relative', borderBottom: '0.5px solid #f0f0ec' }}><span style={{ position: 'absolute', left: 0, top: 11, width: 5, height: 5, borderRadius: '50%', background: sky, opacity: 0.5, display: 'inline-block' }} />{item}</li>))}</ul>
+      </div>
+      {/* Row 4: includes */}
+      <div style={{ padding: '30px 24px 0', borderTop: `0.5px solid ${border}` }}>
         <div style={{ fontSize: 10, letterSpacing: 2, color: slate, textTransform: 'uppercase', marginBottom: 10 }}>{plan.includesLabel}</div>
-        <ul style={{ listStyle: 'none', marginBottom: 18, flex: 1 }}>{plan.includes.map((item, i) => (<li key={i} style={{ fontSize: 13, color: slate, lineHeight: 1.7, padding: '4px 0 4px 16px', position: 'relative', borderBottom: '0.5px solid #f0f0ec' }}><span style={{ position: 'absolute', left: 0, top: 12, width: 4, height: 4, borderRadius: 1, background: navy, display: 'inline-block' }} />{item}</li>))}</ul>
+        <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>{plan.includes.map((item, i) => (<li key={i} style={{ fontSize: 13, color: slate, lineHeight: 1.7, padding: '4px 0 4px 16px', position: 'relative', borderBottom: '0.5px solid #f0f0ec' }}><span style={{ position: 'absolute', left: 0, top: 12, width: 4, height: 4, borderRadius: 1, background: navy, display: 'inline-block' }} />{item}</li>))}</ul>
+      </div>
+      {/* Row 5: CTA */}
+      <div style={{ padding: '18px 24px' }}>
         <button onClick={onDemo} style={{ display: 'block', width: '100%', padding: '12px', borderRadius: 8, fontSize: 13, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit', background: ctaBg, color: ctaColor, border: ctaBorder }}>{plan.cta}</button>
       </div>
     </div>
