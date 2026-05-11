@@ -1,6 +1,6 @@
 import React from 'react';
 import PageHero from '../components/PageHero';
-import { MAX_WIDTH, SECTION_PAD, SECTION_PAD_SM } from '../components/layout';
+import { useMaxWidth, SECTION_PAD, SECTION_PAD_SM } from '../components/layout';
 
 const sky = '#29ABE2';
 const navy = '#0A2540';
@@ -100,6 +100,7 @@ function PartnerCard({ partner, flipped }) {
 }
 
 export default function Partner() {
+  const maxWidth = useMaxWidth();
   return (
     <div style={{ background: '#F7F5F0' }}>
       <PageHero
@@ -111,7 +112,7 @@ export default function Partner() {
 
       {/* TWO PARTNER CARDS */}
       <div style={{ background: surface }}>
-        <div className="db-section" style={{ maxWidth: MAX_WIDTH, margin: '0 auto', padding: SECTION_PAD }}>
+        <div className="db-section" style={{ maxWidth: maxWidth, margin: '0 auto', padding: SECTION_PAD }}>
           <div style={{ fontSize: 10, letterSpacing: '2.5px', color: slate, textTransform: 'uppercase', marginBottom: 40 }}>Partnership types</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
             {partners.map((p, i) => (
@@ -177,7 +178,7 @@ export default function Partner() {
 
       {/* CONTACT */}
       <div style={{ background: navy }}>
-        <div style={{ maxWidth: MAX_WIDTH, margin: '0 auto', padding: '72px 48px' }}>
+        <div style={{ maxWidth: maxWidth, margin: '0 auto', padding: '72px 48px' }}>
           <div className="db-two-col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'center' }}>
             <div>
               <div style={{ fontSize: 11, letterSpacing: '2.5px', color: sky, textTransform: 'uppercase', marginBottom: 16 }}>Interested in working together?</div>

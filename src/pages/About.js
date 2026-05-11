@@ -1,6 +1,6 @@
 import React from 'react';
 import PageHero from '../components/PageHero';
-import { MAX_WIDTH, SECTION_PAD, SECTION_PAD_SM } from '../components/layout';
+import { useMaxWidth, SECTION_PAD, SECTION_PAD_SM } from '../components/layout';
 
 const sky = '#29ABE2';
 const navy = '#0A2540';
@@ -19,11 +19,12 @@ const beliefs = [
 const pillars = ['Operations', 'Technology', 'Research', 'Industry knowledge'];
 
 export default function About() {
+  const maxWidth = useMaxWidth();
   return (
     <div style={{ background: '#F7F5F0' }}>
       <PageHero label="About Deep Bridge" title="Built from inside the export business" subtitle="Deep Bridge began with firsthand experience inside a trading company. We saw how much of the day-to-day work was still handled manually across inboxes, spreadsheets, and disconnected files." dark />
       <div style={{ background: 'white' }}>
-        <div style={{ maxWidth: MAX_WIDTH, margin: '0 auto', padding: SECTION_PAD }}>
+        <div style={{ maxWidth: maxWidth, margin: '0 auto', padding: SECTION_PAD }}>
           <div className="db-one-two" style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: 72 }}>
             <div><div style={{ fontSize: 10, letterSpacing: '2.5px', color: sky, textTransform: 'uppercase', marginBottom: 18 }}>Our story</div><h2 style={{ fontSize: 28, fontWeight: 500, color: navy, lineHeight: 1.1, letterSpacing: '-0.03em' }}>We did not start by trying to build a software company</h2></div>
             <div>
@@ -35,7 +36,7 @@ export default function About() {
         </div>
       </div>
       <div style={{ background: surface }}>
-        <div style={{ maxWidth: MAX_WIDTH, margin: '0 auto', padding: SECTION_PAD }}>
+        <div style={{ maxWidth: maxWidth, margin: '0 auto', padding: SECTION_PAD }}>
           <div className="db-one-two" style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: 72 }}>
             <div><div style={{ fontSize: 10, letterSpacing: '2.5px', color: sky, textTransform: 'uppercase', marginBottom: 18 }}>Why we moved beyond trading</div><h2 style={{ fontSize: 28, fontWeight: 500, color: navy, lineHeight: 1.1, letterSpacing: '-0.03em' }}>Trade runs on trust, judgment, and relationships</h2></div>
             <div>
@@ -47,7 +48,7 @@ export default function About() {
         </div>
       </div>
       <div style={{ background: 'white' }}>
-        <div style={{ maxWidth: MAX_WIDTH, margin: '0 auto', padding: SECTION_PAD }}>
+        <div style={{ maxWidth: maxWidth, margin: '0 auto', padding: SECTION_PAD }}>
           <div className="db-two-col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 72, alignItems: 'center' }}>
             <div>
               <div style={{ fontSize: 10, letterSpacing: '2.5px', color: sky, textTransform: 'uppercase', marginBottom: 18 }}>Who we are</div>
@@ -62,7 +63,7 @@ export default function About() {
         </div>
       </div>
       <div style={{ background: navy }}>
-        <div style={{ maxWidth: MAX_WIDTH, margin: '0 auto', padding: SECTION_PAD }}>
+        <div style={{ maxWidth: maxWidth, margin: '0 auto', padding: SECTION_PAD }}>
           <div className="db-one-two" style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: 72, alignItems: 'start' }}>
             <div><div style={{ fontSize: 10, letterSpacing: '2.5px', color: sky, textTransform: 'uppercase', marginBottom: 18 }}>What we believe</div><h2 style={{ fontSize: 28, fontWeight: 500, color: 'white', lineHeight: 1.1, letterSpacing: '-0.03em' }}>The future of trade is not about replacing traders</h2></div>
             <div>

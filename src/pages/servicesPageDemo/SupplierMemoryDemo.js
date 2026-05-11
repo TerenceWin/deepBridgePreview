@@ -211,7 +211,7 @@ export default function SupplierMemoryDemo({ handleModal }) {
             setUploadDropdownOpen(true);
           }
         }}
-        style={{ width: 32, height: 32, border: '1px solid #d1d5db', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', background: 'white' }}
+        style={{ width: 32, height: 32, border: '1px solid #d1d5db', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', background: 'white', animation: hideSend && !isAiTyping ? 'demoSendPulse 1.5s ease-in-out infinite' : 'none' }}
       >
         <i className="fa fa-upload" style={{ fontSize: 16, color: '#1a2e44' }} />
       </div>

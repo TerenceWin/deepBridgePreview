@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import PageHero from '../components/PageHero';
-import { MAX_WIDTH, SECTION_PAD, SECTION_PAD_SM } from '../components/layout';
+import { useMaxWidth, SECTION_PAD, SECTION_PAD_SM } from '../components/layout';
 import DemoModal from '../components/DemoModal';
 import FactoryFinderDemo from './servicesPageDemo/FactoryFinderDemo.js';
 import QuotationWorkflowDemo from './servicesPageDemo/QuotationWorkflowDemo.js';
@@ -36,6 +36,7 @@ const FACTORY_FINDER_INDEX = 3;
 const CATALOG_INDEX = 4;
 
 export default function Services() {
+  const maxWidth = useMaxWidth();
   const [openIndex, setOpenIndex] = useState(null);
   const [modal, setModal] = useState(false);
 
@@ -46,7 +47,7 @@ export default function Services() {
       <DemoModal isOpen={modal} onClose={() => setModal(false)} />
       <PageHero label="Services" title="Core workflows for export teams" subtitle="Five tools built around how export teams actually work, from first enquiry to final follow-up." dark />
       <div style={{ background: 'white' }}>
-        <div style={{ maxWidth: MAX_WIDTH, margin: '0 auto', padding: SECTION_PAD }}>
+        <div style={{ maxWidth: maxWidth, margin: '0 auto', padding: SECTION_PAD }}>
           <div style={{ fontSize: 10, letterSpacing: '2.5px', color: sky, textTransform: 'uppercase', marginBottom: 32 }}>Core workflows</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 1, background: border, borderRadius: 12, overflow: 'hidden' }}>
             {services.map((s, i) => (
@@ -100,7 +101,7 @@ export default function Services() {
         </div>
       </div>
       <div style={{ background: surface }}>
-        <div style={{ maxWidth: MAX_WIDTH, margin: '0 auto', padding: SECTION_PAD_SM }}>
+        <div style={{ maxWidth: maxWidth, margin: '0 auto', padding: SECTION_PAD_SM }}>
           <div style={{ fontSize: 10, letterSpacing: '2.5px', color: '#8A9BB0', textTransform: 'uppercase', marginBottom: 28 }}>Coming soon</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
             {coming.map((c, i) => (

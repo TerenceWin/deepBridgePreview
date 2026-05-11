@@ -1,6 +1,6 @@
 import React from 'react';
 import PageHero from '../components/PageHero';
-import { MAX_WIDTH, SECTION_PAD, SECTION_PAD_SM } from '../components/layout';
+import { useMaxWidth, SECTION_PAD, SECTION_PAD_SM } from '../components/layout';
 
 const sky = '#29ABE2';
 const navy = '#0A2540';
@@ -52,11 +52,12 @@ function RoleCard({ role }) {
 }
 
 export default function Careers() {
+  const maxWidth = useMaxWidth();
   return (
     <div style={{ background: '#F7F5F0' }}>
       <PageHero label="Careers at Deep Bridge" title="Work on practical systems that improve real trade" subtitle="We are a small team building serious tools. If you want to see the direct impact of your work, this is the right environment." dark />
       <div style={{ background: 'white' }}>
-        <div style={{ maxWidth: MAX_WIDTH, margin: '0 auto', padding: SECTION_PAD }}>
+        <div style={{ maxWidth: maxWidth, margin: '0 auto', padding: SECTION_PAD }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 36 }}>
             <div style={{ fontSize: 10, letterSpacing: '2.5px', color: sky, textTransform: 'uppercase', fontWeight: 500 }}>Open positions</div>
             <span style={{ fontSize: 11, fontWeight: 500, background: sky, color: 'white', borderRadius: 20, padding: '2px 10px' }}>{openRoles.length}</span>
@@ -65,7 +66,7 @@ export default function Careers() {
         </div>
       </div>
       <div style={{ background: surface }}>
-        <div style={{ maxWidth: MAX_WIDTH, margin: '0 auto', padding: SECTION_PAD_SM }}>
+        <div style={{ maxWidth: maxWidth, margin: '0 auto', padding: SECTION_PAD_SM }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 36 }}>
             <div style={{ fontSize: 10, letterSpacing: '2.5px', color: slate, textTransform: 'uppercase', fontWeight: 500 }}>Closed positions</div>
             <span style={{ fontSize: 11, fontWeight: 500, background: '#ddd', color: '#888', borderRadius: 20, padding: '2px 10px' }}>{closedRoles.length}</span>
@@ -74,7 +75,7 @@ export default function Careers() {
         </div>
       </div>
       <div style={{ background: navy, padding: '56px 48px' }}>
-        <div style={{ maxWidth: MAX_WIDTH, margin: '0 auto' }}>
+        <div style={{ maxWidth: maxWidth, margin: '0 auto' }}>
           <div style={{ fontSize: 11, letterSpacing: '2.5px', color: sky, textTransform: 'uppercase', marginBottom: 14 }}>Don't see the right role?</div>
           <h2 style={{ fontSize: 24, fontWeight: 500, color: 'white', lineHeight: 1.2, letterSpacing: '-0.03em', marginBottom: 10 }}>We are always open to strong candidates</h2>
           <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.45)', lineHeight: 1.7 }}>Send your profile to <a href="mailto:careers@deep-bridge.com" style={{ color: sky }}>careers@deep-bridge.com</a> and we will be in touch.</p>

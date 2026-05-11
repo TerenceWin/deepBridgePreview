@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
+
 import PageHero from '../components/PageHero';
 import ImpactCalculator from '../components/ImpactCalculator';
 import DemoModal from '../components/DemoModal';
-import { MAX_WIDTH, SECTION_PAD, SECTION_PAD_SM } from '../components/layout';
+import { useMaxWidth, SECTION_PAD, SECTION_PAD_SM } from '../components/layout';
 
 const sky = '#29ABE2';
 const navy = '#0A2540';
@@ -44,25 +45,26 @@ function Card({ plan, onDemo }) {
 }
 
 export default function Pricing() {
+  const maxWidth = useMaxWidth();
   const [modal, setModal] = useState(false);
   return (
     <div style={{ background: '#F7F5F0' }}>
       <DemoModal isOpen={modal} onClose={() => setModal(false)} />
       <PageHero label="Pricing" title="Choose the setup that fits your workflow" subtitle="Whether you want to start with standard tools, need help with messy data, or want custom modules, Deep Bridge adapts to the way your business works." dark />
       <div style={{ background: surface }}>
-        <div className="db-section" style={{ maxWidth: MAX_WIDTH, margin: '0 auto', padding: SECTION_PAD }}>
+        <div className="db-section" style={{ maxWidth: maxWidth, margin: '0 auto', padding: SECTION_PAD }}>
           <div className="db-pricing-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 16, alignItems: 'stretch' }}>
             {plans.map((plan, i) => <Card key={i} plan={plan} onDemo={() => setModal(true)} />)}
           </div>
         </div>
       </div>
       <div style={{ background: 'white', borderTop: `0.5px solid ${border}`, borderBottom: `0.5px solid ${border}` }}>
-        <div className="db-section" style={{ maxWidth: MAX_WIDTH, margin: '0 auto', padding: SECTION_PAD }}>
+        <div className="db-section" style={{ maxWidth: maxWidth, margin: '0 auto', padding: SECTION_PAD }}>
           <ImpactCalculator onDemo={() => setModal(true)} />
         </div>
       </div>
       <div style={{ background: surface }}>
-        <div className="db-section-sm" style={{ maxWidth: MAX_WIDTH, margin: '0 auto', padding: SECTION_PAD_SM }}>
+        <div className="db-section-sm" style={{ maxWidth: maxWidth, margin: '0 auto', padding: SECTION_PAD_SM }}>
           <div style={{ background: navy, borderRadius: 14, padding: '36px 44px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 32, flexWrap: 'wrap' }}>
             <div>
               <div style={{ fontSize: 16, color: 'white', fontWeight: 400, marginBottom: 6 }}>Not sure which plan fits?</div>

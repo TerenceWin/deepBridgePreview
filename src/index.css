@@ -39,8 +39,7 @@ a { text-decoration: none; color: inherit; }
   .db-nav-links { display: none !important; }
   .db-nav-mobile-btn { display: flex !important; }
 
-  .db-hero { padding: 100px 24px 64px !important; min-height: auto !important; }
-  .db-hero h1 { font-size: 38px !important; }
+  .db-hero { padding: 100px 10px 64px !important; min-height: auto !important; }
   .db-hero p { font-size: 16px !important; }
   .db-hero-btns { flex-direction: column !important; }
   .db-hero-btns a, .db-hero-btns button { width: 100% !important; text-align: center !important; justify-content: center !important; }
@@ -74,7 +73,6 @@ a { text-decoration: none; color: inherit; }
 }
 
 @media (max-width: 480px) {
-  .db-hero h1 { font-size: 30px !important; }
   .db-three-col { grid-template-columns: 1fr !important; }
   .db-page-hero h1 { font-size: 28px !important; }
 }
