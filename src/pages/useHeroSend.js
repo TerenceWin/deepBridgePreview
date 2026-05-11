@@ -17,11 +17,12 @@ function countOutputChars(output) {
 
 export function useHeroSend({
   typingText, userStages, selectedUser, currentTab, tabs,
-  catalogProcessed, stagedHandleFile, processedFile,
+  catalogProcessed, stagedHandleFile, processedFile, stagedPackageImage,
   handleModal, typingIntervalRef, tabIntervalRef, aiTypingTimerRef,
   messageIdCounter, setIsAiTyping, setMessages, setTypingText, setUserTyped,
   setStagedCatalogImages, setProcessedFile, setStagedHandleFile,
   setUserStages, setCatalogProcessed, chatContainerRef, setDemoTriggered,
+  setStagedPackageImage,
 }) {
   function startAiTyping(output, onDone, overrideDuration) {
     clearTimeout(aiTypingTimerRef.current);
@@ -126,13 +127,13 @@ export function useHeroSend({
     }
 
     const thinkingId = ++messageIdCounter.current;
-    setMessages(prev => [...prev,
-      { role: 'user', text: typingText, user: selectedUser, id: ++messageIdCounter.current },
-      { role: 'ai', isThinking: true, id: thinkingId },
-    ]);
+    const userMsg = { role: 'user', text: typingText, user: selectedUser, id: ++messageIdCounter.current };
+    if (stagedPackageImage) userMsg.imageUpload = stagedPackageImage;
+    setMessages(prev => [...prev, userMsg, { role: 'ai', isThinking: true, id: thinkingId }]);
     setTypingText('');
     setUserTyped(true);
     setStagedCatalogImages([]);
+    setStagedPackageImage?.(null);
     setUserStages(prev => ({ ...prev, [selectedUser.name]: nextStage }));
     setTimeout(() => { if (chatContainerRef.current) chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight; }, 50);
     setTimeout(() => {

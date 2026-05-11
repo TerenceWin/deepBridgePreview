@@ -97,7 +97,7 @@ export default function DemoModal({ isOpen, onClose }) {
       >
         {/* Header */}
         <div style={{ background: navy, padding: '24px 28px 20px', position: 'sticky', top: 0, zIndex: 1 }}>
-          <div style={{ fontSize: 10, letterSpacing: '2.5px', color: sky, textTransform: 'uppercase', marginBottom: 10 }}>Book a demo</div>
+          <div style={{ fontSize: 10, letterSpacing: '2.5px', color: sky, textTransform: 'uppercase', marginBottom: 10 }}>BOOK A DEMO</div>
           <div style={{ fontSize: 20, fontWeight: 500, color: 'white', lineHeight: 1.2, letterSpacing: '-0.02em' }}>See it with your workflow</div>
           <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', marginTop: 6, lineHeight: 1.5 }}>30 minutes using real examples from your business. Upload a file to show us your data.</div>
           <button

@@ -17,7 +17,7 @@ function DelayedRow({ delay, animate, style, children }) {
 
 const STAGES = [
   {
-    input: "Supplier: Guangdong Metalworks Co. — review their quotation package for TS_50378",
+    input: "Supplier: Guangdong Metalworks Co. — review their quotation package for #12345",
     output: [{
       type: 'riskFlags',
       summary: { critical: 2, warning: 1, clear: 2 },
@@ -47,12 +47,16 @@ const STAGES = [
     }],
   },
   {
-    input: "Review the shipping documents for order #TT_50112",
+    input: "Review the shipping documents for order #12345",
     // handled with two bubbles — invoice + explanation
   },
   {
-    input: "Check packaging compliance and confirm specifications for order #TT_50112",
-    // handled with two bubbles — packaging card + explanation
+    input: "Run EU packaging compliance checks for order #12345",
+    // handled with one bubble — packaging card only
+  },
+  {
+    input: "Summarise the packaging issues to resolve before production is confirmed",
+    // handled with one bubble — packaging errors summary
   },
 ];
 
@@ -75,7 +79,7 @@ function ShippingInvoiceCard({ animate }) {
       {/* Header bar */}
       <div style={{ background: '#1a2e44', padding: '8px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <span style={{ fontWeight: 700, fontSize: 12, color: 'white', letterSpacing: '0.3px' }}>SHIPPING INVOICE</span>
-        <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.6)' }}>Order #TT_50112</span>
+        <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.6)' }}>Order #12345</span>
       </div>
 
       <div style={{ padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -180,7 +184,7 @@ function ShippingInvoiceCard({ animate }) {
           </thead>
           <tbody>
             {[
-              { id: 'TS_50378', desc: 'BLDC ResQVac w/ Safety Hammer & Blade', qty: '3,000', price: '$9.80', total: '$29,400.00' },
+              { id: '#12345', desc: 'BLDC ResQVac w/ Safety Hammer & Blade', qty: '3,000', price: '$9.80', total: '$29,400.00' },
               { id: 'PKG-001',  desc: 'Export Carton (20 units/carton × 150)',  qty: '150',   price: '$2.10', total: '$315.00'    },
             ].map((r, i) => (
               <DelayedRow key={i} delay={D(6 + i)} animate={animate} style={{ borderBottom: '1px solid #f3f4f6' }}>
@@ -267,7 +271,7 @@ function ShippingErrorsOutput({ animate }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
       <p style={{ margin: '0 0 4px', fontSize: 12, color: '#374151' }}>
-        <TypingText text="3 issues found in the shipping documents for #TT_50112. These must be resolved before the shipment proceeds:" animate={animate} delay={0} />
+        <TypingText text="3 issues found in the shipping documents for #12345. These must be resolved before the shipment proceeds:" animate={animate} delay={0} />
       </p>
       {ERRORS.map((e, i) => {
         const delay = animate ? 80 * i + 200 : 0;
@@ -321,7 +325,7 @@ function PackagingCard({ animate }) {
       <div style={{ border: '1px solid #d1d5db', borderRadius: 8, overflow: 'hidden', background: 'white' }}>
         <div style={{ background: '#1a2e44', padding: '6px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span style={{ fontWeight: 700, fontSize: 11, color: 'white' }}>Packaging Material Breakdown</span>
-          <span style={{ fontSize: 9, color: 'rgba(255,255,255,0.55)' }}>EU SUP Directive check — Order #TT_50112</span>
+          <span style={{ fontSize: 9, color: 'rgba(255,255,255,0.55)' }}>EU SUP Directive check — Order #12345</span>
         </div>
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
@@ -420,7 +424,7 @@ function PackagingErrorsOutput({ animate }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
       <p style={{ margin: '0 0 4px', fontSize: 12, color: '#374151' }}>
-        <TypingText text="2 packaging issues flagged for order #TT_50112. Both require resolution before production is confirmed:" animate={animate} delay={0} />
+        <TypingText text="2 packaging issues flagged for order #12345. Both require resolution before production is confirmed:" animate={animate} delay={0} />
       </p>
       {PKG_ERRORS.map((e, i) => {
         const delay = animate ? 80 * i + 200 : 0;
@@ -580,7 +584,7 @@ export default function RiskFlagsDemo({ handleModal }) {
       }, 1000);
     }
 
-    // ── Stage 2: packaging compliance + spec conflict ──
+    // ── Stage 2: packaging compliance tables ──
     if (stage === 2) {
       setTimeout(() => {
         setMessages(prev => prev.map(m =>
@@ -588,13 +592,20 @@ export default function RiskFlagsDemo({ handleModal }) {
             ? { role: 'ai', output: [{ type: 'packagingCard' }], showThought: true, animate: true, id: thinkingId }
             : m
         ));
-        startAiTyping(3000, () => {
-          setMessages(prev => [...prev,
-            { role: 'ai', output: [{ type: 'packagingErrors' }], showThought: false, animate: true, id: ++messageIdCounter.current },
-          ]);
-          const pkgCharCount = PKG_ERRORS.reduce((n, e) => n + e.label.length + e.description.length, 0);
-          startAiTyping(pkgCharCount * 5 + 600, isLast ? () => setTimeout(() => handleModal(), 1000) : undefined);
-        });
+        startAiTyping(3000, undefined);
+      }, 1000);
+    }
+
+    // ── Stage 3: packaging issues summary ──
+    if (stage === 3) {
+      setTimeout(() => {
+        setMessages(prev => prev.map(m =>
+          m.id === thinkingId
+            ? { role: 'ai', output: [{ type: 'packagingErrors' }], showThought: true, animate: true, id: thinkingId }
+            : m
+        ));
+        const pkgCharCount = PKG_ERRORS.reduce((n, e) => n + e.label.length + e.description.length, 0);
+        startAiTyping(pkgCharCount * 5 + 600, isLast ? () => setTimeout(() => handleModal(), 1000) : undefined);
       }, 1000);
     }
   };

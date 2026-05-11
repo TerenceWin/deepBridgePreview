@@ -54,7 +54,7 @@ export default function Nav() {
               transition: 'color 0.3s',
             }}>{link.label}</Link>
           ))}
-          <button onClick={() => setModal(true)} style={{ background: '#29ABE2', color: 'white', border: 'none', borderRadius: 8, padding: '9px 20px', fontSize: 13, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit' }}>Book a demo</button>
+          <button onClick={() => setModal(true)} style={{ background: '#29ABE2', color: 'white', border: 'none', borderRadius: 8, padding: '9px 20px', fontSize: 13, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit' }}>BOOK A DEMO</button>
         </div>
         <button className="db-nav-mobile-btn" onClick={() => setMenuOpen(o => !o)}
           style={{ display: 'none', background: 'none', border: 'none', cursor: 'pointer', padding: 8, flexDirection: 'column', gap: 5 }}
@@ -70,7 +70,7 @@ export default function Nav() {
           {links.map(link => (
             <Link key={link.to} to={link.to} style={{ fontSize: 16, fontWeight: location.pathname === link.to ? 500 : 400, color: location.pathname === link.to ? '#0A2540' : '#5A6E85', textDecoration: 'none', padding: '12px 0', borderBottom: '0.5px solid #F2F0EB' }}>{link.label}</Link>
           ))}
-          <button onClick={() => { setMenuOpen(false); setModal(true); }} style={{ marginTop: 16, background: '#29ABE2', color: 'white', border: 'none', borderRadius: 8, padding: '13px', fontSize: 15, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit', width: '100%' }}>Book a demo</button>
+          <button onClick={() => { setMenuOpen(false); setModal(true); }} style={{ marginTop: 16, background: '#29ABE2', color: 'white', border: 'none', borderRadius: 8, padding: '13px', fontSize: 15, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit', width: '100%' }}>BOOK A DEMO</button>
         </div>
       )}
     </>

@@ -121,10 +121,10 @@ function CustomerListCard({ item, animate }) {
   );
 }
 
-const previewEmails = ['julia.bauer@cleanhome.de'];
+const defaultPreviewEmails = ['julia.bauer@cleanhome.de'];
 const checks = ['Recipient added', 'Subject is present', 'Message body is present', 'Sender account selected'];
 
-function EmailDraftCard({ item, animate, onSend }) {
+export function EmailDraftCard({ item, animate, onSend }) {
   const [sent, setSent] = useState(false);
 
   const handleSendEmail = () => {
@@ -178,7 +178,8 @@ function EmailDraftCard({ item, animate, onSend }) {
     );
   }
 
-  const extraCount = item.sentTo - previewEmails.length;
+  const emails = item.to ?? defaultPreviewEmails;
+  const extraCount = item.sentTo - emails.length;
   const subjectDelay = 0;
   const bodyDelay = item.subject.length * 5;
 
@@ -202,7 +203,7 @@ function EmailDraftCard({ item, animate, onSend }) {
           <span style={{ fontSize: 10, fontWeight: 700, color: '#374151' }}>To</span>
         </div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, alignItems: 'center' }}>
-          {previewEmails.map((email, i) => (
+          {emails.map((email, i) => (
             <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: 5, background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 20, padding: '2px 8px', fontSize: 10, color: '#1d4ed8' }}>
               {email}
               <i className="fas fa-times-circle" style={{ fontSize: 9, color: '#93c5fd', cursor: 'pointer' }} />

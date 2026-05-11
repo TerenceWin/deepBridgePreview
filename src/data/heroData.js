@@ -28,9 +28,9 @@ const data = {
         input: "Stainless steel pet bowls, OEM, MOQ under 500, Guangdong",
         output: [
           "Found 3 suppliers for 'Stainless steel pet bowls'. Source: online + database.",
-          [{ name: 'Chaozhou Nicety Technology Co., Ltd' }, { url: 'https://cn-cnnicety.en.made-in-china.com/' }, { description: 'Stainless steel household items, lunch boxes, pet supplies. High quality OEM pet accessories.' }, { productImages: [factoryFinder1_1_1, factoryFinder1_1_2, factoryFinder1_1_3] }],
-          [{ name: 'Dongguan ShunTa Melamine Products Co., Ltd.' }, { url: 'https://shunta.en.made-in-china.com/' }, { description: 'Melamine tableware, household kitchenware, pet accessories, 304 stainless steel double-layer bowls.' }, { productImages: [factoryFinder1_2_1, factoryFinder1_2_2] }],
-          [{ name: 'GUANGZHOU UME TECHNOLOGY CO., LTD' }, { url: 'https://yuliangshun.en.made-in-china.com/' }, { description: 'Kitchen appliances, stainless steel dog bowl wholesale, pet food water bowls.' }, { productImages: [factoryFinder1_3_1] }],
+          [{ name: 'Guangdong Haoyu Metal Products Co., Ltd' }, { description: 'Stainless steel household items, lunch boxes, pet supplies. High quality OEM pet accessories.' }, { productImages: [factoryFinder1_1_1, factoryFinder1_1_2, factoryFinder1_1_3] }],
+          [{ name: 'Dongguan Mingfa Household Products Co., Ltd.' }, { description: 'Melamine tableware, household kitchenware, pet accessories, 304 stainless steel double-layer bowls.' }, { productImages: [factoryFinder1_2_1, factoryFinder1_2_2] }],
+          [{ name: 'Guangzhou Runda Technology Co., Ltd' }, { description: 'Kitchen appliances, stainless steel dog bowl wholesale, pet food water bowls.' }, { productImages: [factoryFinder1_3_1] }],
         ],
         type: 'text',
       },
@@ -38,7 +38,7 @@ const data = {
         input: "Waterproof LED strip lights, CE certified, export experience to Europe",
         output: [
           "Found 1 supplier for 'Waterproof LED strip lights'. Source: online + database.",
-          [{ name: 'Beauty (GD) Manufacturing Co., Limited' }, { url: 'https://beautystclighting.en.made-in-china.com/' }, { description: 'LED strip light, TUV CE RoHS IP67 waterproof 220V SMD2835 360LED/M rope double-row LED strip light.' }, { productImages: [factoryFinder2_1_1, factoryFinder2_1_2] }],
+          [{ name: 'Shenzhen Brightex Lighting Co., Limited' }, { description: 'LED strip light, TUV CE RoHS IP67 waterproof 220V SMD2835 360LED/M rope double-row LED strip light.' }, { productImages: [factoryFinder2_1_1, factoryFinder2_1_2] }],
         ],
         type: 'text',
       },
@@ -46,8 +46,8 @@ const data = {
         input: "Bamboo cutting boards, food-safe finish, MOQ 200, Zhejiang",
         output: [
           "Found 2 suppliers for 'Bamboo cutting boards'. Source: online + database.",
-          [{ name: 'Anji Tianzhu Bamboo Industry Co., Ltd' }, { url: 'https://anjitzbamboo.en.made-in-china.com/' }, { description: 'Bamboo kitchenware manufacturer, food-safe lacquer finish, custom engraving available, MOQ 200 units.' }, { productImages: [factoryFinder3_1_1, factoryFinder3_1_2] }],
-          [{ name: 'Zhejiang Greenlife Bamboo Products Co.' }, { url: 'https://zjgreenlife.en.made-in-china.com/' }, { description: 'Eco-friendly bamboo cutting boards, FDA-approved food-safe coating, various sizes available.' }, { productImages: [factoryFinder3_2_1, factoryFinder3_2_2] }],
+          [{ name: 'Anji Qingshan Bamboo Industry Co., Ltd' }, { description: 'Bamboo kitchenware manufacturer, food-safe lacquer finish, custom engraving available, MOQ 200 units.' }, { productImages: [factoryFinder3_1_1, factoryFinder3_1_2] }],
+          [{ name: 'Zhejiang Lvmei Bamboo Products Co.' }, { description: 'Eco-friendly bamboo cutting boards, FDA-approved food-safe coating, various sizes available.' }, { productImages: [factoryFinder3_2_1, factoryFinder3_2_2] }],
         ],
         type: 'text',
       },
@@ -155,16 +155,16 @@ const data = {
         }],
       },
       {
-        input: "Add the product description of TS_50311 to this poster layout",
+        input: "Add the product description of #12345 to this poster layout",
         output: [{
-          description: 'Updated poster — product description for TS_50311 added below the hero image. Key specs, features, and usage highlights pulled from the database and formatted into the layout.',
+          description: 'Updated poster — product description for #12345 added below the hero image. Key specs, features, and usage highlights pulled from the database and formatted into the layout.',
           products: [
             { image: bugZapper3, layout: 'full' },
           ],
         }],
       },
       {
-        input: "Show me how it will look on a package box. Attach this poster to a package box design with the width: 113mm, length: 158mm, and height: 318mm",
+        input: "Show me how it will look on a package box. ",
         output: [{
           description: 'Package box mockup generated — 113 × 158 × 318mm dieline with the poster artwork applied to the front panel. Side panels left clean for barcode and product info.',
           products: [
@@ -180,7 +180,7 @@ const data = {
 export default data;
 
 const riskFlagsFollowUp = {
-  input: "Supplier: Guangdong Metalworks Co. — review their quotation package for TS_50378",
+  input: "Supplier: Guangdong Metalworks Co. — review their quotation package for #12345",
   output: [{
     type: 'riskFlags',
     summary: { critical: 2, warning: 1, clear: 2 },
@@ -211,11 +211,31 @@ const riskFlagsFollowUp = {
 };
 
 export const handleFilesFollowUps = {
-  'handleFiles1.pptx': {
+  'Product #12345.pptx': {
     'Marcus Lin': [
       { input: "What is the HS code and applicable tariff for this product?", output: [{ description: 'HS code 85081100. Under US-China tariffs (Section 301), additional duties may apply — recommend checking current HTS rates before importing.' }] },
-      { input: "Can the supplier reduce the MOQ for a trial order?", output: [{ description: 'MOQ is 3,000 units at $9.80/unit. Supplier may negotiate 1,500 units at ~$11.20/unit for a trial — recommend requesting via sourcing agent.' }] },
-      { input: "Is CE certification sufficient for EU market entry?", output: [{ description: 'CE and RoHS certifications cover EU market entry for this category. No additional product approvals required.' }] },
+      {
+        input: "Can the supplier reduce the MOQ for a trial order?",
+        output: [{
+          type: 'emailDraft',
+          to: ['sales@guangdongmeidea.com'],
+          subject: 'Trial Order Request – MOQ Reduction for #12345',
+          preview: `Dear Sales Team,\n\nThank you for the quotation for #12345. We are interested in moving forward, but would like to start with a trial order before committing to the full MOQ.\n\nThe current MOQ of 3,000 units is above our initial requirement. We would like to request a reduced trial quantity of 1,500 units to evaluate product reception with our buyers.\n\nCould you please advise the adjusted unit price at 1,500 units? We understand this may carry a higher per-unit cost and are happy to discuss terms.\n\nLooking forward to your response.\n\nBest regards,\nMarcus Lin · DeepBridge Sourcing`,
+          sentTo: 1,
+          summary: [{ company: 'Guangdong Meidea Industrial Co., Ltd.', contact: 'Sales Team', markup: '—', status: 'Sent' }],
+        }],
+      },
+      {
+        input: "Is CE certification sufficient for EU market entry?",
+        output: [{
+          type: 'emailDraft',
+          to: ['compliance@clearhome.de'],
+          subject: 'Certification Confirmation – #12345 EU Market Entry',
+          preview: `Dear Compliance Team,\n\nWe are preparing to introduce product #12345 to your market and would like to confirm that the current certifications meet your requirements.\n\nThe product holds CE and RoHS certifications, which we believe cover EU market entry for this category. Could you please confirm whether these are sufficient for your import process, or advise if any additional documentation is required on your end?\n\nWe want to ensure a smooth onboarding before we proceed with a formal quotation.\n\nBest regards,\nMarcus Lin · DeepBridge Sourcing`,
+          sentTo: 1,
+          summary: [{ company: 'CleanHome GmbH', contact: 'Julia Bauer', markup: '—', status: 'Sent' }],
+        }],
+      },
     ],
   },
 };

@@ -3,6 +3,7 @@ import { FactoryFinderUpload } from './heroTab/FactoryFinder.js';
 import { QuotationGeneratorUpload } from './heroTab/QuotationGenerator.js';
 import { HandleFilesUpload } from './heroTab/HandleFiles.js';
 import { CatalogGeneratorUpload } from './heroTab/CatalogGenerator.js';
+import { packageImage } from './heroSectionConfig.js';
 
 export default function HeroChatInput({
   tabs, currentTab, setCurrentTab, startTabInterval, tabIntervalRef,
@@ -10,7 +11,7 @@ export default function HeroChatInput({
   uploadDropdownRef, uploadDropdownOpen, setUploadDropdownOpen, uploadDropdownClosing, setUploadDropdownClosing,
   selectedHandleFile, setSelectedHandleFile, processedFilesSet,
   selectedCatalogImages, setSelectedCatalogImages, catalogUploadImages, handleFilesItems,
-  catalogProcessed, stagedHandleFile, handleProcessFiles, stagedCatalogImages,
+  catalogProcessed, stagedPackageImage, stagedHandleFile, handleProcessFiles, stagedCatalogImages,
   typingText, setTypingText, inputRef, userStages, selectedUser,
   guideStep, isAiTyping, handleSend, isMobile,
 }) {
@@ -28,10 +29,11 @@ export default function HeroChatInput({
   };
 
   const stage = userStages[selectedUser.name] ?? 0;
-  const hideSend = !(catalogProcessed || stagedHandleFile) && stage === 0 && (currentTab === tabs[2] || currentTab === tabs[3]);
+  const hideSend = (!(catalogProcessed || stagedHandleFile) && stage === 0 && (currentTab === tabs[2] || currentTab === tabs[3]))
+    || (currentTab === tabs[3] && stage === 4 && !stagedPackageImage);
   const inUIGuide = guideStep !== null && guideStep <= 3;
   const canProcess = currentTab === tabs[3]
-    ? !catalogProcessed && selectedCatalogImages.length === catalogUploadImages.length
+    ? (stage === 4 ? true : selectedCatalogImages.length === catalogUploadImages.length)
     : !stagedHandleFile && !!selectedHandleFile;
 
   // Auto-resize textarea whenever text changes (including programmatic typing animation)
@@ -50,6 +52,11 @@ export default function HeroChatInput({
             {stagedCatalogImages.map((src, i) => (
               <img key={i} src={src} alt="" style={{ width: 56, height: 48, objectFit: 'cover', borderRadius: 6, border: '1px solid #e5e7eb' }} />
             ))}
+          </div>
+        )}
+        {stagedPackageImage && (
+          <div style={{ padding: '8px 12px 4px', display: 'flex', gap: 6 }}>
+            <img src={stagedPackageImage} alt="" style={{ width: 56, height: 48, objectFit: 'cover', borderRadius: 6, border: '1px solid #e5e7eb' }} />
           </div>
         )}
         {stagedHandleFile && (
@@ -123,7 +130,17 @@ export default function HeroChatInput({
                 {currentTab === tabs[0] && <FactoryFinderUpload />}
                 {currentTab === tabs[1] && <QuotationGeneratorUpload />}
                 {currentTab === tabs[2] && <HandleFilesUpload items={handleFilesItems} selectedFile={selectedHandleFile} setSelectedFile={setSelectedHandleFile} processedSet={processedFilesSet} />}
-                {currentTab === tabs[3] && <CatalogGeneratorUpload uploadImages={catalogUploadImages} selectedImages={selectedCatalogImages} setSelectedImages={setSelectedCatalogImages} />}
+                {currentTab === tabs[3] && stage !== 4 && <CatalogGeneratorUpload uploadImages={catalogUploadImages} selectedImages={selectedCatalogImages} setSelectedImages={setSelectedCatalogImages} />}
+                {currentTab === tabs[3] && stage === 4 && (
+                  <div style={{ marginBottom: 8 }}>
+                    <div style={{ position: 'relative', display: 'inline-block', borderRadius: 6, overflow: 'hidden', border: '2px solid #21916f' }}>
+                      <img src={packageImage} alt="" style={{ width: 80, height: 80, objectFit: 'cover', display: 'block' }} />
+                      <div style={{ position: 'absolute', top: 4, right: 4, background: '#21916f', borderRadius: '50%', width: 16, height: 16, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <i className="fas fa-check" style={{ fontSize: 8, color: 'white' }} />
+                      </div>
+                    </div>
+                  </div>
+                )}
                 <button onClick={handleProcessFiles} style={{ width: '100%', padding: '7px 0', fontSize: 12, fontWeight: 600, background: canProcess ? '#1a2e44' : '#9ca3af', color: 'white', border: 'none', borderRadius: 6, cursor: canProcess ? 'pointer' : 'not-allowed', fontFamily: 'inherit' }}>
                   Process Files
                 </button>

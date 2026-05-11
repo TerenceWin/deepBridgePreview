@@ -4,7 +4,7 @@ import FactoryFinderOutput from './heroTab/FactoryFinder.js'
 import QuotationGeneratorOutput from './heroTab/QuotationGenerator.js'
 import HandleFilesOutput from './heroTab/HandleFiles.js'
 import CatalogGeneratorOutput from './heroTab/CatalogGenerator.js'
-import { catalogUploadImages, handleFilesItems, users, guideSteps } from './heroSectionConfig.js';
+import { catalogUploadImages, handleFilesItems, packageImage, users, guideSteps } from './heroSectionConfig.js';
 import { HeroOverlay, GuideBubble } from './HeroGuide.js';
 import HeroChatInput from './HeroChatInput.js';
 import { useHeroSend } from './useHeroSend.js';
@@ -40,6 +40,7 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop, isL
     const [selectedCatalogImages, setSelectedCatalogImages] = useState([]);
     const [stagedCatalogImages, setStagedCatalogImages] = useState([]);
     const [catalogProcessed, setCatalogProcessed] = useState(false);
+    const [stagedPackageImage, setStagedPackageImage] = useState(null);
     const [stagedHandleFile, setStagedHandleFile] = useState(null);
     const [demoTriggered, setDemoTriggered] = useState(false);
     const [overlayMounted, setOverlayMounted] = useState(true);
@@ -85,15 +86,25 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop, isL
 
     const handleSend = useHeroSend({
       typingText, userStages, selectedUser, currentTab, tabs,
-      catalogProcessed, stagedHandleFile, processedFile,
+      catalogProcessed, stagedHandleFile, processedFile, stagedPackageImage,
       handleModal, typingIntervalRef, tabIntervalRef, aiTypingTimerRef,
       messageIdCounter, setIsAiTyping, setMessages, setTypingText, setUserTyped,
       setStagedCatalogImages, setProcessedFile, setStagedHandleFile,
       setUserStages, setCatalogProcessed, chatContainerRef, setDemoTriggered,
+      setStagedPackageImage,
     });
 
     const handleProcessFiles = () => {
       if (currentTab === tabs[3]) {
+        const stage = userStages[selectedUser.name] ?? 0;
+        // Last stage: package image upload (bugZapper16)
+        if (stage === 4) {
+          setStagedPackageImage(packageImage);
+          setUploadDropdownClosing(true);
+          setTimeout(() => { setUploadDropdownOpen(false); setUploadDropdownClosing(false); }, 250);
+          return;
+        }
+        // First stage: initial catalog images upload
         if (selectedCatalogImages.length !== catalogUploadImages.length) return;
         setStagedCatalogImages([...catalogUploadImages]);
         setCatalogProcessed(true);
@@ -125,6 +136,7 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop, isL
       setProcessedFilesSet(new Set());
       setStagedCatalogImages([]);
       setCatalogProcessed(false);
+      setStagedPackageImage(null);
       setStagedHandleFile(null);
       setDemoTriggered(false);
       setIsAiTyping(false);
@@ -284,14 +296,19 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop, isL
                   <div key={msg.id ?? idx} style={{ display: 'flex', flexDirection: 'column', alignItems: msg.role === 'user' ? 'flex-end' : 'flex-start', gap: 2 }}>
                     <div style={{ display: 'flex', justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start', alignItems: 'flex-end', gap: 8, width: '100%' }}>
                       {msg.role === 'user' ? (
-                        <div style={{ maxWidth: '70%', background: '#2563eb', color: 'white', borderRadius: '18px 18px 4px 18px', padding: '10px 14px', fontSize: 13, lineHeight: 1.5, display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                        <div style={{ maxWidth: '70%', background: '#2563eb', color: 'white', borderRadius: '18px 18px 4px 18px', padding: '10px 14px', fontSize: 13, lineHeight: 1.5, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6 }}>
                           {msg.fileUpload ? (
-                            <>
+                            <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 8 }}>
                               <i className="fas fa-file-powerpoint" style={{ fontSize: 13, color: '#ffb3b3', flexShrink: 0 }} />
                               <span style={{ fontSize: 11, opacity: 0.85, flexShrink: 0 }}>{msg.fileUpload}</span>
                               <span>{msg.text}</span>
-                            </>
+                            </div>
                           ) : msg.text}
+                          {msg.imageUpload && (
+                            <div style={{ borderRadius: 8, overflow: 'hidden', border: '1px solid #e5e7eb', background: '#f3f4f6', padding: 10, width: '100%', boxSizing: 'border-box' }}>
+                              <img src={msg.imageUpload} alt="" style={{ width: '100%', height: 350, objectFit: 'contain', display: 'block' }} />
+                            </div>
+                          )}
                         </div>
                       ) : (
                         <div style={{ width: '100%', maxWidth: 600, background: '#f3f4f6', border: '1px solid #e5e7eb', borderRadius: '18px 18px 18px 4px', padding: '10px 14px', fontSize: 13, display: 'flex', flexDirection: 'column' }}>
@@ -355,6 +372,7 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop, isL
               catalogUploadImages={catalogUploadImages}
               handleFilesItems={handleFilesItems}
               catalogProcessed={catalogProcessed}
+              stagedPackageImage={stagedPackageImage}
               stagedHandleFile={stagedHandleFile}
               handleProcessFiles={handleProcessFiles}
               stagedCatalogImages={stagedCatalogImages}

@@ -224,12 +224,12 @@ export default function Home() {
         <div className="db-section-sm" style={{ maxWidth: maxWidth, margin: '0 auto', padding: SECTION_PAD_SM }}>
           <div className="db-cta-card" style={{ background: navy, borderRadius: 16, padding: '60px 64px', display: 'grid', gridTemplateColumns: '1fr auto', gap: 48, alignItems: 'center' }}>
             <div>
-              <div style={{ fontSize: 11, letterSpacing: '2.5px', color: sky, textTransform: 'uppercase', marginBottom: 16 }}>Book a demo</div>
+              <div style={{ fontSize: 11, letterSpacing: '2.5px', color: sky, textTransform: 'uppercase', marginBottom: 16 }}>BOOK A DEMO</div>
               <h2 style={{ fontSize: 36, fontWeight: 500, color: 'white', lineHeight: 1.1, letterSpacing: '-0.03em', marginBottom: 16 }}>See it with your workflow</h2>
               <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.5)', lineHeight: 1.8, maxWidth: 400 }}>See how Deep Bridge can flag certificate risks, speed up quotation prep, and draft customer follow-ups from one assistant.</p>
             </div>
             <div style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
-              <button onClick={() => setModal(true)} style={{ background: sky, color: 'white', border: 'none', borderRadius: 8, padding: '14px 28px', fontSize: 14, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap' }}>Book a demo</button>
+              <button onClick={() => setModal(true)} style={{ background: sky, color: 'white', border: 'none', borderRadius: 8, padding: '14px 28px', fontSize: 14, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap' }}>BOOK A DEMO</button>
               <Link to="/pricing" style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)', textDecoration: 'none', textAlign: 'center' }}>View pricing →</Link>
             </div>
           </div>

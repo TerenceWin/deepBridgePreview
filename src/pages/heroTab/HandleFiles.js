@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import TypingText, { DelayedVisible } from '../../components/TypingText';
 import handleFilesPicture1 from '../../images/heroSection/handleFiles/handleFilesPicture1.png';
+import { EmailDraftCard } from './QuotationGenerator.js';
 
 // ─────────────────────────────────────────
 // Constants
@@ -11,7 +12,7 @@ const NOTE_TEXT =
   'Save the document once to enable image controls (Display / Brochure / Packaging / AI Enhance).';
 
 const fileImageMap = {
-  'DS_TS_50378_Quotation.pptx': handleFilesPicture1,
+  'Product #12345.pptx': handleFilesPicture1,
 };
 
 // ─────────────────────────────────────────
@@ -63,7 +64,6 @@ function computeDelays(fileData, usersCount = 0) {
   d.specs = [];
   (fileData.specificationsList || []).forEach(s => { d.specs.push(tL); tL += s.length * SPEED; });
 
-  d.productCategory    = tL; tL += fieldDur('Product Category',      fileData.productCategory);
   d.deliveryDays       = tL; tL += fieldDur('Delivery Days',         `${fileData.deliveryDays} Days`);
   d.unitSize           = tL; tL += fieldDur('Unit Size',             fileData.packaging?.unitSize);
   d.unitWeight         = tL; tL += fieldDur('Unit Weight',           fileData.packaging?.unitWeight);
@@ -85,8 +85,6 @@ function computeDelays(fileData, usersCount = 0) {
   d.productClass  = tR; tR += fieldDur('Product Class',         fileData.productClass);
   d.productStatus = tR; tR += fieldDur('Production Status',     fileData.productStatus);
   d.images        = tR; tR += ('Images'.length + NOTE_TEXT.length) * SPEED;
-  d.linkedProduct = tR; tR += fieldDur('Linked Product Ts Id',  '—');
-  d.pendingImages = tR; tR += fieldDur('Pending Images',        'true');
   d.fobPrice      = tR; tR += fieldDur('Fob Unit Price',        `USD ${fileData.unitPriceUSD}`);
 
   const totalDuration = Math.max(tL, tR, s1End) + 300;
@@ -334,7 +332,6 @@ function FileDetailCard({ fileData, onSave, users = [], userStages = {}, animate
                 </div>
               </div>
 
-              <FieldRow label="Product Category"      value={fileData.productCategory}                  animate={animate} delay={d.productCategory}    />
               <FieldRow label="Delivery Days"          value={`${fileData.deliveryDays} Days`}           animate={animate} delay={d.deliveryDays}        />
               <FieldRow label="Unit Size"              value={fileData.packaging?.unitSize}              animate={animate} delay={d.unitSize}            />
               <FieldRow label="Unit Weight"            value={fileData.packaging?.unitWeight}            animate={animate} delay={d.unitWeight}          />
@@ -361,8 +358,6 @@ function FileDetailCard({ fileData, onSave, users = [], userStages = {}, animate
                 animate={animate}
                 delay={d.images}
               />
-              <FieldRow label="Linked Product Ts Id" value="—"                              animate={animate} delay={d.linkedProduct} />
-              <FieldRow label="Pending Images"        value="true"                           animate={animate} delay={d.pendingImages} />
               <FieldRow label="Fob Unit Price"        value={`USD ${fileData.unitPriceUSD}`} animate={animate} delay={d.fobPrice}      />
             </div>
           </div>
@@ -517,6 +512,9 @@ export default function HandleFilesOutput({ output, onSave, users, userStages, a
 
   if (item?.type === 'riskFlags')
     return <RiskFlagsOutput data={item} animate={animate} />;
+
+  if (item?.type === 'emailDraft')
+    return <EmailDraftCard item={item} animate={animate} />;
 
   const description = item?.description;
   if (description)

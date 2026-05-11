@@ -8,6 +8,7 @@ import bugZapper11 from '../../images/catalogGenerator/bugZapper11.jpeg';
 import bugZapper12 from '../../images/catalogGenerator/bugZapper12.jpeg';
 import bugZapper13 from '../../images/catalogGenerator/bugZapper13.jpeg';
 import bugZapper14 from '../../images/catalogGenerator/bugZapper14.jpeg';
+import { packageImage } from '../heroSectionConfig.js';
 
 const cgData = data['Catalog Generator']['Marcus Lin'];
 const catalogUploadImages = [bugZapper9, bugZapper10, bugZapper11, bugZapper12, bugZapper13, bugZapper14];
@@ -33,6 +34,7 @@ export default function CatalogGeneratorDemo({ handleModal }) {
   const [catalogProcessed, setCatalogProcessed] = useState(false);
   const [stagedCatalogImages, setStagedCatalogImages] = useState([]);
   const [selectedCatalogImages, setSelectedCatalogImages] = useState([]);
+  const [stagedPackageImage, setStagedPackageImage] = useState(null);
   const [uploadDropdownOpen, setUploadDropdownOpen] = useState(false);
   const [uploadDropdownClosing, setUploadDropdownClosing] = useState(false);
 
@@ -101,6 +103,12 @@ export default function CatalogGeneratorDemo({ handleModal }) {
   };
 
   const handleProcessFiles = () => {
+    if (stage === 4) {
+      setStagedPackageImage(packageImage);
+      setUploadDropdownClosing(true);
+      setTimeout(() => { setUploadDropdownOpen(false); setUploadDropdownClosing(false); }, 250);
+      return;
+    }
     if (catalogProcessed) return;
     if (selectedCatalogImages.length !== catalogUploadImages.length) return;
     setStagedCatalogImages([...catalogUploadImages]);
@@ -140,17 +148,17 @@ export default function CatalogGeneratorDemo({ handleModal }) {
     }
 
     const thinkingId = ++messageIdCounter.current;
-    setMessages(prev => [...prev,
-      {
-        role: 'user',
-        text: typingText,
-        images: stagedCatalogImages.length > 0 ? [...stagedCatalogImages] : null,
-        id: ++messageIdCounter.current,
-      },
-      { role: 'ai', isThinking: true, id: thinkingId },
-    ]);
+    const userMsg = {
+      role: 'user',
+      text: typingText,
+      images: stagedCatalogImages.length > 0 ? [...stagedCatalogImages] : null,
+      id: ++messageIdCounter.current,
+    };
+    if (stagedPackageImage) userMsg.imageUpload = stagedPackageImage;
+    setMessages(prev => [...prev, userMsg, { role: 'ai', isThinking: true, id: thinkingId }]);
     setTypingText('');
     setStagedCatalogImages([]);
+    setStagedPackageImage(null);
     setStage(nextStage);
 
     setTimeout(() => {
@@ -163,8 +171,8 @@ export default function CatalogGeneratorDemo({ handleModal }) {
     }, 1000);
   };
 
-  const canProcess = !catalogProcessed && selectedCatalogImages.length === catalogUploadImages.length;
-  const showSend = catalogProcessed || stage > 1;
+  const canProcess = stage === 4 ? true : (!catalogProcessed && selectedCatalogImages.length === catalogUploadImages.length);
+  const showSend = catalogProcessed || (stage > 1 && !(stage === 4 && !stagedPackageImage));
 
   const uploadSlot = (
     <div ref={uploadDropdownRef} style={{ position: 'relative', flexShrink: 0 }}>
@@ -191,11 +199,23 @@ export default function CatalogGeneratorDemo({ handleModal }) {
           animation: `${uploadDropdownClosing ? 'demoDropdownShrink' : 'demoDropdownExpand'} 0.25s ease forwards`,
         }}>
           <p style={{ margin: '0 0 8px', fontSize: 12, fontWeight: 600, color: '#111827' }}>Upload Files</p>
-          <CatalogGeneratorUpload
-            uploadImages={catalogUploadImages}
-            selectedImages={selectedCatalogImages}
-            setSelectedImages={setSelectedCatalogImages}
-          />
+          {stage !== 4 && (
+            <CatalogGeneratorUpload
+              uploadImages={catalogUploadImages}
+              selectedImages={selectedCatalogImages}
+              setSelectedImages={setSelectedCatalogImages}
+            />
+          )}
+          {stage === 4 && (
+            <div style={{ marginBottom: 8 }}>
+              <div style={{ position: 'relative', display: 'inline-block', borderRadius: 6, overflow: 'hidden', border: '2px solid #21916f' }}>
+                <img src={packageImage} alt="" style={{ width: 80, height: 80, objectFit: 'cover', display: 'block' }} />
+                <div style={{ position: 'absolute', top: 4, right: 4, background: '#21916f', borderRadius: '50%', width: 16, height: 16, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <i className="fas fa-check" style={{ fontSize: 8, color: 'white' }} />
+                </div>
+              </div>
+            </div>
+          )}
           <button
             onClick={handleProcessFiles}
             style={{ width: '100%', padding: '7px 0', fontSize: 12, fontWeight: 600, background: canProcess ? '#1a2e44' : '#9ca3af', color: 'white', border: 'none', borderRadius: 6, cursor: canProcess ? 'pointer' : 'not-allowed', fontFamily: 'inherit' }}
@@ -214,15 +234,20 @@ export default function CatalogGeneratorDemo({ handleModal }) {
       emptyIcon={{ className: 'fas fa-list', color: '#049669' }}
       emptyText="Try uploading an image."
       renderUserBubble={msg => (
-        <div style={{ maxWidth: '70%', background: '#2563eb', color: 'white', borderRadius: '18px 18px 4px 18px', padding: '10px 14px', fontSize: 13, lineHeight: 1.5 }}>
+        <div style={{ maxWidth: '70%', background: '#2563eb', color: 'white', borderRadius: '18px 18px 4px 18px', padding: '10px 14px', fontSize: 13, lineHeight: 1.5, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6 }}>
           {msg.images && (
-            <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', marginBottom: 6 }}>
+            <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
               {msg.images.map((src, i) => (
                 <img key={i} src={src} alt="" style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 4, border: '1px solid rgba(255,255,255,0.3)' }} />
               ))}
             </div>
           )}
           {msg.text}
+          {msg.imageUpload && (
+            <div style={{ borderRadius: 8, overflow: 'hidden', border: '1px solid #e5e7eb', background: '#f3f4f6', padding: 10, width: '100%', boxSizing: 'border-box' }}>
+              <img src={msg.imageUpload} alt="" style={{ width: '100%', height: 350, objectFit: 'contain', display: 'block' }} />
+            </div>
+          )}
         </div>
       )}
       renderAiContent={msg => <CatalogGeneratorOutput output={msg.output} animate={msg.animate} />}
@@ -236,13 +261,22 @@ export default function CatalogGeneratorDemo({ handleModal }) {
           hideSend={!showSend}
           pulsing={!isAiTyping}
           uploadSlot={uploadSlot}
-          stagedContent={stagedCatalogImages.length > 0 && (
-            <div style={{ padding: '8px 12px 4px', display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-              {stagedCatalogImages.map((src, i) => (
-                <img key={i} src={src} alt="" style={{ width: 56, height: 48, objectFit: 'cover', borderRadius: 6, border: '1px solid #e5e7eb' }} />
-              ))}
-            </div>
-          )}
+          stagedContent={
+            <>
+              {stagedCatalogImages.length > 0 && (
+                <div style={{ padding: '8px 12px 4px', display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                  {stagedCatalogImages.map((src, i) => (
+                    <img key={i} src={src} alt="" style={{ width: 56, height: 48, objectFit: 'cover', borderRadius: 6, border: '1px solid #e5e7eb' }} />
+                  ))}
+                </div>
+              )}
+              {stagedPackageImage && (
+                <div style={{ padding: '8px 12px 4px', display: 'flex', gap: 6 }}>
+                  <img src={stagedPackageImage} alt="" style={{ width: 56, height: 48, objectFit: 'cover', borderRadius: 6, border: '1px solid #e5e7eb' }} />
+                </div>
+              )}
+            </>
+          }
         />
       }
     />

@@ -5,11 +5,13 @@ import bugZapper11 from '../images/catalogGenerator/bugZapper11.jpeg';
 import bugZapper12 from '../images/catalogGenerator/bugZapper12.jpeg';
 import bugZapper13 from '../images/catalogGenerator/bugZapper13.jpeg';
 import bugZapper14 from '../images/catalogGenerator/bugZapper14.jpeg';
+import bugZapper16 from '../images/catalogGenerator/bugZapper16.png';
 import { handleFile1 } from '../data/handleFilesData.js';
 
 export const catalogUploadImages = [bugZapper9, bugZapper10, bugZapper11, bugZapper12, bugZapper13, bugZapper14];
-export const handleFilesItems = [{ file: handleFiles1, name: 'handleFiles1.pptx' }];
-export const fileDataMap = { 'handleFiles1.pptx': handleFile1 };
+export const packageImage = bugZapper16;
+export const handleFilesItems = [{ file: handleFiles1, name: 'Product #12345.pptx' }];
+export const fileDataMap = { 'Product #12345.pptx': handleFile1 };
 
 export const users = [
   { name: 'Marcus Lin', color: '#1fc9ed' },

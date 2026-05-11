@@ -79,8 +79,8 @@ export default function About() {
       <div style={{ background: sky, padding: '72px 48px', textAlign: 'center' }}>
         <div style={{ fontSize: 11, letterSpacing: '2.5px', color: 'rgba(255,255,255,0.7)', textTransform: 'uppercase', marginBottom: 18 }}>Build with us</div>
         <h2 style={{ fontSize: 32, fontWeight: 500, color: 'white', marginBottom: 14, letterSpacing: '-0.03em' }}>Building for exporters who want stronger systems</h2>
-        <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.75)', maxWidth: 440, margin: '0 auto 32px', lineHeight: 1.7 }}>Book a demo and see how Deep Bridge can support your workflow, from quotation preparation and risk flags to supplier search and commercial materials.</p>
-        <button style={{ background: 'white', color: sky, border: 'none', borderRadius: 8, padding: '13px 32px', fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>Book a demo</button>
+        <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.75)', maxWidth: 440, margin: '0 auto 32px', lineHeight: 1.7 }}>BOOK A DEMO and see how Deep Bridge can support your workflow, from quotation preparation and risk flags to supplier search and commercial materials.</p>
+        <button style={{ background: 'white', color: sky, border: 'none', borderRadius: 8, padding: '13px 32px', fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>BOOK A DEMO</button>
       </div>
     </div>
   );

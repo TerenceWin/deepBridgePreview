@@ -6,7 +6,7 @@ import { DemoChatShell, DemoChatInputBar } from '../../components/DemoChat.js';
 
 const STAGED_TEXT = 'Generate a Document Detail file for this file';
 
-const FILE_NAME = 'handleFiles1.pptx';
+const FILE_NAME = 'Product #12345.pptx';
 const handleFilesItems = [{ name: FILE_NAME }];
 const fileDataMap = { [FILE_NAME]: handleFile1 };
 

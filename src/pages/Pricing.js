@@ -13,7 +13,7 @@ const surface = '#F2F0EB';
 const BADGE_H = 36;
 
 const plans = [
-  { num: '01', title: 'Standard', tagline: 'Built-in workflows for day-to-day exporter operations.', price: 'From HKD 6,000 onwards', period: 'per enterprise / month', featured: false, bestFor: ['Teams with relatively clean workflows', 'Companies that want to get started quickly', 'Exporters looking for immediate efficiency gains'], includesLabel: 'Includes', includes: ['Quotation workflow tools', 'Risk and document flagging', 'Supplier memory and factory finder', 'Catalog and brochure generation', 'Standard onboarding', 'Monthly support'], cta: 'Book a demo', ctaStyle: 'outline' },
+  { num: '01', title: 'Standard', tagline: 'Built-in workflows for day-to-day exporter operations.', price: 'From HKD 6,000 onwards', period: 'per enterprise / month', featured: false, bestFor: ['Teams with relatively clean workflows', 'Companies that want to get started quickly', 'Exporters looking for immediate efficiency gains'], includesLabel: 'Includes', includes: ['Quotation workflow tools', 'Risk and document flagging', 'Supplier memory and factory finder', 'Catalog and brochure generation', 'Standard onboarding', 'Monthly support'], cta: 'BOOK A DEMO', ctaStyle: 'outline' },
   { num: '02', title: 'Custom Onboarding', tagline: 'For teams with messy data and more complex workflows.', price: 'Custom', period: 'setup fee + monthly plan', featured: true, bestFor: ['Teams with messy email history', 'Businesses with inconsistent product and supplier data', 'Exporters using multiple channels and disconnected files'], includesLabel: 'Includes', includes: ['Everything in Standard', 'Workflow mapping', 'Inbox and file review', 'Data cleanup and structuring support', 'Tailored onboarding', 'Closer implementation support'], cta: 'Talk to us', ctaStyle: 'primary' },
   { num: '03', title: 'Custom Modules', tagline: 'New capabilities built around your specific workflow.', price: 'Custom', period: 'scope and pricing', featured: false, bestFor: ['Companies with highly specific requirements', 'Teams that want custom workflows', 'Businesses looking for a longer-term technology partner'], includesLabel: 'Examples', includes: ['Custom quotation logic', 'Document and certificate workflows', 'Supplier intelligence tools', 'Industry-specific dashboards', 'Trade finance and sourcing modules'], cta: 'Discuss a build', ctaStyle: 'dark' },
 ];
@@ -70,7 +70,7 @@ export default function Pricing() {
               <div style={{ fontSize: 16, color: 'white', fontWeight: 400, marginBottom: 6 }}>Not sure which plan fits?</div>
               <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', lineHeight: 1.6 }}>Most teams start with a 30-minute demo using their own data.</div>
             </div>
-            <button onClick={() => setModal(true)} style={{ background: sky, color: 'white', border: 'none', borderRadius: 8, padding: '13px 28px', fontSize: 14, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap' }}>Book a demo</button>
+            <button onClick={() => setModal(true)} style={{ background: sky, color: 'white', border: 'none', borderRadius: 8, padding: '13px 28px', fontSize: 14, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap' }}>BOOK A DEMO</button>
           </div>
         </div>
       </div>
