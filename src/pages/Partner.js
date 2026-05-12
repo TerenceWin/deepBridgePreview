@@ -1,6 +1,6 @@
 import React from 'react';
 import PageHero from '../components/PageHero';
-import { useMaxWidth, SECTION_PAD, SECTION_PAD_SM } from '../components/layout';
+import { useMaxWidth, SECTION_PAD, SECTION_PAD_SM, useIsMobile } from '../components/layout';
 
 const sky = '#29ABE2';
 const navy = '#0A2540';
@@ -101,6 +101,7 @@ function PartnerCard({ partner, flipped }) {
 
 export default function Partner() {
   const maxWidth = useMaxWidth();
+  const isMobile = useIsMobile();
   return (
     <div style={{ background: '#F7F5F0' }}>
       <PageHero
@@ -121,16 +122,16 @@ export default function Partner() {
                 className="db-partner-card"
                 style={{
                   display: 'grid',
-                  gridTemplateColumns: i % 2 === 0 ? '1.4fr 1fr' : '1fr 1.4fr',
+                  gridTemplateColumns: isMobile ? '1fr' : (i % 2 === 0 ? '1.4fr 1fr' : '1fr 1.4fr'),
                   background: navy,
                   borderRadius: 16,
                   overflow: 'hidden',
-                  minHeight: 360,
+                  minHeight: isMobile ? 'unset' : 360,
                 }}
               >
                 {/* Main content */}
                 {i % 2 === 0 && (
-                  <div style={{ padding: '48px 52px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                  <div style={{ padding: isMobile ? '32px 24px' : '48px 52px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                     <div>
                       <div style={{ fontSize: 10, letterSpacing: '3px', color: sky, textTransform: 'uppercase', marginBottom: 18, fontWeight: 500 }}>{p.num}</div>
                       <h2 style={{ fontSize: 28, fontWeight: 500, color: 'white', lineHeight: 1.1, letterSpacing: '-0.03em', marginBottom: 14 }}>{p.title}</h2>
@@ -144,7 +145,7 @@ export default function Partner() {
                 )}
 
                 {/* Detail panel */}
-                <div style={{ background: navyMid, padding: '48px 44px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}>
+                <div style={{ background: navyMid, padding: isMobile ? '32px 24px' : '48px 44px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}>
                   <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.5)', lineHeight: 1.9, marginBottom: 32 }}>{p.detail}</p>
                   <div style={{ display: 'flex', flexDirection: 'column' }}>
                     {p.points.map((pt, j) => (
@@ -158,7 +159,7 @@ export default function Partner() {
 
                 {/* Flipped: content on right */}
                 {i % 2 !== 0 && (
-                  <div style={{ padding: '48px 52px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                  <div style={{ padding: isMobile ? '32px 24px' : '48px 52px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', order: isMobile ? -1 : 'unset' }}>
                     <div>
                       <div style={{ fontSize: 10, letterSpacing: '3px', color: sky, textTransform: 'uppercase', marginBottom: 18, fontWeight: 500 }}>{p.num}</div>
                       <h2 style={{ fontSize: 28, fontWeight: 500, color: 'white', lineHeight: 1.1, letterSpacing: '-0.03em', marginBottom: 14 }}>{p.title}</h2>

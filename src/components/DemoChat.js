@@ -133,8 +133,8 @@ export function DemoChatInputBar({
   );
 }
 
-export function DemoUploadSlotEmpty() {
-  const [open, setOpen] = useState(false);
+export function DemoUploadSlotEmpty({ initialOpen = false }) {
+  const [open, setOpen] = useState(initialOpen);
   const [closing, setClosing] = useState(false);
   const ref = useRef(null);
 

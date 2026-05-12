@@ -38,7 +38,7 @@ const CATALOG_INDEX = 4;
 export default function Services() {
   const maxWidth = useMaxWidth();
   const isMobile = useIsMobile();
-  const [openIndex, setOpenIndex] = useState(null);
+  const [openIndex, setOpenIndex] = useState(0);
   const [modal, setModal] = useState(false);
 
   const toggle = (i) => setOpenIndex(openIndex === i ? null : i);

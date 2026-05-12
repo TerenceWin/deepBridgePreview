@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { useIsMobile } from './layout';
 
 // ─── site design tokens (matches theme.css) ───────────────────────────────
 const navy       = '#0D1F35';
@@ -191,6 +192,7 @@ function CapIndicator({ current, theoretical, demand }) {
 
 // ─── main component ───────────────────────────────────────────────────────────
 export default function ImpactCalculator({ onDemo }) {
+  const isMobile = useIsMobile();
   const [tab, setTab] = useState('cost');
   const [showFormulas, setShowFormulas] = useState(false);
   const [showAssumptions, setShowAssumptions] = useState(false);
@@ -289,7 +291,7 @@ export default function ImpactCalculator({ onDemo }) {
   const c = costInputs;   // shorthand for render
 
   return (
-    <div style={{ minWidth: 1000 }}>
+    <div style={{ width: '100%' }}>
       {/* header */}
       <div style={{ marginBottom: 28 }}>
         <div className="db-section-tag">Impact Calculator</div>
@@ -309,7 +311,7 @@ export default function ImpactCalculator({ onDemo }) {
 
       {/* ── COST TAB ── */}
       {tab === 'cost' && (
-        <div style={{ display: 'grid', gridTemplateColumns: '548px 548px', gap: 20, alignItems: 'stretch' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '548px 548px', gap: 20, alignItems: 'stretch' }}>
 
           {/* left — inputs */}
           <div style={{ background: '#fff', border: `1px solid ${rule}`, borderRadius: 3, padding: '28px 24px', display: 'flex', flexDirection: 'column' }}>
@@ -434,7 +436,7 @@ export default function ImpactCalculator({ onDemo }) {
 
       {/* ── REVENUE TAB ── */}
       {tab === 'revenue' && (
-        <div style={{ display: 'grid', gridTemplateColumns: '548px 548px', gap: 20, alignItems: 'start' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '548px 548px', gap: 20, alignItems: 'start' }}>
           <div style={{ background: '#fff', border: `1px solid ${rule}`, borderRadius: 3, padding: '28px 24px' }}>
             <div style={{ fontFamily: fontBody, fontSize: 18, fontWeight: 400, color: navy, marginBottom: 4 }}>Your quotation pipeline</div>
             <div style={{ fontFamily: fontBody, fontSize: 13, fontWeight: 300, color: slate, marginBottom: 24, lineHeight: 1.7 }}>Deep Bridge reduces quotation prep from 30 to 10 minutes. Projected revenue is capped by available opportunities.</div>
@@ -463,7 +465,7 @@ export default function ImpactCalculator({ onDemo }) {
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             <CapIndicator current={revenueInputs.currentQuotationsPerMonth} theoretical={revenue.theoreticalCapacity} demand={revenueInputs.quoteableOpportunities} />
-            <div style={{ display: 'grid', gridTemplateColumns: '264px 264px', gap: 10 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '264px 264px', gap: 10 }}>
               <ResultCard label="Current monthly revenue"   value={currency(revenue.curRev)}  sub={`${fmt(revenueInputs.currentQuotationsPerMonth, 0)} quotations`} />
               <ResultCard label="Projected monthly revenue" value={currency(revenue.projRev)} sub={`${fmt(revenue.projectedQuotations, 0)} quotations`} accent={!revenue.isCapConstrained} />
             </div>
