@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import HandleFilesOutput from '../heroTab/HandleFiles.js';
 import TypingText, { DelayedVisible } from '../../components/TypingText';
-import { DemoChatShell, DemoChatInputBar } from '../../components/DemoChat.js';
+import { DemoChatShell, DemoChatInputBar, DemoUploadSlotEmpty } from '../../components/DemoChat.js';
+import { useIsMobile } from '../../components/layout';
 
 function DelayedRow({ delay, animate, style, children }) {
   const [visible, setVisible] = useState(!animate);
@@ -72,9 +73,18 @@ const cell  = { border: '1px solid #d1d5db', padding: '4px 8px', fontSize: 10, c
 const hCell = { ...cell, background: '#f3f4f6', fontWeight: 700, fontSize: 9, letterSpacing: '0.3px', color: '#111827' };
 
 function ShippingInvoiceCard({ animate }) {
+  const isMobile = useIsMobile();
   const D = (i) => animate ? i * 150 : 0;
+
+  const lineItems = [
+    { id: '#12345',  desc: 'BLDC ResQVac w/ Safety Hammer & Blade', qty: '3,000', price: '$9.80', total: '$29,400.00' },
+    { id: 'PKG-001', desc: 'Export Carton (20 units/carton × 150)',  qty: '150',   price: '$2.10', total: '$315.00'    },
+  ];
+  const lineHeaders = ['ITEM NO.', 'DESCRIPTION', 'QTY', 'UNIT PRICE', 'TOTAL'];
+  const lineKeys    = ['id', 'desc', 'qty', 'price', 'total'];
+
   return (
-    <div style={{ border: '1px solid #d1d5db', borderRadius: 10, overflow: 'hidden', background: 'white', fontSize: 10 }}>
+    <div style={{ border: '1px solid #d1d5db', borderRadius: 10, overflowX: 'auto', background: 'white', fontSize: 10 }}>
 
       {/* Header bar */}
       <div style={{ background: '#1a2e44', padding: '8px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -85,7 +95,7 @@ function ShippingInvoiceCard({ animate }) {
       <div style={{ padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: 10 }}>
 
         {/* Company + Invoice meta */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           <DelayedVisible delay={D(0)} animate={animate} style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <span style={{ fontWeight: 700, fontSize: 11, color: '#111827' }}><TypingText text="Deep Bridge Sourcing Ltd." animate={animate} delay={D(0)} speed={5} /></span>
             <span style={{ color: '#6b7280' }}><TypingText text="Unit 12, Harbour View Centre" animate={animate} delay={D(0)} speed={5} /></span>
@@ -93,7 +103,7 @@ function ShippingInvoiceCard({ animate }) {
             <span style={{ color: '#6b7280' }}><TypingText text="+852 3900 1122" animate={animate} delay={D(0)} speed={5} /></span>
             <span style={{ color: '#6b7280' }}><TypingText text="sourcing@deepbridge.com" animate={animate} delay={D(0)} speed={5} /></span>
           </DelayedVisible>
-          <DelayedVisible delay={D(1)} animate={animate} style={{ display: 'flex', flexDirection: 'column', gap: 3, alignItems: 'flex-end' }}>
+          <DelayedVisible delay={D(1)} animate={animate} style={{ display: 'flex', flexDirection: 'column', gap: 3, alignItems: 'flex-start' }}>
             <div style={{ display: 'flex', gap: 8 }}><span style={{ fontWeight: 700, color: '#111827' }}>DATE</span><span><TypingText text="01/03/2025" animate={animate} delay={D(1)} speed={5} /></span></div>
             <div style={{ display: 'flex', gap: 8 }}><span style={{ fontWeight: 700, color: '#111827' }}>INVOICE NO.</span><span><TypingText text="INV-2025-0312" animate={animate} delay={D(1)} speed={5} /></span></div>
             <div style={{ display: 'flex', gap: 8 }}><span style={{ fontWeight: 700, color: '#111827' }}>CUSTOMER NO.</span><span><TypingText text="C-0892" animate={animate} delay={D(1)} speed={5} /></span></div>
@@ -101,7 +111,7 @@ function ShippingInvoiceCard({ animate }) {
         </div>
 
         {/* Bill To / Ship To */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           <DelayedVisible delay={D(2)} animate={animate} style={{ border: '1px solid #e5e7eb', borderRadius: 6, padding: '8px 10px' }}>
             <div style={{ fontWeight: 700, fontSize: 9, color: '#6b7280', marginBottom: 5, letterSpacing: '0.5px', textTransform: 'uppercase' }}>Bill To</div>
             <div style={{ color: '#374151', lineHeight: 1.6 }}>
@@ -172,36 +182,50 @@ function ShippingInvoiceCard({ animate }) {
         </table>
 
         {/* Line items */}
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead>
-            <tr>
-              <th style={hCell}>ITEM NO.</th>
-              <th style={{ ...hCell, width: '40%' }}>DESCRIPTION</th>
-              <th style={hCell}>QTY</th>
-              <th style={hCell}>UNIT PRICE</th>
-              <th style={hCell}>TOTAL</th>
-            </tr>
-          </thead>
-          <tbody>
-            {[
-              { id: '#12345', desc: 'BLDC ResQVac w/ Safety Hammer & Blade', qty: '3,000', price: '$9.80', total: '$29,400.00' },
-              { id: 'PKG-001',  desc: 'Export Carton (20 units/carton × 150)',  qty: '150',   price: '$2.10', total: '$315.00'    },
-            ].map((r, i) => (
-              <DelayedRow key={i} delay={D(6 + i)} animate={animate} style={{ borderBottom: '1px solid #f3f4f6' }}>
-                <td style={cell}><TypingText text={r.id} animate={animate} delay={D(6 + i)} speed={5} /></td>
-                <td style={cell}><TypingText text={r.desc} animate={animate} delay={D(6 + i)} speed={5} /></td>
-                <td style={cell}><TypingText text={r.qty} animate={animate} delay={D(6 + i)} speed={5} /></td>
-                <td style={cell}><TypingText text={r.price} animate={animate} delay={D(6 + i)} speed={5} /></td>
-                <td style={cell}><TypingText text={r.total} animate={animate} delay={D(6 + i)} speed={5} /></td>
-              </DelayedRow>
-            ))}
-            {[...Array(3)].map((_, i) => (
-              <tr key={`empty-${i}`} style={{ borderBottom: '1px solid #f3f4f6' }}>
-                {[...Array(5)].map((__, j) => <td key={j} style={{ ...cell, color: '#d1d5db' }}>—</td>)}
+        {isMobile ? (
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <tbody>
+              {lineHeaders.map((header, hi) => (
+                <DelayedRow key={hi} delay={D(6 + hi)} animate={animate} style={{ borderBottom: '1px solid #f3f4f6' }}>
+                  <th style={hCell}>{header}</th>
+                  {lineItems.map((r, ii) => (
+                    <td key={ii} style={cell}>
+                      <TypingText text={r[lineKeys[hi]]} animate={animate} delay={D(6 + hi)} speed={5} />
+                    </td>
+                  ))}
+                </DelayedRow>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <thead>
+              <tr>
+                <th style={hCell}>ITEM NO.</th>
+                <th style={{ ...hCell, width: '40%' }}>DESCRIPTION</th>
+                <th style={hCell}>QTY</th>
+                <th style={hCell}>UNIT PRICE</th>
+                <th style={hCell}>TOTAL</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {lineItems.map((r, i) => (
+                <DelayedRow key={i} delay={D(6 + i)} animate={animate} style={{ borderBottom: '1px solid #f3f4f6' }}>
+                  <td style={cell}><TypingText text={r.id} animate={animate} delay={D(6 + i)} speed={5} /></td>
+                  <td style={cell}><TypingText text={r.desc} animate={animate} delay={D(6 + i)} speed={5} /></td>
+                  <td style={cell}><TypingText text={r.qty} animate={animate} delay={D(6 + i)} speed={5} /></td>
+                  <td style={cell}><TypingText text={r.price} animate={animate} delay={D(6 + i)} speed={5} /></td>
+                  <td style={cell}><TypingText text={r.total} animate={animate} delay={D(6 + i)} speed={5} /></td>
+                </DelayedRow>
+              ))}
+              {[...Array(3)].map((_, i) => (
+                <tr key={`empty-${i}`} style={{ borderBottom: '1px solid #f3f4f6' }}>
+                  {[...Array(5)].map((__, j) => <td key={j} style={{ ...cell, color: '#d1d5db' }}>—</td>)}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
 
         {/* Totals */}
         <DelayedVisible delay={D(8)} animate={animate} style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -270,9 +294,9 @@ const ERRORS = [
 function ShippingErrorsOutput({ animate }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-      <p style={{ margin: '0 0 4px', fontSize: 12, color: '#374151' }}>
+      <div style={{ margin: '0 0 4px', fontSize: 12, color: '#374151' }}>
         <TypingText text="3 issues found in the shipping documents for #12345. These must be resolved before the shipment proceeds:" animate={animate} delay={0} />
-      </p>
+      </div>
       {ERRORS.map((e, i) => {
         const delay = animate ? 80 * i + 200 : 0;
         return (
@@ -281,12 +305,12 @@ function ShippingErrorsOutput({ animate }) {
               <i className={e.icon} style={{ fontSize: 10, color: e.color }} />
               <span style={{ fontSize: 9, fontWeight: 700, color: e.color, letterSpacing: '0.5px', textTransform: 'uppercase' }}>{e.severity}</span>
             </div>
-            <p style={{ margin: '0 0 6px', fontSize: 11, fontWeight: 700, color: '#111827' }}>
+            <div style={{ margin: '0 0 6px', fontSize: 11, fontWeight: 700, color: '#111827' }}>
               <TypingText text={e.label} animate={animate} delay={delay} />
-            </p>
-            <p style={{ margin: '0 0 8px', fontSize: 11, color: '#6b7280', lineHeight: 1.4 }}>
+            </div>
+            <div style={{ margin: '0 0 8px', fontSize: 11, color: '#6b7280', lineHeight: 1.4 }}>
               <TypingText text={e.description} animate={animate} delay={delay} />
-            </p>
+            </div>
             <span style={{ fontSize: 10, color: '#2563eb', cursor: 'pointer' }}>
               <TypingText text="View Shipping Document ↗" animate={animate} delay={delay} />
             </span>
@@ -434,12 +458,12 @@ function PackagingErrorsOutput({ animate }) {
               <i className={e.icon} style={{ fontSize: 10, color: e.color }} />
               <span style={{ fontSize: 9, fontWeight: 700, color: e.color, letterSpacing: '0.5px', textTransform: 'uppercase' }}>{e.severity}</span>
             </div>
-            <p style={{ margin: '0 0 6px', fontSize: 11, fontWeight: 700, color: '#111827' }}>
+            <div style={{ margin: '0 0 6px', fontSize: 11, fontWeight: 700, color: '#111827' }}>
               <TypingText text={e.label} animate={animate} delay={delay} />
-            </p>
-            <p style={{ margin: '0 0 8px', fontSize: 11, color: '#6b7280', lineHeight: 1.4 }}>
+            </div>
+            <div style={{ margin: '0 0 8px', fontSize: 11, color: '#6b7280', lineHeight: 1.4 }}>
               <TypingText text={e.description} animate={animate} delay={delay} />
-            </p>
+            </div>
             <span style={{ fontSize: 10, color: '#2563eb', cursor: 'pointer' }}>
               <TypingText text="View Packaging Specification ↗" animate={animate} delay={delay} />
             </span>
@@ -627,6 +651,7 @@ export default function RiskFlagsDemo({ handleModal }) {
           onSend={handleSend}
           isAiTyping={isAiTyping}
           pulsing={!isAiTyping && !isDone}
+          uploadSlot={<DemoUploadSlotEmpty />}
         />
       }
     />

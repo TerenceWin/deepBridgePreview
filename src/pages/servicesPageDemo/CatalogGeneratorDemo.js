@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import data from '../../data/heroData.js';
 import CatalogGeneratorOutput, { CatalogGeneratorUpload } from '../heroTab/CatalogGenerator.js';
 import { DemoChatShell, DemoChatInputBar } from '../../components/DemoChat.js';
+import { useIsMobile } from '../../components/layout';
 import bugZapper9  from '../../images/catalogGenerator/bugZapper9.jpeg';
 import bugZapper10 from '../../images/catalogGenerator/bugZapper10.jpeg';
 import bugZapper11 from '../../images/catalogGenerator/bugZapper11.jpeg';
@@ -27,6 +28,7 @@ function countOutputChars(output) {
 }
 
 export default function CatalogGeneratorDemo({ handleModal }) {
+  const isMobile = useIsMobile();
   const [messages, setMessages] = useState([]);
   const [typingText, setTypingText] = useState('');
   const [stage, setStage] = useState(0);
@@ -186,7 +188,8 @@ export default function CatalogGeneratorDemo({ handleModal }) {
             setUploadDropdownOpen(true);
           }
         }}
-        style={{ width: 32, height: 32, border: '1px solid #d1d5db', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', background: 'white', animation: !showSend && !isAiTyping ? 'demoSendPulse 1.5s ease-in-out infinite' : 'none' }}
+        style={{ width: 32, height: 32, border: '1px solid #d1d5db', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', 
+          cursor: 'pointer', background: 'white', animation: !showSend && !isAiTyping ? 'demoSendPulse 1.5s ease-in-out infinite' : 'none' }}
       >
         <i className="fa fa-upload" style={{ fontSize: 16, color: '#1a2e44' }} />
       </div>
@@ -198,7 +201,7 @@ export default function CatalogGeneratorDemo({ handleModal }) {
           transformOrigin: 'bottom left',
           animation: `${uploadDropdownClosing ? 'demoDropdownShrink' : 'demoDropdownExpand'} 0.25s ease forwards`,
         }}>
-          <p style={{ margin: '0 0 8px', fontSize: 12, fontWeight: 600, color: '#111827' }}>Upload Files</p>
+          <div style={{ margin: '0 0 8px', fontSize: 12, fontWeight: 600, color: '#111827' }}>Upload Files</div>
           {stage !== 4 && (
             <CatalogGeneratorUpload
               uploadImages={catalogUploadImages}
@@ -234,7 +237,7 @@ export default function CatalogGeneratorDemo({ handleModal }) {
       emptyIcon={{ className: 'fas fa-list', color: '#049669' }}
       emptyText="Try uploading an image."
       renderUserBubble={msg => (
-        <div style={{ maxWidth: '70%', background: '#2563eb', color: 'white', borderRadius: '18px 18px 4px 18px', padding: '10px 14px', fontSize: 13, lineHeight: 1.5, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6 }}>
+        <div style={{ maxWidth: isMobile ? '95%' : '70%', background: '#2563eb', color: 'white', borderRadius: '18px 18px 4px 18px', padding: isMobile ? '10px 10px' : '10px 14px', fontSize: 13, lineHeight: 1.5, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6 }}>
           {msg.images && (
             <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
               {msg.images.map((src, i) => (
@@ -245,12 +248,12 @@ export default function CatalogGeneratorDemo({ handleModal }) {
           {msg.text}
           {msg.imageUpload && (
             <div style={{ borderRadius: 8, overflow: 'hidden', border: '1px solid #e5e7eb', background: '#f3f4f6', padding: 10, width: '100%', boxSizing: 'border-box' }}>
-              <img src={msg.imageUpload} alt="" style={{ width: '100%', height: 350, objectFit: 'contain', display: 'block' }} />
+              <img src={msg.imageUpload} alt="" style={{ width: '100%', height: isMobile ? 200 : 350, objectFit: 'contain', display: 'block' }} />
             </div>
           )}
         </div>
       )}
-      renderAiContent={msg => <CatalogGeneratorOutput output={msg.output} animate={msg.animate} />}
+      renderAiContent={msg => <CatalogGeneratorOutput output={msg.output} animate={msg.animate} isMobile={isMobile} />}
       inputBar={
         <DemoChatInputBar
           inputRef={inputRef}

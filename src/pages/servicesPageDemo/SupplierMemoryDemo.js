@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useIsMobile } from '../../components/layout';
 import { handleFilesFollowUps } from '../../data/heroData.js';
 import { handleFile1 } from '../../data/handleFilesData.js';
 import HandleFilesOutput, { HandleFilesUpload, computeFileDetailsDuration } from '../heroTab/HandleFiles.js';
@@ -18,6 +19,7 @@ const users = [
 ];
 
 export default function SupplierMemoryDemo({ handleModal }) {
+  const isMobile = useIsMobile();
   const [messages, setMessages] = useState([]);
   const [typingText, setTypingText] = useState('');
   const [stage, setStage] = useState(0);
@@ -223,7 +225,7 @@ export default function SupplierMemoryDemo({ handleModal }) {
           transformOrigin: 'bottom left',
           animation: `${uploadDropdownClosing ? 'demoDropdownShrink' : 'demoDropdownExpand'} 0.25s ease forwards`,
         }}>
-          <p style={{ margin: '0 0 8px', fontSize: 12, fontWeight: 600, color: '#111827' }}>Upload Files</p>
+          <div style={{ margin: '0 0 8px', fontSize: 12, fontWeight: 600, color: '#111827' }}>Upload Files</div>
           <HandleFilesUpload
             items={handleFilesItems}
             selectedFile={selectedHandleFile}
@@ -248,12 +250,12 @@ export default function SupplierMemoryDemo({ handleModal }) {
       emptyIcon={{ className: 'fas fa-file-upload', color: '#e02f3e' }}
       emptyText="Try uploading a file."
       renderUserBubble={msg => (
-        <div style={{ maxWidth: '70%', background: '#2563eb', color: 'white', borderRadius: '18px 18px 4px 18px', padding: '10px 14px', fontSize: 13, lineHeight: 1.5, display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+        <div style={{ maxWidth: isMobile ? '95%' : '70%', background: '#2563eb', color: 'white', borderRadius: '18px 18px 4px 18px', padding: isMobile ? '10px 10px' : '10px 14px', fontSize: 13, lineHeight: 1.5, display: 'flex', flexDirection: 'column', gap: 6 }}>
           {msg.fileUpload && (
-            <>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
               <i className="fas fa-file-powerpoint" style={{ fontSize: 13, color: '#ffb3b3', flexShrink: 0 }} />
-              <span style={{ fontSize: 11, opacity: 0.85, flexShrink: 0 }}>{msg.fileUpload}</span>
-            </>
+              <span style={{ fontSize: 11, opacity: 0.85 }}>{msg.fileUpload}</span>
+            </div>
           )}
           <span>{msg.text}</span>
         </div>

@@ -126,7 +126,7 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop, isL
       if (tab === 'Factory Finder')     return <FactoryFinderOutput output={output} animate={animate} isMobile={isMobile} />;
       if (tab === 'Generate Quotation') return <QuotationGeneratorOutput output={output} animate={animate} onEmailSent={() => { handleModal(); setDemoTriggered(true); }} />;
       if (tab === 'Handle Files')       return <HandleFilesOutput output={output} users={users} userStages={userStages} onSave={(msg) => { setSaveToast(msg); setTimeout(() => setSaveToast(null), 3500); }} animate={animate} />;
-      if (tab === 'Catalog Generator')  return <CatalogGeneratorOutput output={output} animate={animate} />;
+      if (tab === 'Catalog Generator')  return <CatalogGeneratorOutput output={output} animate={animate} isMobile={isMobile} />;
     };
 
     useEffect(() => {
@@ -298,20 +298,22 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop, isL
                       {msg.role === 'user' ? (
                         <div style={{ maxWidth: '70%', background: '#2563eb', color: 'white', borderRadius: '18px 18px 4px 18px', padding: '10px 14px', fontSize: 13, lineHeight: 1.5, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6 }}>
                           {msg.fileUpload ? (
-                            <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                              <i className="fas fa-file-powerpoint" style={{ fontSize: 13, color: '#ffb3b3', flexShrink: 0 }} />
-                              <span style={{ fontSize: 11, opacity: 0.85, flexShrink: 0 }}>{msg.fileUpload}</span>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                                <i className="fas fa-file-powerpoint" style={{ fontSize: 13, color: '#ffb3b3', flexShrink: 0 }} />
+                                <span style={{ fontSize: 11, opacity: 0.85 }}>{msg.fileUpload}</span>
+                              </div>
                               <span>{msg.text}</span>
                             </div>
                           ) : msg.text}
                           {msg.imageUpload && (
                             <div style={{ borderRadius: 8, overflow: 'hidden', border: '1px solid #e5e7eb', background: '#f3f4f6', padding: 10, width: '100%', boxSizing: 'border-box' }}>
-                              <img src={msg.imageUpload} alt="" style={{ width: '100%', height: 350, objectFit: 'contain', display: 'block' }} />
+                              <img src={msg.imageUpload} alt="" style={{ width: '100%', height: isMobile ? 200 : 350, objectFit: 'contain', display: 'block' }} />
                             </div>
                           )}
                         </div>
                       ) : (
-                        <div style={{ width: '100%', maxWidth: 600, background: '#f3f4f6', border: '1px solid #e5e7eb', borderRadius: '18px 18px 18px 4px', padding: '10px 14px', fontSize: 13, display: 'flex', flexDirection: 'column' }}>
+                        <div style={{ width: '100%', maxWidth: 600, background: '#f3f4f6', border: '1px solid #e5e7eb', borderRadius: '18px 18px 18px 4px', padding: '10px 14px', display: 'flex', flexDirection: 'column' }}>
                           {msg.isThinking ? (
                             <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '2px 0' }}>
                               <span style={{ fontSize: 12, color: '#6b7280' }}>Thinking</span>
@@ -325,7 +327,7 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop, isL
                             <>
                               {msg.showThought && (
                                 <div style={{ fontSize: 10, color: '#9ca3af', marginBottom: 6, display: 'flex', alignItems: 'center', gap: 4 }}>
-                                  <i className="fas fa-clock" style={{ fontSize: 9 }} />
+                                  <i className="fas fa-clock" style={{ fontSize: 10 }} />
                                   Thought for 1 second
                                 </div>
                               )}
@@ -385,6 +387,7 @@ export default function HeroSection({ stopAnimation, handleModal, isDesktop, isL
               isAiTyping={isAiTyping}
               handleSend={handleSend}
               isMobile={isMobile}
+              userTyped={userTyped}
             />
           </div>
         </div>

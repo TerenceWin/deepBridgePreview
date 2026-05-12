@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import data from '../../data/heroData.js';
 import FactoryFinderOutput from '../heroTab/FactoryFinder.js';
-import { DemoChatShell, DemoChatInputBar } from '../../components/DemoChat.js';
+import { DemoChatShell, DemoChatInputBar, DemoUploadSlotEmpty } from '../../components/DemoChat.js';
+import { useIsMobile } from '../../components/layout';
 
 const selectedUser = { name: 'Marcus Lin' };
 const ffData = data['Factory Finder']['Marcus Lin'];
@@ -20,6 +21,7 @@ function countOutputChars(output) {
 }
 
 export default function FactoryFinderDemo({ handleModal }) {
+  const isMobile = useIsMobile();
   const [messages, setMessages] = useState([]);
   const [typingText, setTypingText] = useState('');
   const [stage, setStage] = useState(0);
@@ -122,7 +124,7 @@ export default function FactoryFinderDemo({ handleModal }) {
       messages={messages}
       emptyIcon={{ className: 'fas fa-industry', color: '#1fc9ed' }}
       emptyText="Try sending a message."
-      renderAiContent={msg => <FactoryFinderOutput output={msg.output} animate={msg.animate} />}
+      renderAiContent={msg => <FactoryFinderOutput output={msg.output} animate={msg.animate} isMobile={isMobile} />}
       inputBar={
         <DemoChatInputBar
           inputRef={inputRef}
@@ -131,6 +133,7 @@ export default function FactoryFinderDemo({ handleModal }) {
           onSend={handleSend}
           isAiTyping={isAiTyping}
           pulsing={!isAiTyping}
+          uploadSlot={<DemoUploadSlotEmpty />}
         />
       }
     />

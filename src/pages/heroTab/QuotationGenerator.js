@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import TypingText, { DelayedVisible } from '../../components/TypingText';
+import { useIsMobile } from '../../components/layout';
 
 const sendEmailPulse = `
   @keyframes sendEmailPulse {
@@ -10,9 +11,9 @@ const sendEmailPulse = `
 
 export function QuotationGeneratorUpload() {
   return (
-    <p style={{ margin: '0 0 10px', fontSize: 11, color: '#6b7280', lineHeight: 1.5 }}>
+    <div style={{ margin: '0 0 10px', fontSize: 11, color: '#6b7280', lineHeight: 1.5 }}>
       No file required — type your product ID, markup, and any notes directly in the input field.
-    </p>
+    </div>
   );
 }
 
@@ -32,21 +33,22 @@ const thStyle = { padding: '6px 10px', fontSize: 10, fontWeight: 600, color: '#6
 const tdStyle = { padding: '6px 10px', fontSize: 11, color: '#374151' };
 
 function ProductFoundCard({ item, animate }) {
+  const isMobile = useIsMobile();
   const p = item.product;
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-      <p style={{ margin: 0, fontSize: 14, color: '#374151' }}>
+      <div style={{ margin: 0, fontSize: 12, color: '#374151' }}>
         <TypingText text={item.description} animate={animate} delay={0} />
-      </p>
+      </div>
       <div style={{ border: '1px solid #e5e7eb', borderRadius: 8, overflow: 'hidden', background: 'white' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '200px 1fr' }}>
-          <DelayedVisible delay={item.description.length * 5} animate={animate} style={{ overflow: 'hidden', borderRight: '1px solid #e5e7eb' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '200px 1fr' }}>
+          <DelayedVisible delay={item.description.length * 5} animate={animate} style={{ overflow: 'hidden', borderRight: isMobile ? 'none' : '1px solid #e5e7eb', borderBottom: isMobile ? '1px solid #e5e7eb' : 'none' }}>
             <img src={p.image} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </DelayedVisible>
           <div style={{ padding: '10px 12px', display: 'flex', flexDirection: 'column', gap: 6 }}>
-            <p style={{ margin: 0, fontWeight: 700, fontSize: 12, color: '#111827' }}>
+            <div style={{ margin: 0, fontWeight: 700, fontSize: 12, color: '#111827' }}>
               <TypingText text={p.name} animate={animate} delay={item.description.length * 5} />
-            </p>
+            </div>
             <div style={{ display: 'flex', gap: 16 }}>
               <div>
                 <span style={{ fontSize: 9, fontWeight: 600, color: '#6b7280', display: 'block' }}>PRICE</span>
@@ -94,9 +96,9 @@ function CustomerListCard({ item, animate }) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-      <p style={{ margin: 0, fontSize: 12, color: '#374151' }}>
+      <div style={{ margin: 0, fontSize: 12, color: '#374151' }}>
         <TypingText text={item.description} animate={animate} delay={descDelay} />
-      </p>
+      </div>
       <div style={{ border: '1px solid #e5e7eb', borderRadius: 8, overflow: 'hidden' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
@@ -125,6 +127,7 @@ const defaultPreviewEmails = ['julia.bauer@cleanhome.de'];
 const checks = ['Recipient added', 'Subject is present', 'Message body is present', 'Sender account selected'];
 
 export function EmailDraftCard({ item, animate, onSend }) {
+  const isMobile = useIsMobile();
   const [sent, setSent] = useState(false);
 
   const handleSendEmail = () => {
@@ -145,15 +148,15 @@ export function EmailDraftCard({ item, animate, onSend }) {
       return d;
     });
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           <i className="fas fa-check-circle" style={{ color: '#22c55e', fontSize: 13 }} />
           <span style={{ fontSize: 12, fontWeight: 600, color: '#111827' }}>
             <TypingText text={`Emails sent to ${item.sentTo} customers.`} animate={animate} delay={0} />
           </span>
         </div>
-        <div style={{ border: '1px solid #e5e7eb', borderRadius: 8, overflow: 'hidden' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+        <div style={{ border: '1px solid #e5e7eb', borderRadius: 8, overflow: 'scroll' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', overflow: 'auto' }}>
             <thead>
               <tr>
                 <th style={thStyle}>Company</th>
@@ -184,7 +187,7 @@ export function EmailDraftCard({ item, animate, onSend }) {
   const bodyDelay = item.subject.length * 5;
 
   return (
-    <div style={{ border: '1px solid #e5e7eb', borderRadius: 10, overflow: 'hidden', background: 'white', fontSize: 11 }}>
+    <div style={{ border: '1px solid #e5e7eb', borderRadius: 10, overflowX: 'auto', background: 'white', fontSize: 11 }}>
 
       {/* Header */}
       <div style={{ background: '#2563eb', color: 'white', padding: '8px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -224,8 +227,8 @@ export function EmailDraftCard({ item, animate, onSend }) {
       </div>
 
       {/* From + Subject */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderBottom: '1px solid #f3f4f6' }}>
-        <div style={{ padding: '7px 14px', borderRight: '1px solid #f3f4f6' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', borderBottom: '1px solid #f3f4f6' }}>
+        <div style={{ padding: '7px 14px', borderRight: isMobile ? 'none' : '1px solid #f3f4f6', borderBottom: isMobile ? '1px solid #f3f4f6' : 'none' }}>
           <div style={{ fontSize: 9, fontWeight: 700, color: '#6b7280', marginBottom: 3, display: 'flex', alignItems: 'center', gap: 4 }}>
             <i className="fas fa-user" /> From
           </div>
@@ -276,9 +279,9 @@ export function EmailDraftCard({ item, animate, onSend }) {
 
       {/* Message body */}
       <div style={{ padding: '10px 14px' }}>
-        <p style={{ margin: 0, fontSize: 11, color: '#374151', lineHeight: 1.8, whiteSpace: 'pre-line' }}>
+        <div style={{ margin: 0, fontSize: 11, color: '#374151', lineHeight: 1.8, whiteSpace: 'pre-line' }}>
           <TypingText text={item.preview} animate={animate} delay={bodyDelay} />
-        </p>
+        </div>
       </div>
 
       {/* Loaded saved draft status */}
@@ -289,7 +292,7 @@ export function EmailDraftCard({ item, animate, onSend }) {
       </div>
 
       {/* Checklist */}
-      <div style={{ padding: '8px 14px', borderTop: '1px solid #f3f4f6', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px 8px' }}>
+      <div style={{ padding: '8px 14px', borderTop: '1px solid #f3f4f6', display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '4px 8px' }}>
         {checks.map((c, i) => (
           <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: '#374151' }}>
             <i className="fas fa-check-circle" style={{ color: '#22c55e', fontSize: 11 }} />
@@ -300,7 +303,7 @@ export function EmailDraftCard({ item, animate, onSend }) {
 
       {/* Bottom actions */}
       <style>{sendEmailPulse}</style>
-    <div style={{ padding: '8px 14px', borderTop: '1px solid #e5e7eb', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <div style={{ padding: '8px 14px', borderTop: '1px solid #e5e7eb', display: 'flex', flexDirection: isMobile ? 'column' : 'row', justifyContent: 'space-between', alignItems: isMobile ? 'stretch' : 'center', gap: isMobile ? 8 : 0 }}>
         <button style={{ fontSize: 11, fontWeight: 600, color: '#dc2626', background: 'white', border: '1px solid #fca5a5', borderRadius: 6, padding: '5px 13px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5 }}>
           <i className="fas fa-trash-alt" style={{ fontSize: 9 }} /> Discard
         </button>
@@ -334,10 +337,10 @@ export default function QuotationGeneratorOutput({ output, animate = false, onEm
 
   if (item?.type === 'markupSaved')
     return (
-      <p style={{ margin: 0, fontSize: 12, color: '#374151', display: 'flex', alignItems: 'center', gap: 6 }}>
+      <div style={{ margin: 0, fontSize: 12, color: '#374151', display: 'flex', alignItems: 'center', gap: 6 }}>
         <i className="fas fa-check-circle" style={{ color: '#22c55e', fontSize: 13 }} />
         <TypingText text={item.description} animate={animate} delay={0} />
-      </p>
+      </div>
     );
 
   if (item?.type === 'emailDraft')
@@ -357,11 +360,11 @@ export default function QuotationGeneratorOutput({ output, animate = false, onEm
   const totalDelay = runningDelay;
 
   if (description && lineItems.length === 0)
-    return <p style={{ margin: 0, fontSize: 12, color: '#374151' }}><TypingText text={description} animate={animate} delay={0} /></p>;
+    return <div style={{ margin: 0, fontSize: 12, color: '#374151' }}><TypingText text={description} animate={animate} delay={0} /></div>;
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-      {description && <p style={{ margin: 0, fontSize: 12, color: '#374151' }}><TypingText text={description} animate={animate} delay={0} /></p>}
+      {description && <div style={{ margin: 0, fontSize: 12, color: '#374151' }}><TypingText text={description} animate={animate} delay={0} /></div>}
       {lineItems.length > 0 && (
         <div style={{ background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: 8, overflow: 'hidden' }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr auto auto', padding: '6px 10px', background: '#f3f4f6', borderBottom: '1px solid #e5e7eb', fontSize: 11, fontWeight: 600, color: '#6b7280', gap: 12 }}>

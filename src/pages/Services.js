@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import PageHero from '../components/PageHero';
-import { useMaxWidth, SECTION_PAD, SECTION_PAD_SM } from '../components/layout';
+import { useMaxWidth, useIsMobile, SECTION_PAD, SECTION_PAD_SM } from '../components/layout';
 import DemoModal from '../components/DemoModal';
 import FactoryFinderDemo from './servicesPageDemo/FactoryFinderDemo.js';
 import QuotationWorkflowDemo from './servicesPageDemo/QuotationWorkflowDemo.js';
@@ -37,6 +37,7 @@ const CATALOG_INDEX = 4;
 
 export default function Services() {
   const maxWidth = useMaxWidth();
+  const isMobile = useIsMobile();
   const [openIndex, setOpenIndex] = useState(null);
   const [modal, setModal] = useState(false);
 
@@ -47,15 +48,15 @@ export default function Services() {
       <DemoModal isOpen={modal} onClose={() => setModal(false)} />
       <PageHero label="Services" title="Core workflows for export teams" subtitle="Five tools built around how export teams actually work, from first enquiry to final follow-up." dark />
       <div style={{ background: 'white' }}>
-        <div style={{ maxWidth: maxWidth, margin: '0 auto', padding: SECTION_PAD }}>
-          <div style={{ fontSize: 10, letterSpacing: '2.5px', color: sky, textTransform: 'uppercase', marginBottom: 32 }}>Core workflows</div>
+        <div style={{ maxWidth: maxWidth, margin: '0 auto', padding: isMobile ? '96px 10px' : SECTION_PAD }}>
+          <div style={{ fontSize: 10, letterSpacing: '2.5px', color: sky, textTransform: 'uppercase', marginBottom: 32, marginLeft: isMobile ? 10 : 0}}>Core workflows</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 1, background: border, borderRadius: 12, overflow: 'hidden' }}>
             {services.map((s, i) => (
               <div key={i}>
                 <div
                   className="db-svc-row"
                   onClick={() => toggle(i)}
-                  style={{ background: 'white', padding: '28px 32px', display: 'grid', gridTemplateColumns: '72px 1fr 1fr auto', gap: 32, alignItems: 'start', cursor: 'pointer' }}
+                  style={{ background: 'white', padding: isMobile ? '5px 10px' :'28px 32px', boxSizing:'border-box' , display: 'grid', gridTemplateColumns: '72px 1fr 1fr auto', gap: 32, alignItems: 'start', cursor: 'pointer' }}
                 >
                   <div style={{ fontSize: 11, letterSpacing: 2, color: sky, textTransform: 'uppercase', fontWeight: 500, paddingTop: 3 }}>{s.num}</div>
                   <div>
@@ -63,7 +64,7 @@ export default function Services() {
                     <div style={{ fontSize: 13, color: sky, lineHeight: 1.6, fontStyle: 'italic' }}>{s.problem}</div>
                   </div>
                   <div style={{ fontSize: 14, color: slate, lineHeight: 1.8 }}>{s.text}</div>
-                  <div style={{ fontSize: 18, color: slate, userSelect: 'none', transition: 'transform 0.3s ease', transform: openIndex === i ? 'rotate(180deg)' : 'rotate(0deg)', paddingTop: 2 }}>⌄</div>
+                  <div style={{ fontSize: 18, color: slate, userSelect: 'none', transition: 'transform 0.3s ease', transform: openIndex === i ? 'rotate(180deg)' : 'rotate(0deg)', paddingTop: 2, boxSizing: 'border-box'}}>⌄</div>
                 </div>
                 <div style={{
                   background: 'white',
@@ -72,23 +73,23 @@ export default function Services() {
                   transition: 'max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
                 }}>
                   {i === QUOTATION_INDEX ? (
-                    <div style={{ borderTop: `1px solid ${border}`, padding: '24px 32px' }}>
+                    <div style={{ borderTop: `1px solid ${border}`, padding: isMobile ? 0 :'24px 32px' }}>
                       <QuotationWorkflowDemo handleModal={() => setModal(true)} />
                     </div>
                   ) : i === RISK_FLAGS_INDEX ? (
-                    <div style={{ borderTop: `1px solid ${border}`, padding: '24px 32px' }}>
+                    <div style={{ borderTop: `1px solid ${border}`, padding: isMobile ? 0 : '24px 32px' }}>
                       <RiskFlagsDemo handleModal={() => setModal(true)} />
                     </div>
                   ) : i === SUPPLIER_MEMORY_INDEX ? (
-                    <div style={{ borderTop: `1px solid ${border}`, padding: '24px 32px' }}>
+                    <div style={{ borderTop: `1px solid ${border}`, padding: isMobile ? 0 : '24px 32px' }}>
                       <SupplierMemoryDemo handleModal={() => setModal(true)} />
                     </div>
                   ) : i === FACTORY_FINDER_INDEX ? (
-                    <div style={{ borderTop: `1px solid ${border}`, padding: '24px 32px' }}>
+                    <div style={{ borderTop: `1px solid ${border}`, padding: isMobile ? 0 : '24px 32px' }}>
                       <FactoryFinderDemo handleModal={() => setModal(true)} />
                     </div>
                   ) : i === CATALOG_INDEX ? (
-                    <div style={{ borderTop: `1px solid ${border}`, padding: '24px 32px' }}>
+                    <div style={{ borderTop: `1px solid ${border}`, padding: isMobile ? 0 : '24px 32px' }}>
                       <CatalogGeneratorDemo handleModal={() => setModal(true)} />
                     </div>
                   ) : (
@@ -101,11 +102,11 @@ export default function Services() {
         </div>
       </div>
       <div style={{ background: surface }}>
-        <div style={{ maxWidth: maxWidth, margin: '0 auto', padding: SECTION_PAD_SM }}>
-          <div style={{ fontSize: 10, letterSpacing: '2.5px', color: '#8A9BB0', textTransform: 'uppercase', marginBottom: 28 }}>Coming soon</div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+        <div style={{ maxWidth: maxWidth, margin: '0 auto', padding: isMobile ? '64px 10px' : SECTION_PAD_SM }}>
+          <div style={{ fontSize: 10, letterSpacing: '2.5px', color: '#8A9BB0', textTransform: 'uppercase', marginBottom: 28, marginLeft: isMobile ? 10 : 0 }}>Coming soon</div>
+          <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: 16 }}>
             {coming.map((c, i) => (
-              <div key={i} style={{ background: 'white', border: `0.5px dashed ${border}`, borderRadius: 12, padding: '28px' }}>
+              <div key={i} style={{ flex: 1, background: 'white', border: `0.5px dashed ${border}`, borderRadius: 12, padding: isMobile ? '20px 16px' : '28px' }}>
                 <div style={{ fontSize: 15, fontWeight: 500, color: navy, marginBottom: 10 }}>{c.title}</div>
                 <div style={{ fontSize: 14, color: slate, lineHeight: 1.8 }}>{c.text}</div>
                 <div style={{ marginTop: 14, fontSize: 10, color: '#8A9BB0', letterSpacing: '1.5px', textTransform: 'uppercase' }}>In development</div>
@@ -114,7 +115,7 @@ export default function Services() {
           </div>
         </div>
       </div>
-      <div style={{ background: navy, padding: '72px 72px', textAlign: 'center' }}>
+      <div style={{ background: navy, padding: isMobile ? '50px 20px' :'72px 72px', textAlign: 'center' }}>
         <h2 style={{ fontSize: 32, fontWeight: 500, color: 'white', marginBottom: 14, letterSpacing: '-0.03em' }}>See these tools with your own data</h2>
         <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.5)', maxWidth: 380, margin: '0 auto 32px', lineHeight: 1.7 }}>A 30-minute demo using real examples from your workflow.</p>
         <Link to="/pricing" style={{ display: 'inline-block', background: sky, color: 'white', borderRadius: 8, padding: '13px 28px', fontSize: 14, fontWeight: 500, textDecoration: 'none' }}>View pricing</Link>

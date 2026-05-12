@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import TypingText, { DelayedVisible } from '../../components/TypingText';
+import { useIsMobile } from '../../components/layout';
 import handleFilesPicture1 from '../../images/heroSection/handleFiles/handleFilesPicture1.png';
 import { EmailDraftCard } from './QuotationGenerator.js';
 
@@ -168,6 +169,7 @@ function AnimatedListItem({ text, animate = false, delay = 0 }) {
 // AnimatedImagesSection
 // ─────────────────────────────────────────
 function AnimatedImagesSection({ src, alt, animate = false, delay = 0 }) {
+  const isMobile = useIsMobile();
   const mounted = useDelayedMount(animate, delay);
   if (!mounted) return null;
 
@@ -181,7 +183,7 @@ function AnimatedImagesSection({ src, alt, animate = false, delay = 0 }) {
         marginTop: 4, width: '100%', borderRadius: 6, overflow: 'hidden',
         border: '1px solid #e5e7eb', display: 'flex', justifyContent: 'center', alignItems: 'center',
       }}>
-        <img src={src} alt={alt} style={{ maxWidth: 420, height: 300, objectFit: 'cover' }} />
+        <img src={src} alt={alt} style={{ maxWidth: isMobile ? '100%' : 420, height: isMobile ? 180 : 300, objectFit: 'cover' }} />
       </div>
       <div style={{ fontSize: 9, color: '#9ca3af', marginTop: 4, lineHeight: 1.4 }}>
         {animate
@@ -245,6 +247,7 @@ const SEVERITY = {
 // FileDetailCard
 // ─────────────────────────────────────────
 function FileDetailCard({ fileData, onSave, users = [], userStages = {}, animate = false }) {
+  const isMobile = useIsMobile();
   const [minimized, setMinimized] = useState(false);
 
   const containerStr = Object.entries(fileData.containerQty || {})
@@ -308,10 +311,10 @@ function FileDetailCard({ fileData, onSave, users = [], userStages = {}, animate
       {/* ── Section 2: Two-column body ───────────────────────── */}
       {!minimized && (
         <div style={{ border: '1px solid #e5e7eb', borderRadius: 10, overflow: 'hidden', background: 'white' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '40% 60%' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '40% 60%' }}>
 
             {/* Left column */}
-            <div style={{ padding: '10px 12px', borderRight: '1px solid #e5e7eb' }}>
+            <div style={{ padding: '10px 12px', borderRight: isMobile ? 'none' : '1px solid #e5e7eb', borderBottom: isMobile ? '1px solid #e5e7eb' : 'none' }}>
               <FieldRow label="Name" value={fileData.productName} animate={animate} delay={d.name} />
 
               <div style={{ marginBottom: 6 }}>
@@ -422,12 +425,12 @@ function RiskFlagsOutput({ data, animate = false }) {
               <i className={icon} style={{ fontSize: 10, color }} />
               <span style={{ fontSize: 9, fontWeight: 700, color, letterSpacing: '0.5px', textTransform: 'uppercase' }}>{flag.category}</span>
             </div>
-            <p style={{ margin: '0 0 3px', fontSize: 11, fontWeight: 600, color: '#111827' }}>
+            <div style={{ margin: '0 0 3px', fontSize: 11, fontWeight: 600, color: '#111827' }}>
               <TypingText text={flag.title} animate={animate} delay={delay} speed={5} />
-            </p>
-            <p style={{ margin: '0 0 6px', fontSize: 11, color: '#6b7280', lineHeight: 1.4 }}>
+            </div>
+            <div style={{ margin: '0 0 6px', fontSize: 11, color: '#6b7280', lineHeight: 1.4 }}>
               <TypingText text={flag.description} animate={animate} delay={delay} speed={5} />
-            </p>
+            </div>
             <span style={{ fontSize: 10, color: '#2563eb', cursor: 'pointer' }}>
               <TypingText text={flag.action + ' ↗'} animate={animate} delay={delay} speed={5} />
             </span>
@@ -484,9 +487,9 @@ export default function HandleFilesOutput({ output, onSave, users, userStages, a
 
   if (item?.type === 'fileSuccess')
     return (
-      <p style={{ margin: 0, fontSize: 12, color: '#374151' }}>
+      <div style={{ margin: 0, fontSize: 12, color: '#374151' }}>
         <TypingText text={`Document uploaded successfully: /${item.fileName}`} animate={animate} />
-      </p>
+      </div>
     );
 
   if (item?.type === 'fileDetails')
@@ -502,12 +505,12 @@ export default function HandleFilesOutput({ output, onSave, users, userStages, a
 
   if (item?.type === 'fileFollowUp')
     return (
-      <p style={{ margin: 0, fontSize: 12, color: '#374151' }}>
+      <div style={{ margin: 0, fontSize: 12, color: '#374151' }}>
         <TypingText
           text="You can now ask follow-up questions about these files or reference their document IDs."
           animate={animate}
         />
-      </p>
+      </div>
     );
 
   if (item?.type === 'riskFlags')
@@ -518,7 +521,7 @@ export default function HandleFilesOutput({ output, onSave, users, userStages, a
 
   const description = item?.description;
   if (description)
-    return <p style={{ margin: 0, fontSize: 12, color: '#374151' }}><TypingText text={description} animate={animate} /></p>;
+    return <div style={{ margin: 0, fontSize: 12, color: '#374151' }}><TypingText text={description} animate={animate} /></div>;
 
-  return <p style={{ margin: 0, fontSize: 12, color: '#374151' }}>{JSON.stringify(output)}</p>;
+  return <div style={{ margin: 0, fontSize: 12, color: '#374151' }}>{JSON.stringify(output)}</div>;
 }

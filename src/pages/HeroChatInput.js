@@ -13,7 +13,7 @@ export default function HeroChatInput({
   selectedCatalogImages, setSelectedCatalogImages, catalogUploadImages, handleFilesItems,
   catalogProcessed, stagedPackageImage, stagedHandleFile, handleProcessFiles, stagedCatalogImages,
   typingText, setTypingText, inputRef, userStages, selectedUser,
-  guideStep, isAiTyping, handleSend, isMobile,
+  guideStep, isAiTyping, handleSend, isMobile, userTyped,
 }) {
   const handleIcon = () => {
     if (currentTab === tabs[0]) return 'fas fa-industry';
@@ -114,7 +114,7 @@ export default function HeroChatInput({
                 if (uploadDropdownOpen) {
                   setUploadDropdownClosing(true);
                   setTimeout(() => { setUploadDropdownOpen(false); setUploadDropdownClosing(false); }, 250);
-                  startTabInterval();
+                  if (!userTyped) startTabInterval();
                 } else {
                   setUploadDropdownOpen(true);
                   clearInterval(tabIntervalRef.current);
@@ -125,7 +125,7 @@ export default function HeroChatInput({
               <i className="fa fa-upload" style={{ fontSize: 16, color: '#1a2e44' }} />
             </div>
             {uploadDropdownOpen && (
-              <div style={{ position: 'absolute', bottom: '110%', left: 0, width: 240, background: 'white', border: '1px solid #d1d5db', borderRadius: 8, boxShadow: '0 4px 16px rgba(0,0,0,0.12)', padding: 10, zIndex: 50, transformOrigin: 'bottom left', animation: `${uploadDropdownClosing ? 'tabShrink' : 'tabExpand'} 0.25s ease forwards` }}>
+              <div style={{ position: 'absolute', bottom: isMobile ? '120%' :'110%', left: isMobile ? -150 : 0, width: 240, background: 'white', border: '1px solid #d1d5db', borderRadius: 8, boxShadow: '0 4px 16px rgba(0,0,0,0.12)', padding: 10, zIndex: 50, transformOrigin: 'bottom left', animation: `${uploadDropdownClosing ? 'tabShrink' : 'tabExpand'} 0.25s ease forwards` }}>
                 <p style={{ margin: '0 0 8px', fontSize: 12, fontWeight: 600, color: '#111827' }}>Upload Files</p>
                 {currentTab === tabs[0] && <FactoryFinderUpload />}
                 {currentTab === tabs[1] && <QuotationGeneratorUpload />}
@@ -152,7 +152,7 @@ export default function HeroChatInput({
           {!isMobile && (
             <textarea ref={inputRef}
               onFocus={() => { clearInterval(tabIntervalRef.current); }}
-              onBlur={() => { startTabInterval(); }}
+              onBlur={() => { if (!userTyped) startTabInterval(); }}
               onChange={e => setTypingText(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (!hideSend && !inUIGuide) handleSend(); } }}
               style={{ flex: 1, fontSize: 13, padding: '8px 12px', border: '1px solid #d1d5db', borderRadius: 6, color: 'black', background: 'white', fontFamily: 'inherit', resize: 'none', overflow: 'hidden', lineHeight: 1.5, minHeight: 36, boxSizing: 'border-box' }}
@@ -175,7 +175,7 @@ export default function HeroChatInput({
           <div style={{ padding: '8px 14px 0px' }}>
             <textarea ref={inputRef}
               onFocus={() => { clearInterval(tabIntervalRef.current); }}
-              onBlur={() => { startTabInterval(); }}
+              onBlur={() => { if (!userTyped) startTabInterval(); }}
               onChange={e => setTypingText(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (!hideSend && !inUIGuide) handleSend(); } }}
               style={{ width: '100%', fontSize: 13, padding: '8px 12px', border: '1px solid #d1d5db', borderRadius: 6, color: 'black', background: 'white', fontFamily: 'inherit', resize: 'none', overflow: 'hidden', lineHeight: 1.5, minHeight: 30, boxSizing: 'border-box' }}

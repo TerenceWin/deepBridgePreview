@@ -3,9 +3,9 @@ import TypingText, { DelayedVisible } from '../../components/TypingText';
 
 export function FactoryFinderUpload() {
   return (
-    <p style={{ margin: '0 0 10px', fontSize: 11, color: '#6b7280', lineHeight: 1.5 }}>
+    <div style={{ margin: '0 0 10px', fontSize: 11, color: '#6b7280', lineHeight: 1.5 }}>
       No file required — describe the product you're sourcing and our AI will find matching factories and suppliers for you.
-    </p>
+    </div>
   );
 }
 
@@ -35,20 +35,20 @@ export default function FactoryFinderOutput({ output, animate = false, isMobile 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
       {summary && (
-        <p style={{ margin: 0, fontSize: isMobile ? 9 : 12, color: '#374151' }}>
+        <div style={{ margin: 0, fontSize: 12, color: '#374151' }}>
           <TypingText text={summary} animate={animate} delay={0} />
-        </p>
+        </div>
       )}
       {parsed.map(({ name, url, desc, images }, idx) => {
         const d = cardDelays[idx];
         return (
           <DelayedVisible key={idx} delay={d} animate={animate} style={{ background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: 8, padding: isMobile ? 8 : 10 }}>
-            <p style={{ margin: '0 0 4px', fontWeight: 600, fontSize: isMobile ? 9 : 12, color: '#111827' }}>
+            <div style={{ margin: '0 0 4px', fontWeight: 600, fontSize: 12, color: '#111827' }}>
               <TypingText text={name} animate={animate} delay={d} />
-            </p>
-            <p style={{ margin: '0 0 6px', fontSize: isMobile ? 8 : 11, color: '#6b7280', lineHeight: 1.4 }}>
+            </div>
+            <div style={{ margin: '0 0 6px', fontSize: 12, color: '#6b7280', lineHeight: 1.4 }}>
               <TypingText text={desc} animate={animate} delay={d} />
-            </p>
+            </div>
             <div style={{ display: 'flex', gap: isMobile ? 4 : 6, flexWrap: 'wrap' }}>
               {images.map((img, i) => {
                 const imgDelay = d + (name.length + desc.length + url.length) * 5 + i * 100;

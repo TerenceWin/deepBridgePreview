@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import data from '../../data/heroData.js';
 import QuotationGeneratorOutput from '../heroTab/QuotationGenerator.js';
-import { DemoChatShell, DemoChatInputBar } from '../../components/DemoChat.js';
+import { DemoChatShell, DemoChatInputBar, DemoUploadSlotEmpty } from '../../components/DemoChat.js';
 
 const selectedUser = { name: 'Marcus Lin' };
 const qData = data['Generate Quotation']['Marcus Lin'];
@@ -136,6 +136,7 @@ export default function QuotationWorkflowDemo({ handleModal }) {
           onSend={handleSend}
           isAiTyping={isAiTyping}
           pulsing={!isAiTyping}
+          uploadSlot={<DemoUploadSlotEmpty />}
         />
       }
     />
