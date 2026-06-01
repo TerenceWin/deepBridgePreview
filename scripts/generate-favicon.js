@@ -10,28 +10,28 @@ const svg = `
   <clipPath id="lb"><rect x="0" y="200" width="680" height="400"/></clipPath>
 
   <!-- white outline layer drawn first (stroke-width 36 vs 22 = 7px halo each side) -->
-  <line x1="249" y1="120" x2="249" y2="280" stroke="white" stroke-width="36" stroke-linecap="round"/>
-  <line x1="431" y1="120" x2="431" y2="280" stroke="white" stroke-width="36" stroke-linecap="round"/>
-  <circle cx="340" cy="200" r="80" fill="none" stroke="white" stroke-width="36"/>
+  <line x1="249" y1="120" x2="249" y2="280" stroke="white" stroke-width="37" stroke-linecap="round"/>
+  <line x1="431" y1="120" x2="431" y2="280" stroke="white" stroke-width="37" stroke-linecap="round"/>
+  <circle cx="340" cy="200" r="80" fill="none" stroke="white" stroke-width="37"/>
 
   <!-- colored icon on top -->
   <g clip-path="url(#lt)">
-    <line x1="249" y1="120" x2="249" y2="280" stroke="#29ABE2" stroke-width="22" stroke-linecap="round"/>
-    <line x1="431" y1="120" x2="431" y2="280" stroke="#29ABE2" stroke-width="22" stroke-linecap="round"/>
-    <circle cx="340" cy="200" r="80" fill="none" stroke="#29ABE2" stroke-width="22"/>
+    <line x1="249" y1="120" x2="249" y2="280" stroke="#29ABE2" stroke-width="23" stroke-linecap="round"/>
+    <line x1="431" y1="120" x2="431" y2="280" stroke="#29ABE2" stroke-width="23" stroke-linecap="round"/>
+    <circle cx="340" cy="200" r="80" fill="none" stroke="#29ABE2" stroke-width="23"/>
     <rect x="235" y="120" width="28" height="160" fill="transparent"/>
-    <line x1="249" y1="120" x2="249" y2="280" stroke="#29ABE2" stroke-width="22" stroke-linecap="round"/>
+    <line x1="249" y1="120" x2="249" y2="280" stroke="#29ABE2" stroke-width="23" stroke-linecap="round"/>
     <rect x="417" y="120" width="28" height="160" fill="transparent"/>
-    <line x1="431" y1="120" x2="431" y2="280" stroke="#29ABE2" stroke-width="22" stroke-linecap="round"/>
+    <line x1="431" y1="120" x2="431" y2="280" stroke="#29ABE2" stroke-width="23" stroke-linecap="round"/>
   </g>
   <g clip-path="url(#lb)">
-    <line x1="249" y1="120" x2="249" y2="280" stroke="#0F3D6E" stroke-width="22" stroke-linecap="round"/>
-    <line x1="431" y1="120" x2="431" y2="280" stroke="#0F3D6E" stroke-width="22" stroke-linecap="round"/>
-    <circle cx="340" cy="200" r="80" fill="none" stroke="#0F3D6E" stroke-width="22"/>
+    <line x1="249" y1="120" x2="249" y2="280" stroke="#0F3D6E" stroke-width="23" stroke-linecap="round"/>
+    <line x1="431" y1="120" x2="431" y2="280" stroke="#0F3D6E" stroke-width="23" stroke-linecap="round"/>
+    <circle cx="340" cy="200" r="80" fill="none" stroke="#0F3D6E" stroke-width="23"/>
     <rect x="235" y="120" width="28" height="160" fill="transparent"/>
-    <line x1="249" y1="120" x2="249" y2="280" stroke="#0F3D6E" stroke-width="22" stroke-linecap="round"/>
+    <line x1="249" y1="120" x2="249" y2="280" stroke="#0F3D6E" stroke-width="23" stroke-linecap="round"/>
     <rect x="417" y="120" width="28" height="160" fill="transparent"/>
-    <line x1="431" y1="120" x2="431" y2="280" stroke="#0F3D6E" stroke-width="22" stroke-linecap="round"/>
+    <line x1="431" y1="120" x2="431" y2="280" stroke="#0F3D6E" stroke-width="23" stroke-linecap="round"/>
   </g>
 </svg>`;
 
