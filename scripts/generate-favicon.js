@@ -49,9 +49,9 @@ async function generate() {
   await sharp(buf).resize(192, 192).png().toFile(path.join(publicDir, 'logo192.png'));
   await sharp(buf).resize(192, 192).png().toFile(path.join(buildDir,  'logo192.png'));
 
-  // 33x33 favicon PNG
-  await sharp(buf).resize(33, 33).png().toFile(path.join(publicDir, 'favicon.png'));
-  await sharp(buf).resize(33, 33).png().toFile(path.join(buildDir,  'favicon.png'));
+  // 34x34 favicon PNG
+  await sharp(buf).resize(34, 34).png().toFile(path.join(publicDir, 'favicon.png'));
+  await sharp(buf).resize(34, 34).png().toFile(path.join(buildDir,  'favicon.png'));
 
   console.log('Generated: logo512.png, logo192.png, favicon.png in public/ and build/');
 }
